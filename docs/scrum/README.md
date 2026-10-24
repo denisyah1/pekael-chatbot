@@ -7,7 +7,7 @@ Folder ini adalah catatan resmi pelaksanaan Scrum untuk penelitian skripsi Pekae
 | Peran | Nama | Tanggung jawab dalam proyek ini |
 |---|---|---|
 | Product Owner | Bambang Satrio, S. Pd., M. Kom. | Memvalidasi knowledge base, Sprint Goal, increment, dan dataset ground truth |
-| Scrum Master | Dr. WIdodo, M. Kom. dan Nur Elah, S. Pd., N. Kom. | Menjaga jalannya event Scrum dan menghapus hambatan |
+| Scrum Master | Dr. Widodo, M. Kom. dan Nur Elah, S. Pd., M. Kom. | Menjaga jalannya event Scrum dan menghapus hambatan |
 | Developer | Deni Merdiansyah | Merencanakan, membangun, menguji, dan mendokumentasikan increment |
 
 ## Ritme

@@ -13,10 +13,10 @@
 | 3 | `pyproject.toml` | Selesai | Install editable `pekael 0.1.0` berhasil |
 | 4 | `.venv` + dependency + pin versi | Selesai | `requirements.txt`, `requirements-dev.txt`, `requirements-lock.txt`; `pip check` bersih |
 | 5 | Smoke test tanpa API (FAISS, PyMuPDF, Tesseract) | Selesai | `pytest`: 5 lulus, 0 gagal |
-| 6 | `.env.example` | Belum | |
-| 7 | `AppConfig`, configurator, logging | Belum | |
-| 8 | Kontrak inti dan factory minimal | Belum | |
-| 9 | Unit test dasar | Belum | |
+| 6 | `.env.example` | Selesai | Placeholder saja, tanpa secret |
+| 7 | `AppConfig`, configurator, logging | Selesai | `test_config.py`, `test_logging_config.py` |
+| 8 | Kontrak inti dan factory minimal | Selesai | 26 modul `pekael` dapat diimpor |
+| 9 | Unit test dasar | Selesai | `pytest`: 50 lulus, 0 gagal |
 | 10 | README instalasi | Belum | |
 | 11 | Kerangka `scripts/smoke_test_models.py` | Belum | |
 | 12 | Audit secret | Belum | |
@@ -87,3 +87,45 @@
 - PyMuPDF 2.0 mewajibkan `pymupdf4llm`, `pymupdf-layout`, dan `onnxruntime`, sehingga instalasi lebih besar. Fungsi tetap berjalan; dicatat untuk pertimbangan hosting (OD-07).
 
 **Berikutnya**: langkah Setup 6–9 (`.env.example`, konfigurasi + logging, kontrak inti dan factory, unit test dasar).
+
+### 2026-10-25 (sesi 3)
+
+**Dikerjakan**
+- `.env.example` dibuat sesuai spec §8 dengan penyesuaian `FAISS_INDEX_PATH=data/index` (D-04) dan variabel baru `QUESTION_MAX_CHARS=500` (D-13).
+- **Konfigurasi** (`config/settings.py`): `AppConfig` (Pydantic, immutable) memvalidasi tipe dan rentang nilai, termasuk `CHUNK_OVERLAP < CHUNK_SIZE` dan `LOG_LEVEL` yang valid. Nilai kosong atau placeholder `replace_with_...` dianggap belum diisi. Secret bertipe `SecretStr` sehingga tidak tampil di `repr`/log. `missing_runtime_settings()` menyediakan daftar variabel wajib yang belum diisi (bahan status FR-08).
+- **`AppConfigurator.read_config()`**: membaca `.env` bila ada; environment variable sungguhan (secrets hosting) diprioritaskan. `create_manager_from_config()` masih kerangka (Sprint 3).
+- **Logging** (`config/logging_config.py`): formatter yang menyamarkan nilai secret pada pesan dan traceback.
+- **Kontrak inti dan Abstract Factory** sesuai class diagram:
+  - ABC `BaseLoader`, `BaseSplitter`, `BaseVectorStore`;
+  - `DocumentLoaderFactory.get_loader()`, `DocumentSplitterFactory.get_splitter()`, `VectorStoreFactory.get_vector_store()` yang mengembalikan `PDFLoader`, `RecursiveCharacterSplitter`, `FaissVectorStore`;
+  - kerangka `ChatbotManager`, `GeminiModel`, `OcrService` (method inti melempar `NotImplementedError` dengan keterangan sprint pengisiannya).
+- **`Chain` diimplementasikan penuh**: `add()`, `clear()`, `build()` (menyusun langkah menjadi LangChain `RunnableSequence`), `invoke()`. Langkah yang mengisi `ChainState.response` (mis. relevancy gate) menghentikan langkah berikutnya, sehingga fallback tidak memanggil Gemini.
+- **Schemas** (`core/schemas.py`): `SourceReference`, `RetrievedDocument`, `ChatbotResponse`, `ResponseStatus`, `IndexingReport`, `IngestionReport`, `ChainState`.
+- **`AdminAuthenticator`** diimplementasikan: satu akun, perbandingan constant-time (`hmac.compare_digest`), login nonaktif bila kredensial belum dikonfigurasi (FR-06).
+
+**Hasil test**
+- Perintah: `.venv\Scripts\python.exe -m pytest` → **50 lulus, 0 gagal**, 1 warning (sunset `langchain-community`, sama dengan sesi 2).
+
+  | File test | Jumlah | Cakupan |
+  |---|---|---|
+  | `test_admin_auth.py` | 10 | kredensial benar/salah, case-sensitive, karakter non-ASCII, login nonaktif |
+  | `test_chain.py` | 7 | urutan langkah, Runnable LangChain, short-circuit, chain kosong, clear, rebuild |
+  | `test_config.py` | 11 | default spec, parsing, nilai kosong/placeholder, error yang menyebut nama variabel, secret tidak tampil, prioritas env vs `.env` |
+  | `test_environment.py` | 5 | smoke test lingkungan (sesi 2) |
+  | `test_factories.py` | 14 | ketiga factory, tipe tidak didukung, validasi parameter, ABC tidak dapat diinstansiasi |
+  | `test_logging_config.py` | 3 | redaksi secret di pesan dan traceback |
+- Import seluruh 26 modul `pekael` → berhasil (tidak ada circular import).
+
+**File dibuat/diubah**
+- `.env.example`
+- `src/pekael/config/{settings,app_configurator,logging_config}.py`
+- `src/pekael/core/{schemas,chain,chatbot_manager}.py`, `src/pekael/models/gemini_model.py`
+- `src/pekael/loaders/{base,pdf_loader,factory}.py`, `src/pekael/splitters/{base,recursive_character_splitter,factory}.py`, `src/pekael/vectorstores/{base,faiss_vector_store,factory}.py`
+- `src/pekael/services/{ocr_service,admin_auth}.py`
+- `tests/unit/test_{config,logging_config,factories,chain,admin_auth}.py`
+
+**Keputusan**: D-13, D-14.
+
+**Hambatan**: tidak ada.
+
+**Berikutnya**: langkah Setup 10–12 (README instalasi, kerangka `scripts/smoke_test_models.py`, audit secret).
