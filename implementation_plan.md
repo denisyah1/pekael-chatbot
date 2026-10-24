@@ -3,7 +3,7 @@
 > **Turunan dari:** `project_spec.md` (sumber acuan utama; bila bertentangan, spec yang berlaku)
 > **Fase:** Output Phase 1 — PLAN (spec §17), menjadi pegangan Phase 2 — SETUP dan Phase 3 — BUILD
 > **Tanggal dibuat:** 2026-10-25
-> **Status:** Menunggu tinjauan pemilik proyek sebelum Setup dimulai
+> **Status:** Ditinjau dan dinyatakan lengkap oleh pemilik proyek (2026-10-25). Usulan D-04 s.d. D-08 dianggap disetujui; rincian di `docs/decision_log.md`.
 
 ---
 
@@ -20,7 +20,7 @@ Keputusan berikut tidak ada di spec atau melengkapinya. Masing-masing dicatat ag
 | D-05 | Vektor embedding **dinormalisasi L2** sebelum masuk `IndexFlatL2` | Usulan (OD-12) | `gemini-embedding-001` pada dimensi < 3072 tidak dinormalisasi otomatis. Setelah normalisasi, jarak L2 setara monoton dengan cosine similarity sehingga threshold lebih stabil. Indeks tetap `IndexFlatL2` sesuai spec. |
 | D-06 | Dependency dipecah: `requirements.txt` (runtime), `requirements-dev.txt` (test), `requirements-eval.txt` (Ragas/OpenAI) | Usulan | FR-11 & NFR-03: chatbot dan deployment tidak perlu paket/kunci evaluator. |
 | D-07 | `pyproject.toml` untuk package `src/pekael` (install editable) dan konfigurasi pytest | Usulan | Layout `src/` pada spec §5.4 membutuhkan package yang terpasang agar import konsisten di app, script, dan test. |
-| D-08 | Folder `docs/` untuk `logbook.md` dan `decisions.md` | Usulan | Spec §16 mewajibkan logbook sprint dan catatan keputusan; folder belum ada di struktur spec §5.4. |
+| D-08 | Folder `docs/`: dokumentasi Scrum di `docs/scrum/` (planning, backlog, review, retrospective, lembar validasi per sprint), `docs/decision_log.md`, dan `docs/experiment_log.md` | Disetujui pemilik | Spec §16 mewajibkan logbook sprint dan catatan keputusan; dibutuhkan untuk laporan dan validasi per sprint. |
 
 ---
 
