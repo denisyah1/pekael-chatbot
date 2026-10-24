@@ -20,6 +20,7 @@ Catatan keputusan teknis yang tidak tertulis di `project_spec.md` atau yang meny
 | D-12 | 2026-10-25 | Tetap memakai `langchain-community==0.4.2` untuk wrapper FAISS; **tidak** memakai paket PyPI `langchain-faiss` | Diterapkan, menunggu OD-15 | Upstream diarsipkan, tetapi versi terpin berfungsi. `langchain-faiss` tidak resmi dan tanpa provenance (risiko supply chain) | Setup |
 | D-13 | 2026-10-25 | Variabel baru `QUESTION_MAX_CHARS` (default 500). Nilai env kosong atau berawalan `replace_with_` dianggap belum diisi | Diterapkan | FR-01 mewajibkan batas panjang input lewat konfigurasi, tetapi variabelnya belum ada di spec §8. Placeholder dicegah terbaca sebagai key asli | Setup |
 | D-14 | 2026-10-25 | `Chain` menyusun langkah menjadi LangChain `RunnableSequence`; langkah yang mengisi `ChainState.response` menghentikan langkah sisanya. Schema memakai dataclass; `AppConfig` memakai Pydantic | Diterapkan | Workflow deterministik sesuai class diagram; fallback tanpa memanggil Gemini (spec §4.3 langkah 6) | Setup |
+| D-15 | 2026-10-25 | Hook pre-commit `.githooks/pre-commit` → `scripts/check_secrets.py` (stdlib saja); diaktifkan per clone dengan `git config core.hooksPath .githooks` | Diterapkan, menunggu aktivasi pemilik | Mencegah terulangnya secret ter-commit (insiden sesi 4); NFR-01 | Setup |
 
 ## Penyelesaian Open Decision
 

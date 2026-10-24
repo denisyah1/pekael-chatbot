@@ -17,9 +17,9 @@
 | 7 | `AppConfig`, configurator, logging | Selesai | `test_config.py`, `test_logging_config.py` |
 | 8 | Kontrak inti dan factory minimal | Selesai | 26 modul `pekael` dapat diimpor |
 | 9 | Unit test dasar | Selesai | `pytest`: 50 lulus, 0 gagal |
-| 10 | README instalasi | Belum | |
-| 11 | Kerangka `scripts/smoke_test_models.py` | Belum | |
-| 12 | Audit secret | Belum | |
+| 10 | README instalasi | Selesai | `README.md` |
+| 11 | `scripts/smoke_test_models.py` | Skrip siap; **belum dijalankan** (butuh persetujuan pemanggilan API) | |
+| 12 | Audit secret | Selesai | `check_secrets.py --all` bersih; hook pre-commit diuji |
 
 ## Log Pengerjaan
 
@@ -129,3 +129,38 @@
 **Hambatan**: tidak ada.
 
 **Berikutnya**: langkah Setup 10–12 (README instalasi, kerangka `scripts/smoke_test_models.py`, audit secret).
+
+### 2026-10-25 (sesi 4)
+
+**Insiden secret (ditangani sebelum publikasi)**
+- Commit lokal `726a6d7` memuat API key Gemini, API key OpenAI, dan password admin asli di `.env.example`. Commit berikutnya (`fix`) mengembalikan placeholder, tetapi nilai asli masih ada di riwayat commit.
+- Push ditolak oleh GitHub Push Protection. Riwayat di `origin/main` diperiksa: **0 kemunculan** secret.
+- Penanganan oleh pemilik: dua commit lokal digabung dengan `git reset --soft 8aa8a74` menjadi `4d0d78a` yang bersih, lalu di-push. Nilai asli dipindahkan ke `.env` (di-ignore).
+- Sesuai NFR-01, kedua API key dan password admin dianjurkan untuk di-rotate karena nilainya sempat tersimpan di commit lokal dan terbaca saat pemeriksaan.
+- Pencegahan: hook pre-commit pemindai secret (lihat di bawah).
+
+**Dikerjakan**
+- Parameter `langchain-google-genai` 4.4.2 diverifikasi dari source terpasang: `embed_documents` default `RETRIEVAL_DOCUMENT`, `embed_query` default `RETRIEVAL_QUERY` (sesuai spec §4.1 langkah 9 dan §4.3 langkah 3); dimensi diatur lewat `output_dimensionality`; nama model diterima tanpa awalan `models/`.
+- `scripts/smoke_test_models.py`: tiga panggilan API kecil tanpa retry (chat, embedding dokumen, embedding query); memeriksa dimensi = `EMBEDDING_OUTPUT_DIMENSION` dan melaporkan norma L2 vektor (bahan OD-12); pesan error disamarkan dari secret.
+- `scripts/check_secrets.py` + `.githooks/pre-commit`: memblokir commit file `.env` dan baris berisi pola key OpenAI/Google atau nilai `GEMINI_API_KEY`/`OPENAI_API_KEY`/`ADMIN_PASSWORD` non-placeholder. Mode `--all` memindai semua file yang dilacak git.
+- README berisi prasyarat Windows, instalasi, konfigurasi, perlindungan secret, pengujian, dan struktur.
+- Pemeriksaan `.env` (tanpa menampilkan nilai): `GEMINI_API_KEY` terisi, admin aktif, `OPENAI_API_KEY` terisi, `TESSERACT_CMD` kosong (Tesseract tidak ada di PATH, perlu diisi sebelum Sprint 1).
+
+**Hasil test**
+- `pytest` → **64 lulus, 0 gagal**, 1 warning (sunset `langchain-community`). Tambahan 14 test di `test_check_secrets.py` (deteksi key, placeholder diabaikan, file `.env` dilarang, `.env.example` di repo bersih).
+- `check_secrets.py --all` → bersih.
+- Uji hook pada repo git sementara: perubahan normal → exit 0; file `.env` dan key palsu → exit 1 dengan tiga temuan.
+- `py_compile` kedua skrip → berhasil.
+
+**File dibuat/diubah**
+- `scripts/smoke_test_models.py`, `scripts/check_secrets.py`, `.githooks/pre-commit`, `tests/unit/test_check_secrets.py`, `README.md`
+
+**Keputusan**: D-15.
+
+**Hambatan**: insiden secret di atas (selesai ditangani).
+
+**Berikutnya**
+- Pemilik mengaktifkan hook: `git config core.hooksPath .githooks`.
+- Pemilik mengisi `TESSERACT_CMD` di `.env`.
+- Menjalankan `smoke_test_models.py` (OD-01, OD-02) setelah disetujui.
+- Memasang dan mempin Ragas + smoke test tiga metrik (spec §10.4; OD-05, OD-06).
