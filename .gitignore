@@ -1,0 +1,58 @@
+# ── Secrets (NFR-01) ───────────────────────────────────────────
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# ── Research data (NFR-07) — never commit sources, OCR output, indexes ──
+data/source/*
+data/processed/*
+data/index/*
+!data/source/.gitkeep
+!data/processed/.gitkeep
+!data/index/.gitkeep
+
+# Evaluation: only the example dataset and README are public
+data/evaluation/*
+!data/evaluation/README.md
+!data/evaluation/ground_truth.example.jsonl
+
+# UAT responses / exports
+data/uat/
+
+# Raw PDFs anywhere except test fixtures
+*.pdf
+!tests/fixtures/**/*.pdf
+
+# ── Claude Code helper files (not part of the research artifact) ──
+CLAUDE.md
+CLAUDE.local.md
+MEMORY.md
+.claude/
+
+# ── Python ─────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.python-version
+
+# ── Tooling ────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+logs/
+*.log
+
+# ── OS / editor ────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
