@@ -156,6 +156,7 @@ Urutan kerja (spec §17 Phase 2). Setiap langkah dilaporkan sebelum lanjut.
 | FAISS di Windows | Wheel pip tidak tersedia untuk kombinasi Python/OS | Python 3.11 (D-01); fallback ke Miniforge + `environment.yml` |
 | Tesseract | Executable tidak ada di PATH; data `ind` belum terpasang | `TESSERACT_CMD` di konfigurasi; cek `get_languages()` di smoke test |
 | `langchain-google-genai` | Parameter `task_type`/`output_dimensionality` berubah antarversi | Verifikasi pada versi terpin; test dimensi vektor |
+| `langchain-community` | Diarsipkan upstream; tidak ada update keamanan atau kompatibilitas | Versi dipin; OD-15 diputuskan di Sprint 3 |
 | LangChain FAISS | `load_local` mensyaratkan `allow_dangerous_deserialization=True` | Hanya memuat indeks dari folder versi buatan sendiri; dicatat di `decisions.md` |
 | Ragas | Nama metric/field dataset berubah antarversi | Pin versi; fungsi mapping eksplisit; dry-run Sprint 5 |
 | Model Gemini | `gemini-3.5-flash-lite` belum terverifikasi tersedia/gratis | Smoke test Setup; tidak ada auto-switch ke model berbayar |
@@ -172,6 +173,7 @@ OD-01 s.d. OD-10 tetap seperti spec §18. Tambahan dari fase Plan:
 | OD-11 | Lisensi repository | Sebelum deployment publik (Sprint 6) | PyMuPDF berlisensi AGPL-3.0; repo public memudahkan kepatuhan. Pilih lisensi yang kompatibel (mis. AGPL-3.0) atau ganti ke `pypdfium2` (permisif) dengan persetujuan. |
 | OD-12 | Normalisasi L2 embedding (D-05) | Sprint 2 | Diuji bersama OD-02; disimpan di manifest indeks. |
 | OD-13 | Apakah dataset ground truth dan buku panduan boleh dipublikasikan di repo public | Sprint 5 | Default: tidak di-commit (sudah di `.gitignore`). Hanya `ground_truth.example.jsonl` yang public. |
+| OD-15 | Wrapper FAISS jangka panjang | Sprint 3 | `langchain-community` diarsipkan upstream (2026). Opsi: (a) tetap pakai 0.4.2 yang dipin; (b) `FaissVectorStore` memakai `faiss` langsung + docstore sederhana, tetap dalam workflow LangChain (`Document`, `Embeddings`). Kontrak `BaseVectorStore` membuat penggantian hanya berdampak pada satu modul. |
 | OD-14 | Butir UAT no. 3 ("rujukan pada *setiap* jawaban") vs jawaban fallback tanpa rujukan | Sebelum distribusi UAT | Dibahas bersama OD-08 dengan pembimbing. |
 
 ---

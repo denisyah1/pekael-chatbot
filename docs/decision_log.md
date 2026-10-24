@@ -16,6 +16,8 @@ Catatan keputusan teknis yang tidak tertulis di `project_spec.md` atau yang meny
 | D-08 | 2026-10-25 | Dokumentasi Scrum di `docs/scrum/`, keputusan di `docs/decision_log.md`, eksperimen di `docs/experiment_log.md` | Disetujui pemilik | Spec §16; kebutuhan laporan dan validasi per sprint | Plan |
 | D-09 | 2026-10-25 | Tesseract 5.4.0.20240606 (UB Mannheim) + `ind.traineddata` dari repo `tesseract-ocr/tessdata` | Terpasang | Model standar, sama dengan yang dibundel installer | Setup |
 | D-10 | 2026-10-25 | Claude Code tidak melakukan `git commit`/`push`; hanya memberi arahan, dan pemilik yang menjalankan | Disetujui pemilik | Kendali penuh pemilik atas riwayat repo | Setup |
+| D-11 | 2026-10-25 | Dependency langsung dipin `==` di `requirements.txt` / `requirements-dev.txt`; seluruh dependency transitif dikunci di `requirements-lock.txt`. `faiss-cpu` dipasang via pip (tanpa Conda) | Diterapkan | Spec §3.1; smoke test lulus pada Python 3.11.9 / Windows 11 | Setup |
+| D-12 | 2026-10-25 | Tetap memakai `langchain-community==0.4.2` untuk wrapper FAISS; **tidak** memakai paket PyPI `langchain-faiss` | Diterapkan, menunggu OD-15 | Upstream diarsipkan, tetapi versi terpin berfungsi. `langchain-faiss` tidak resmi dan tanpa provenance (risiko supply chain) | Setup |
 
 ## Penyelesaian Open Decision
 

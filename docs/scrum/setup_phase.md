@@ -9,10 +9,10 @@
 |---|---|---|---|
 | 0 | `.gitignore` dan `implementation_plan.md` | Selesai | Ditinjau pemilik 2026-10-25 |
 | 1 | Prasyarat OS: Python 3.11, Tesseract + bahasa `ind` | Selesai | Lihat log 2026-10-25 |
-| 2 | Struktur folder dan package | Belum | |
-| 3 | `pyproject.toml` | Belum | |
-| 4 | `.venv` + dependency + pin versi | Belum | |
-| 5 | Smoke test tanpa API (FAISS, PyMuPDF, Tesseract) | Belum | |
+| 2 | Struktur folder dan package | Selesai | `src/pekael/*`, `scripts/`, `data/*`, `tests/*` |
+| 3 | `pyproject.toml` | Selesai | Install editable `pekael 0.1.0` berhasil |
+| 4 | `.venv` + dependency + pin versi | Selesai | `requirements.txt`, `requirements-dev.txt`, `requirements-lock.txt`; `pip check` bersih |
+| 5 | Smoke test tanpa API (FAISS, PyMuPDF, Tesseract) | Selesai | `pytest`: 5 lulus, 0 gagal |
 | 6 | `.env.example` | Belum | |
 | 7 | `AppConfig`, configurator, logging | Belum | |
 | 8 | Kontrak inti dan factory minimal | Belum | |
@@ -38,3 +38,52 @@
 **Hambatan**: tidak ada.
 
 **Berikutnya**: langkah Setup 2–5.
+
+### 2026-10-25 (sesi 2)
+
+**Dikerjakan**
+- Struktur folder sesuai spec §5.4 dibuat: package `src/pekael/` (config, core, models, loaders, splitters, vectorstores, services, evaluation), `scripts/`, `data/{source,processed,index,evaluation}`, `tests/{unit,integration,fixtures}`.
+- `pyproject.toml` dibuat: package `pekael` (src layout, Python `>=3.11,<3.12`), konfigurasi pytest dengan marker `live` untuk test API sungguhan yang secara default dilewati. README awal ditambahkan.
+- Virtual environment `.venv` dibuat dengan Python 3.11.9; pip ditingkatkan ke 26.2.2.
+- Dependency runtime dan dev dipasang, lalu dipin (D-11, D-12):
+
+  | Paket | Versi |
+  |---|---|
+  | langchain-core | 1.7.0 |
+  | langchain-community | 0.4.2 |
+  | langchain-text-splitters | 1.1.3 |
+  | langchain-google-genai | 4.4.2 |
+  | faiss-cpu | 1.15.1 (wheel pip Windows tersedia; Conda tidak diperlukan) |
+  | numpy | 2.4.6 |
+  | pymupdf | 2.0 |
+  | pytesseract | 0.3.13 |
+  | pillow | 13.0.0 |
+  | streamlit | 1.66.1 |
+  | pydantic | 2.14.1 |
+  | python-dotenv | 1.2.4 |
+  | pytest | 9.1.1 |
+
+  Lock lengkap (96 paket): `requirements-lock.txt`.
+
+**Hasil test**
+- Perintah: `.venv\Scripts\python.exe -m pytest -v` → **5 lulus, 0 gagal**, 1 warning.
+  - `test_core_imports`: semua paket inti dapat diimpor.
+  - `test_runtime_does_not_import_evaluator_packages`: `pekael` tidak mengimpor `ragas` atau `langchain_openai` (FR-11).
+  - `test_faiss_flat_l2_save_and_load`: LangChain FAISS membuat `IndexFlatL2` 768 dimensi, menyimpan dan memuat ulang, lalu menemukan dokumen yang benar dengan jarak ≈ 0.
+  - `test_pymupdf_extracts_text_and_renders_page`: ekstraksi teks dan render halaman berfungsi.
+  - `test_tesseract_ocr_indonesian`: bahasa `ind` tersedia; OCR membaca "PRAKTIK KERJA LAPANGAN" dari halaman yang dirender.
+- Warning: `DeprecationWarning` bahwa `langchain-community` sedang di-sunset (lihat Hambatan).
+- `pip check` → "No broken requirements found".
+
+**File dibuat/diubah**
+- `pyproject.toml`, `README.md`, `requirements.txt`, `requirements-dev.txt`, `requirements-lock.txt`
+- `src/pekael/__init__.py` dan `__init__.py` di tiap subpackage
+- `tests/unit/test_environment.py`, `.gitkeep` di `data/*` dan `tests/fixtures/`
+
+**Keputusan**: D-11, D-12; Open Decision baru OD-15.
+
+**Hambatan**
+- Repo `langchain-community` diarsipkan upstream (issue langchain-ai/langchain-community#674, 2026). Wrapper FAISS LangChain berada di paket ini. Paket `langchain-faiss` di PyPI diperiksa: rilis 2024 oleh perorangan, ~1 kB, tanpa repo/provenance, dan bukan dari langchain-ai, sehingga **tidak dipakai**. Untuk saat ini `langchain-community==0.4.2` dipin karena terbukti berfungsi (OD-15).
+- PyMuPDF 2.0 mewajibkan `pymupdf4llm`, `pymupdf-layout`, dan `onnxruntime`, sehingga instalasi lebih besar. Fungsi tetap berjalan; dicatat untuk pertimbangan hosting (OD-07).
+
+**Berikutnya**: langkah Setup 6–9 (`.env.example`, konfigurasi + logging, kontrak inti dan factory, unit test dasar).

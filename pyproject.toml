@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pekael"
+dynamic = ["version"]
+description = "RAG chatbot (LangChain + Gemini + FAISS) for PKL information at PTIK UNJ"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+
+[tool.setuptools.dynamic]
+version = { attr = "pekael.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -m 'not live'"
+markers = [
+    "live: calls a real external API (Gemini/OpenAI); run manually only",
+]
