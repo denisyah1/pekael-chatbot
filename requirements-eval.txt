@@ -1,0 +1,6 @@
+# Evaluation-only dependencies (FR-11): not needed to run the chatbot or for deployment.
+-r requirements.txt
+ragas==0.4.3
+langchain-openai==1.7.2
+openai==3.3.0
+google-genai==2.33.0

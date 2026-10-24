@@ -33,15 +33,20 @@ docs/
 │       ├── sprint_review.md
 │       ├── validasi_review.md
 │       └── sprint_retrospective.md
+├── technical/                    # rincian teknis: log perintah, versi, hasil smoke test
+│   ├── setup_log.md
+│   └── smoke_tests.md
 ├── decision_log.md               # keputusan teknis (D-xx) dan penyelesaian Open Decision (OD-xx)
 └── experiment_log.md             # eksperimen chunking, threshold, model (NFR-06)
 ```
+
+Dokumen di `docs/scrum/` ditulis dengan bahasa sederhana sebagai bahan laporan. Rincian teknis (perintah, versi paket, keluaran test) ada di `docs/technical/` dan dirujuk lewat tautan.
 
 ## Status Sprint
 
 | Sprint | Periode | Sprint Goal | Planning | Review | Retro | Status |
 |---|---|---|---|---|---|---|
-| Setup | 2026-10-25 – … | Lingkungan dan kerangka kode siap dibangun | — | — | — | Berjalan |
+| Setup | 2026-10-25 | Lingkungan dan kerangka kode siap dibangun | — | — | — | Selesai (uji evaluator OpenAI tertunda) |
 | 1 | _[tgl]_ | Persiapan dan validasi knowledge base | ☐ | ☐ | ☐ | Belum dimulai |
 | 2 | _[tgl]_ | Chunking dan embedding | ☐ | ☐ | ☐ | Belum dimulai |
 | 3 | _[tgl]_ | FAISS dan alur RAG inti | ☐ | ☐ | ☐ | Belum dimulai |

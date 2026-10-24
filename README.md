@@ -52,7 +52,9 @@ py -3.11 -m venv .venv
 
 - `requirements.txt`: dependency runtime yang dipin.
 - `requirements-dev.txt`: runtime + pytest.
-- `requirements-lock.txt`: seluruh dependency transitif hasil `pip freeze` untuk reproduksi persis:
+- `requirements-eval.txt`: runtime + Ragas/OpenAI, khusus skrip evaluasi (tidak diperlukan chatbot maupun deployment):
+  `pip install -r requirements-eval.txt`
+- `requirements-lock.txt`: seluruh dependency transitif lingkungan pengembangan (dev + eval) hasil `pip freeze`, untuk reproduksi persis:
   `pip install -r requirements-lock.txt -e .`
 
 **FAISS:** `faiss-cpu` terpasang langsung dari pip pada Windows 11 + Python 3.11. Conda/Miniforge hanya diperlukan bila instalasi pip gagal di mesin lain.
@@ -104,6 +106,14 @@ Uji model Gemini dengan API sungguhan dijalankan manual (3 panggilan kecil, tanp
 ```powershell
 .\.venv\Scripts\python.exe scripts\smoke_test_models.py
 ```
+
+Uji ketiga metrik Ragas (memakai kredit OpenAI API, satu sampel fiktif):
+
+```powershell
+.\.venv\Scripts\python.exe scripts\smoke_test_ragas.py
+```
+
+Hasil smoke test dicatat di [`docs/technical/smoke_tests.md`](docs/technical/smoke_tests.md).
 
 ## Struktur
 

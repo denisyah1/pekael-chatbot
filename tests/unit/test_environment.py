@@ -41,6 +41,14 @@ def test_runtime_does_not_import_evaluator_packages():
     assert "langchain_openai" not in sys.modules
 
 
+def test_evaluation_packages_import_when_installed():
+    """Guards the langchain-community pin: ragas fails to import with 0.4.2 (D-16)."""
+    pytest.importorskip("ragas", reason="evaluation dependencies (requirements-eval.txt) not installed")
+    from ragas.embeddings import GoogleEmbeddings  # noqa: F401
+    from ragas.llms import llm_factory  # noqa: F401
+    from ragas.metrics.collections import AnswerRelevancy, ContextRecall, Faithfulness  # noqa: F401
+
+
 def test_faiss_flat_l2_save_and_load(tmp_path):
     import faiss
     from langchain_community.vectorstores import FAISS

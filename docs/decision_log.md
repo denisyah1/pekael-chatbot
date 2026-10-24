@@ -21,9 +21,15 @@ Catatan keputusan teknis yang tidak tertulis di `project_spec.md` atau yang meny
 | D-13 | 2026-10-25 | Variabel baru `QUESTION_MAX_CHARS` (default 500). Nilai env kosong atau berawalan `replace_with_` dianggap belum diisi | Diterapkan | FR-01 mewajibkan batas panjang input lewat konfigurasi, tetapi variabelnya belum ada di spec §8. Placeholder dicegah terbaca sebagai key asli | Setup |
 | D-14 | 2026-10-25 | `Chain` menyusun langkah menjadi LangChain `RunnableSequence`; langkah yang mengisi `ChainState.response` menghentikan langkah sisanya. Schema memakai dataclass; `AppConfig` memakai Pydantic | Diterapkan | Workflow deterministik sesuai class diagram; fallback tanpa memanggil Gemini (spec §4.3 langkah 6) | Setup |
 | D-15 | 2026-10-25 | Hook pre-commit `.githooks/pre-commit` → `scripts/check_secrets.py` (stdlib saja); diaktifkan per clone dengan `git config core.hooksPath .githooks` | Diterapkan, menunggu aktivasi pemilik | Mencegah terulangnya secret ter-commit (insiden sesi 4); NFR-01 | Setup |
+| D-16 | 2026-10-25 | `langchain-community` diturunkan dari 0.4.2 ke **0.4.1**. Paket evaluasi dipin: `ragas==0.4.3`, `langchain-openai==1.7.2`, `openai==3.3.0`, `google-genai==2.33.0` | Diterapkan | Ragas 0.3.9–0.4.3 mengimpor `langchain_community.chat_models.vertexai`, yang dihapus di 0.4.2. Versi 0.4.1 cocok dengan `langchain-core==1.7.0`; 65 test lulus | Setup |
+| D-17 | 2026-10-25 | Evaluasi Ragas memakai API `ragas.metrics.collections` (Faithfulness, AnswerRelevancy, ContextRecall) dengan `llm_factory` + `AsyncOpenAI` dan embedding `GoogleEmbeddings` (Gemini) | Diterapkan; evaluator OpenAI belum terverifikasi | API yang direkomendasikan di Ragas 0.4.3 (spec §10.4); embedding Gemini menghindari biaya OpenAI tambahan | Setup |
+| D-18 | 2026-10-25 | Dokumentasi dua lapis: `docs/scrum/` berbahasa sederhana untuk laporan; rincian teknis di `docs/technical/` | Disetujui pemilik | Permintaan pemilik agar dokumen laporan mudah dipahami | Setup |
 
 ## Penyelesaian Open Decision
 
 | OD | Tanggal | Hasil | Bukti | Rujukan |
 |---|---|---|---|---|
-| — | | | | |
+| OD-01 | 2026-10-25 | **Sebagian.** `gemini-3.5-flash-lite` tersedia dan menjawab dalam Bahasa Indonesia. Belum final: status free tier/kuota perlu dicek pemilik di dashboard Google AI Studio, lalu disetujui | Smoke test Gemini percobaan 2 | `technical/smoke_tests.md` §2 |
+| OD-02 | 2026-10-25 | **Sebagian.** Dimensi 768 didukung (`output_dimensionality`). Pilihan final tetap di Sprint 2 | Smoke test Gemini | `technical/smoke_tests.md` §2 |
+| OD-05 | 2026-10-25 | **Selesai.** Answer Relevancy memakai embedding Gemini lewat `ragas.embeddings.GoogleEmbeddings`; `text-embedding-3-small` tidak dipakai | Uji komponen embedding Ragas | `technical/smoke_tests.md` §3 |
+| OD-06 | — | **Tertunda.** Saldo OpenAI kosong (429 `insufficient_quota`) | Smoke test Ragas | `technical/smoke_tests.md` §3 |
