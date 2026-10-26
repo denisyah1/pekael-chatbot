@@ -20,6 +20,7 @@
 | S1-T09 | PBI-01 | Pengecekan hasil OCR 29 halaman | In Progress | Halaman prioritas sudah ditentukan, hal. 19 dan 28 sudah dicek |
 | S1-T10 | PBI-02 | Penyaringan isi + persetujuan PO | In Progress | [Usulan penyaringan](usulan_penyaringan.md) siap dibahas dengan PO |
 | S1-T11 | PBI-02 | Daftar topik pertanyaan mahasiswa | To Do | |
+| S1-T12 | — | Membuat skrip ekspor dokumen Scrum ke Word dan PDF sesuai template laporan (ditambahkan selama sprint atas permintaan Developer) | Done | Dokumen Sprint 1, Product Backlog, dan laporan fase Setup berhasil diekspor ke Word dan PDF |
 
 ## Log Pengerjaan
 
@@ -64,3 +65,17 @@
 - Melanjutkan pengecekan OCR untuk halaman lain, terutama halaman yang diusulkan masuk knowledge base.
 - Membahas usulan penyaringan bersama Product Owner.
 - Menyusun daftar topik pertanyaan mahasiswa (S1-T11).
+
+### 26 Oktober 2026 (lanjutan)
+
+**Dikerjakan**
+- Menambahkan pekerjaan baru ke Sprint Backlog (S1-T12): dokumen Scrum perlu bisa diubah ke Word dan PDF untuk laporan dan lembar validasi.
+- Membuat skrip ekspor yang mengubah semua dokumen Scrum menjadi Word dan PDF dengan tampilan yang sama seperti template Lembar Validasi Sprint Report: logo UNJ, judul penelitian, huruf Times New Roman, dan ukuran A4. Setiap dokumen hanya berbeda pada judul di bagian header dan keterangan di bagian bawah halaman.
+- Menjaga data pribadi: NIP dan NIM tidak disimpan di repository publik, tetapi diisi otomatis dari pengaturan lokal saat dokumen diekspor. File template asli yang memuat NIP dan NIM juga tidak ikut diunggah.
+
+**Hasil uji**
+- Pengujian otomatis: 100 lulus, 0 gagal.
+- Enam dokumen (Sprint Planning, Lembar Validasi Planning, Sprint Backlog, Usulan Penyaringan, Product Backlog, Laporan Fase Setup) berhasil diekspor ke Word dan PDF, lalu tampilannya diperiksa.
+
+**Berikutnya**
+- Melanjutkan pengecekan OCR (S1-T09) dan penyusunan daftar topik pertanyaan (S1-T11).

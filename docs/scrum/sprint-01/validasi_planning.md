@@ -42,9 +42,9 @@ Isi Buku Pedoman PKL UNJ 2025 berhasil diubah menjadi teks per halaman yang suda
 ☐ Sprint Planning **disetujui**, sprint dapat dimulai
 ☐ Disetujui **dengan revisi** berikut:
 
-_______________________________________________________________________________
+........................................................................................................................
 
-_______________________________________________________________________________
+........................................................................................................................
 
 ☐ **Belum disetujui**, perlu planning ulang
 
@@ -52,5 +52,5 @@ _______________________________________________________________________________
 
 | Product Owner | Developer |
 |---|---|
-| <br><br><br>Bambang Satrio, S. Pd., M. Kom.<br>NIP/NIDN: ____________________ | <br><br><br>Deni Merdiansyah<br>NIM: ____________________ |
+| <br><br><br>Bambang Satrio, S. Pd., M. Kom.<br>NIP: {{NIP_PRODUCT_OWNER}} | <br><br><br>Deni Merdiansyah<br>NIM: {{NIM_DEVELOPER}} |
 | Tanggal: | Tanggal: |

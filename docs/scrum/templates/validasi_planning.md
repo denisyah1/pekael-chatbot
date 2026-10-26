@@ -32,5 +32,5 @@ _[catatan revisi]_
 
 | Product Owner | Developer |
 |---|---|
-| <br><br><br>_[nama]_<br>NIP/NIDN: _[...]_ | <br><br><br>Deni Merdiansyah<br>NIM: _[...]_ |
+| <br><br><br>_[nama]_<br>NIP: {{NIP_PRODUCT_OWNER}}[...]_ | <br><br><br>Deni Merdiansyah<br>NIM: {{NIM_DEVELOPER}}[...]_ |
 | Tanggal: | Tanggal: |

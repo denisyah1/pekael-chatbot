@@ -115,6 +115,18 @@ Uji ketiga metrik Ragas (memakai kredit OpenAI API, satu sampel fiktif):
 
 Hasil smoke test dicatat di [`docs/technical/smoke_tests.md`](docs/technical/smoke_tests.md).
 
+## Ekspor Dokumen ke Word/PDF
+
+Dokumen Scrum (`docs/scrum/`) dapat diekspor menjadi Word dan PDF dengan format laporan yang seragam (logo UNJ, judul penelitian, Times New Roman, A4). Prasyarat: [pandoc](https://pandoc.org) (`winget install --id JohnMacFarlane.Pandoc --exact`), dan Microsoft Word untuk PDF.
+
+```powershell
+.\.venv\Scripts\python.exe scripts\export_docs.py              # semua dokumen Scrum → docs/export/
+.\.venv\Scripts\python.exe scripts\export_docs.py --sprint 1   # hanya Sprint 1
+.\.venv\Scripts\python.exe scripts\export_docs.py --pdf        # sekaligus PDF
+```
+
+NIM dan NIP pada lembar validasi diambil dari `NIM_DEVELOPER` dan `NIP_PRODUCT_OWNER` di `.env`, sehingga tidak tersimpan di repository. Template tampilan ada di `docs/templates/reference.docx` dan dapat dibangun ulang dari template Word dengan `--build-reference <file.docx>`.
+
 ## Struktur
 
 ```text

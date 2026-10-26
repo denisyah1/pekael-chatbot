@@ -82,3 +82,30 @@
 | 16 | Judul bab terbaca `BAB II` padahal urutannya BAB III (perlu dicek terhadap gambar). |
 
 **Peta isi** (dari judul hasil OCR): hal. 1–3 pembuka, 4–12 BAB I, 13–15 BAB II prosedur, 16 BAB III penilaian, 17–26 BAB IV–V format laporan, 27–28 lampiran instrumen penilaian, 29 berita acara. Usulan penyaringan: [`docs/scrum/sprint-01/usulan_penyaringan.md`](../scrum/sprint-01/usulan_penyaringan.md).
+
+## Sesi 3 — 26 Oktober 2026 (S1-T12: ekspor Word/PDF)
+
+**Instalasi**: pandoc 3.12.1 via `winget install --id JohnMacFarlane.Pandoc --exact --scope user` → `%LOCALAPPDATA%\Pandoc\pandoc.exe`.
+
+**Analisis template** `Lembar Validasi Sprint Planning 1.docx` (Word 365, di-ignore git karena memuat NIP/NIM):
+- A4, margin 1134 twip (2 cm) semua sisi, header 708, footer 708. Font default Times New Roman 11 pt.
+- Header: logo PNG (anchor kiri, `wrapThrough`), judul tebal 14 pt, sub-judul tebal 12 pt, judul penelitian miring 10,5 pt dengan garis bawah ganda.
+- Footer: abu-abu `595959` 9 pt, "<label> | Halaman {PAGE}".
+- Judul bagian: tebal 12 pt, garis bawah tunggal `404040`, spasi sebelum 12 pt, sesudah 6 pt. Paragraf rata kiri-kanan, spasi 1,15.
+- Tabel: garis tunggal `808080`, margin sel 3/5 pt, baris judul tebal 10 pt rata tengah dan berulang, isi 10,5 pt. Tabel identitas dan tanda tangan tanpa garis.
+- `settings.xml`: `compatibilityMode=15`.
+
+**Implementasi**
+- `scripts/export_docs.py`:
+  - `--build-reference <template.docx>` → `docs/templates/reference.docx`: reference default pandoc + gaya di atas (Body Text, Compact, Heading 1–3, Block Text, Checklist, Table), header template dengan penanda `{{HEADER_TITLE}}`/`{{HEADER_SUBTITLE}}`, footer baru dengan `{{FOOTER_LABEL}}` + field PAGE, `sectPr` A4/2 cm, dan blok `<w:compat>` dari template (tanpa itu teks header menimpa logo).
+  - Ekspor: `pandoc -f gfm -t docx --reference-doc ... --lua-filter docs/templates/pekael-docx.lua --columns 10000`, lalu penanda header/footer diganti sesuai jenis dokumen, tabel dilebarkan 100% (`tblW pct 5000`), tabel tanpa baris judul dan tabel tanda tangan dibuat tanpa garis.
+  - `--pdf`: konversi lewat Microsoft Word (COM, `SaveAs` format 17).
+  - `{{NIM_DEVELOPER}}`, `{{NIP_PRODUCT_OWNER}}` diisi dari `.env` (kosong → garis isian).
+- `docs/templates/pekael-docx.lua`: hapus H1 pertama (judul pindah ke header), `##` → Heading 1 bernomor ("1. …"), level lain naik satu, link → teks, kode → teks biasa, `<br>` → baris baru, tabel dengan header kosong → tanpa header, baris di blockquote dan paragraf kotak centang tetap terpisah (gaya Checklist, rata kiri).
+- Lembar validasi (Sprint 1 dan templat): garis isian `____` (terbaca sebagai garis pemisah di Markdown) diganti titik-titik, NIP/NIM diganti penanda.
+- `.gitignore`: `docs/export/`, `/*.docx`, `~$*.docx`. `.env.example`: `NIM_DEVELOPER=`, `NIP_PRODUCT_OWNER=`.
+
+**Verifikasi**
+- `reference.docx` diperiksa tidak memuat NIP, NIM, nama, maupun metadata penulis template.
+- PDF hasil ekspor dirender dan dibandingkan dengan template: header, footer, tabel, dan tanda tangan sesuai.
+- `pytest` → **100 lulus, 0 gagal** (baru: `test_export_docs.py`, 10 test).
