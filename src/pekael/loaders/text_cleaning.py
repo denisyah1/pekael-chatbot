@@ -43,10 +43,11 @@ def _continues_sentence(previous: str, current: str) -> bool:
 
 
 def _unwrap(lines: list[str]) -> str:
-    """Join wrapped lines of one paragraph, keeping list items and headings on their own lines."""
+    """Join wrapped lines of one paragraph, keeping list items, headings and table rows on their own lines."""
     merged = [lines[0]]
     for line in lines[1:]:
-        if LIST_ITEM.match(line) or (_is_heading(merged[-1]) and line[0].isupper()):
+        is_table_row = "|" in line or "|" in merged[-1]
+        if is_table_row or LIST_ITEM.match(line) or (_is_heading(merged[-1]) and line[0].isupper()):
             merged.append(line)
         else:
             merged[-1] = f"{merged[-1]} {line}"

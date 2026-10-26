@@ -92,6 +92,35 @@ def test_ocr_text_is_cleaned(tmp_path):
     assert document.page_content == "baris satu baris dua"
 
 
+def test_correction_file_replaces_ocr_text(tmp_path):
+    path = _make_pdf(tmp_path / "scan.pdf", [None, None])
+    source_hash = hashlib.sha256(path.read_bytes()).hexdigest()
+    corrections = tmp_path / "corrections"
+    (corrections / source_hash[:12]).mkdir(parents=True)
+    (corrections / source_hash[:12] / "page_002.txt").write_text("Teks halaman 2 yang sudah diverifikasi.", encoding="utf-8")
+    ocr = FakeOcr()
+
+    first, second = PDFLoader(ocr, corrections_dir=corrections).load(path)
+
+    assert ocr.calls == 1
+    assert first.metadata["manually_corrected"] is False
+    assert second.page_content == "Teks halaman 2 yang sudah diverifikasi."
+    assert second.metadata["manually_corrected"] is True
+    assert second.metadata["extraction_method"] == TESSERACT_OCR
+
+
+def test_correction_for_another_source_version_is_ignored(tmp_path):
+    path = _make_pdf(tmp_path / "scan.pdf", [None])
+    stale = tmp_path / "corrections" / "000000000000"
+    stale.mkdir(parents=True)
+    (stale / "page_001.txt").write_text("koreksi untuk versi PDF lain", encoding="utf-8")
+
+    (document,) = PDFLoader(FakeOcr(), corrections_dir=tmp_path / "corrections").load(path)
+
+    assert document.page_content == "Teks hasil OCR halaman scan."
+    assert document.metadata["manually_corrected"] is False
+
+
 def test_missing_file(tmp_path):
     with pytest.raises(DocumentLoadError, match="File not found"):
         PDFLoader().load(tmp_path / "nothing.pdf")

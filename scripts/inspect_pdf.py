@@ -1,7 +1,7 @@
 """Extract a PDF page by page and write an extraction report (spec §4.1 steps 3-6, Sprint 1).
 
 Writes to data/processed/<pdf name>/ (git-ignored):
-    page_NNN.txt      cleaned text used by the knowledge base
+    page_NNN.txt      cleaned text used by the knowledge base (manual correction applied if present)
     page_NNN.raw.txt  text before clean-up (native text or raw OCR output)
     report.json       per-page statistics
     report.md         human-readable report for manual OCR review
@@ -62,7 +62,9 @@ def main() -> int:
     except OcrUnavailableError as exc:
         print(exc)
         return 2
-    loader = PDFLoader(ocr, min_text_chars=config.ocr_min_text_chars_per_page, ocr_dpi=dpi)
+    loader = PDFLoader(
+        ocr, min_text_chars=config.ocr_min_text_chars_per_page, ocr_dpi=dpi, corrections_dir=config.ocr_corrections_path
+    )
 
     try:
         pdf = loader.open_pdf(pdf_path)
@@ -77,10 +79,12 @@ def main() -> int:
     for number in pages:
         page = pdf[number - 1]
         start = time.perf_counter()
-        extraction = loader.extract_page(page)
+        extraction = loader.extract_page(page)  # always the raw native/OCR text, for comparison
         elapsed = time.perf_counter() - start
-        document = loader.to_document(extraction, pdf_path.name, source_hash, pdf.page_count)
-        meta = document.metadata
+        corrected = loader.correction_path(source_hash, number) is not None
+        final = loader.extract_page(page, source_hash) if corrected else extraction
+        document = loader.to_document(final, pdf_path.name, source_hash, pdf.page_count)
+        meta = loader.to_document(extraction, pdf_path.name, source_hash, pdf.page_count).metadata
         (out_dir / f"page_{number:03d}.raw.txt").write_text(extraction.raw_text, encoding="utf-8")
         (out_dir / f"page_{number:03d}.txt").write_text(document.page_content, encoding="utf-8")
         rows.append(
@@ -93,11 +97,13 @@ def main() -> int:
                 if meta.get("ocr_mean_confidence") is not None
                 else None,
                 "ocr_low_confidence_words": meta.get("ocr_low_confidence_words"),
+                "manually_corrected": corrected,
                 "seconds": round(elapsed, 2),
             }
         )
         print(f"page {number:>3}: {rows[-1]['extraction_method']:<14} {rows[-1]['clean_chars']:>5} chars  "
-              f"conf={rows[-1]['ocr_mean_confidence']}  low={rows[-1]['ocr_low_confidence_words']}  {elapsed:.1f}s")
+              f"conf={rows[-1]['ocr_mean_confidence']}  low={rows[-1]['ocr_low_confidence_words']}  "
+              f"{'corrected  ' if corrected else ''}{elapsed:.1f}s")
     pdf.close()
 
     report = {
@@ -109,6 +115,7 @@ def main() -> int:
         "tesseract_lang": config.tesseract_lang,
         "ocr_render_dpi": dpi,
         "ocr_min_text_chars_per_page": config.ocr_min_text_chars_per_page,
+        "corrections_dir": str(config.ocr_corrections_path / source_hash[:12]),
         "pages": rows,
     }
     (out_dir / "report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -130,6 +137,8 @@ def _markdown(report: dict) -> str:
         f"- Dibuat: {report['generated_at']} (pekael {report['pekael_version']})",
         f"- Tesseract {report['tesseract_version']}, bahasa `{report['tesseract_lang']}`, render {report['ocr_render_dpi']} dpi",
         f"- Halaman diproses: {len(rows)} (teks digital: {len(rows) - len(ocr_rows)}, OCR: {len(ocr_rows)})",
+        f"- Halaman dengan koreksi manual: {', '.join(str(r['page']) for r in rows if r['manually_corrected']) or 'tidak ada'}"
+        f" (`{report['corrections_dir']}`)",
         "",
         f"## Prioritas pemeriksaan manual (keyakinan OCR < {REVIEW_CONFIDENCE})",
         "",
@@ -137,13 +146,14 @@ def _markdown(report: dict) -> str:
         "",
         "## Per halaman",
         "",
-        "| Hal. | Metode | Karakter | Keyakinan OCR | Kata ragu (<60) | Detik |",
-        "|---|---|---|---|---|---|",
+        "| Hal. | Metode | Karakter | Keyakinan OCR | Kata ragu (<60) | Koreksi manual | Detik |",
+        "|---|---|---|---|---|---|---|",
     ]
     for r in rows:
         lines.append(
             f"| {r['page']} | {r['extraction_method']} | {r['clean_chars']} | {r['ocr_mean_confidence'] or '-'} "
-            f"| {r['ocr_low_confidence_words'] if r['ocr_low_confidence_words'] is not None else '-'} | {r['seconds']} |"
+            f"| {r['ocr_low_confidence_words'] if r['ocr_low_confidence_words'] is not None else '-'} "
+            f"| {'ya' if r['manually_corrected'] else '-'} | {r['seconds']} |"
         )
     return "\n".join(lines) + "\n"
 

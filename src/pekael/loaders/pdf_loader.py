@@ -26,6 +26,7 @@ class PageExtraction:
     raw_text: str  # before clean-up
     extraction_method: str
     ocr: OcrResult | None = None
+    corrected: bool = False  # text comes from a manually verified correction file
 
 
 def file_sha256(path: Path) -> str:
@@ -37,7 +38,13 @@ def file_sha256(path: Path) -> str:
 
 
 class PDFLoader(BaseLoader):
-    def __init__(self, ocr_service: OcrService | None = None, min_text_chars: int = 40, ocr_dpi: int = 200) -> None:
+    def __init__(
+        self,
+        ocr_service: OcrService | None = None,
+        min_text_chars: int = 40,
+        ocr_dpi: int = 200,
+        corrections_dir: str | Path | None = None,
+    ) -> None:
         if min_text_chars < 0:
             raise ValueError("min_text_chars must be >= 0")
         if ocr_dpi <= 0:
@@ -45,6 +52,7 @@ class PDFLoader(BaseLoader):
         self.ocr_service = ocr_service
         self.min_text_chars = min_text_chars
         self.ocr_dpi = ocr_dpi
+        self.corrections_dir = Path(corrections_dir) if corrections_dir else None
 
     def load(self, source_path: str | Path) -> list[Document]:
         """Return one Document per PDF page, in page order."""
@@ -53,7 +61,8 @@ class PDFLoader(BaseLoader):
         source_hash = file_sha256(path)
         try:
             return [
-                self.to_document(self.extract_page(page), path.name, source_hash, pdf.page_count) for page in pdf
+                self.to_document(self.extract_page(page, source_hash), path.name, source_hash, pdf.page_count)
+                for page in pdf
             ]
         finally:
             pdf.close()
@@ -74,11 +83,22 @@ class PDFLoader(BaseLoader):
             raise DocumentLoadError(f"PDF has no pages: {path.name}")
         return pdf
 
-    def extract_page(self, page: pymupdf.Page) -> PageExtraction:
-        """Use the native text layer when it is long enough, otherwise OCR the rendered page."""
+    def correction_path(self, source_hash: str, page_number: int) -> Path | None:
+        """Manually verified text for one page, stored per source version (OD-17)."""
+        if self.corrections_dir is None:
+            return None
+        path = self.corrections_dir / source_hash[:12] / f"page_{page_number:03d}.txt"
+        return path if path.is_file() else None
+
+    def extract_page(self, page: pymupdf.Page, source_hash: str | None = None) -> PageExtraction:
+        """Use a correction file if one exists for this source version, else native text, else OCR."""
         number = page.number + 1
         native = page.get_text()
-        if len(native.strip()) >= self.min_text_chars:
+        method = NATIVE_TEXT if len(native.strip()) >= self.min_text_chars else TESSERACT_OCR
+        correction = self.correction_path(source_hash, number) if source_hash else None
+        if correction is not None:
+            return PageExtraction(number, correction.read_text(encoding="utf-8"), method, corrected=True)
+        if method == NATIVE_TEXT:
             return PageExtraction(number, native, NATIVE_TEXT)
         if self.ocr_service is None:
             raise DocumentLoadError(f"Page {number} has no text layer and OCR is not configured")
@@ -93,6 +113,7 @@ class PDFLoader(BaseLoader):
             "page": extraction.page,
             "total_pages": total_pages,
             "extraction_method": extraction.extraction_method,
+            "manually_corrected": extraction.corrected,
         }
         if extraction.ocr is not None:
             metadata["ocr_mean_confidence"] = extraction.ocr.mean_confidence

@@ -13,9 +13,9 @@ Folder ini adalah catatan resmi pelaksanaan Scrum untuk penelitian skripsi Pekae
 ## Ritme
 
 - 6 sprint menghasilkan **satu MVP** (spec §12). Sprint 1–3 masing-masing 1 minggu karena pengembangan dimulai lebih lambat dari rencana, Sprint 4–6 masing-masing 2 minggu (D-19).
-- **Awal sprint:** Sprint Planning → Lembar Validasi Planning ditandatangani PO → sprint dimulai.
+- **Awal sprint:** Sprint Planning → Lembar Validasi Sprint Report Bagian A ditandatangani PO → sprint dimulai.
 - **Selama sprint:** setiap sesi kerja dicatat di `sprint_backlog.md` sprint tersebut (bagian *Log Pengerjaan*).
-- **Akhir sprint:** Sprint Review → Lembar Validasi Review → Sprint Retrospective → Product Backlog diperbarui.
+- **Akhir sprint:** Sprint Review → Lembar Validasi Bagian B (PO) → Sprint Retrospective → Lembar Validasi Bagian C (Scrum Master) → Product Backlog diperbarui.
 
 ## Struktur
 
@@ -27,12 +27,10 @@ docs/
 │   ├── setup_phase.md            # catatan fase Setup (sebelum Sprint 1)
 │   ├── templates/                # templat yang disalin ke tiap sprint
 │   └── sprint-NN/
-│       ├── sprint_planning.md
-│       ├── validasi_planning.md
-│       ├── sprint_backlog.md     # task + log pengerjaan harian
-│       ├── sprint_review.md
-│       ├── validasi_review.md
-│       └── sprint_retrospective.md
+│       ├── sprint_planning.md       # Lembar Validasi Bagian A (planning + validasi PO)
+│       ├── sprint_backlog.md        # task + logbook harian
+│       ├── sprint_review.md         # Lembar Validasi Bagian B (review + validasi PO)
+│       └── sprint_retrospective.md  # Lembar Validasi Bagian C (retro + konfirmasi Scrum Master)
 ├── technical/                    # rincian teknis: log perintah, versi, hasil smoke test
 │   ├── setup_log.md
 │   └── smoke_tests.md

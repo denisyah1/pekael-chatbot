@@ -1,32 +1,59 @@
-# Sprint Retrospective — Sprint N
+# Lembar Validasi Sprint Report N — Bagian C: Sprint Retrospective
 
 | | |
 |---|---|
-| Tanggal | _[tgl]_ |
-| Peserta | _[...]_ |
+| Sprint | : Sprint N |
+| Periode Sprint | : _[tgl mulai]_ – _[tgl selesai]_ |
+| Tanggal *Sprint Retrospective* | : _[tgl]_ |
+| Scrum Master | : Dosen pembimbing |
+| Developer | : Deni Merdiansyah (NIM {{NIM_DEVELOPER}}) |
 
-## Yang Berjalan Baik
+## Tujuan
+
+Lembar ini memuat hasil *Sprint Retrospective* Sprint N, yaitu evaluasi cara kerja selama sprint dan rencana perbaikan untuk sprint berikutnya, untuk dikonfirmasi oleh Scrum Master.
+
+## Yang berjalan baik
 
 -
 
-## Yang Perlu Diperbaiki
+## Yang perlu diperbaiki
 
 -
 
-## Hambatan dan Penyebabnya
+## Hambatan dan penyebab
 
-| Hambatan | Penyebab | Dampak ke sprint |
+| Hambatan | Penyebab | Dampak pada sprint |
 |---|---|---|
 | | | |
 
-## Rencana Perbaikan untuk Sprint Berikutnya
+## Rencana perbaikan untuk Sprint N+1
 
-| Tindakan | Penanggung jawab | Dicek pada |
+| Tindakan | Penanggung jawab | Diperiksa pada |
 |---|---|---|
-| | | Sprint N+1 Review |
+| | | *Sprint Review* Sprint N+1 |
 
-## Tindak Lanjut Rencana Perbaikan Sprint Sebelumnya
+## Tindak lanjut rencana perbaikan Sprint N-1
 
-| Tindakan (dari Retro Sprint N-1) | Terlaksana? | Catatan |
+| Tindakan | Terlaksana | Catatan |
 |---|---|---|
 | | ☐ | |
+
+## Checklist akhir Sprint
+
+| Butir | Status |
+|---|---|
+| *Sprint Planning* terlaksana dan divalidasi *Product Owner* | ☐ |
+| Logbook diisi setiap hari kerja aktif | ☐ |
+| *Sprint Review* terlaksana dan Increment divalidasi *Product Owner* | ☐ |
+| *Sprint Retrospective* terlaksana | ☐ |
+| Product Backlog diperbarui | ☐ |
+
+## Konfirmasi Scrum Master
+
+Berdasarkan checklist di atas, peristiwa Scrum pada Sprint N telah terlaksana sesuai rencana.
+
+| | |
+|---|---|
+| Jakarta, _[tanggal]_<br>Scrum Master,<br><br><br><br>_[nama Scrum Master]_ | <br>Developer,<br><br><br><br>Deni Merdiansyah<br>NIM {{NIM_DEVELOPER}} |
+
+*Dasar penyusunan: Schwaber & Sutherland (2020) untuk komponen Sprint Retrospective. Rujukan lengkap tercantum pada laporan.*

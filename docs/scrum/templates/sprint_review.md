@@ -1,36 +1,63 @@
-# Sprint Review — Sprint N
+# Lembar Validasi Sprint Report N — Bagian B: Sprint Review
 
 | | |
 |---|---|
-| Tanggal | _[tgl]_ |
-| Peserta | _[PO, Scrum Master, Developer]_ |
-| Sprint Goal | _[salin]_ |
-| Sprint Goal tercapai? | ☐ Ya ☐ Sebagian ☐ Tidak |
+| Sprint | : Sprint N |
+| Periode Sprint | : _[tgl mulai]_ – _[tgl selesai]_ |
+| Tanggal *Sprint Review* | : _[tgl]_ |
+| *Product Owner* (validator) | : Dosen Koordinator PKL Prodi PTIK UNJ |
+| Scrum Master | : Dosen pembimbing |
+| Developer | : Deni Merdiansyah (NIM {{NIM_DEVELOPER}}) |
 
-## Increment yang Didemonstrasikan
+## Tujuan
 
-| ID | Item | Hasil | Bukti | Diterima PO? |
+Lembar ini memuat hasil *Sprint Review* Sprint N, yaitu Increment yang dihasilkan, untuk diperiksa dan divalidasi oleh *Product Owner* terhadap *Sprint Goal* dan kriteria selesai yang ditetapkan pada *Sprint Planning*.
+
+## *Sprint Goal*
+
+_[salin dari Sprint Planning]_
+
+Status pencapaian: ☐ Tercapai ☐ Tercapai sebagian ☐ Tidak tercapai
+
+## Increment yang dihasilkan
+
+| No | Increment | Kriteria selesai | Hasil | Bukti |
 |---|---|---|---|---|
-| PBI-xx | | | _[file, screenshot, laporan test]_ | ☐ |
+| 1 | | | | |
 
-## Ringkasan Pengujian
+## Hasil pengujian
 
-| Jenis | Perintah / skenario | Hasil |
+| Jenis pengujian | Cakupan | Hasil |
 |---|---|---|
-| Unit test | `pytest tests/unit` | _[x lulus / y gagal]_ |
-| Integration test | | |
-| Functional / manual | | |
+| Pengujian otomatis (unit/integrasi) | | _[x lulus, y gagal]_ |
+| Pemeriksaan manual | | |
 
-## Item yang Tidak Selesai
+## Pekerjaan yang belum selesai
 
-| ID | Alasan | Tindak lanjut (kembali ke Product Backlog / sprint berikutnya) |
+| Pekerjaan | Alasan | Tindak lanjut |
 |---|---|---|
 | | | |
 
-## Masukan Product Owner
+## Masukan *Product Owner*
 
--
+_[catatan masukan]_
 
 ## Perubahan Product Backlog
 
-_[catat juga di `product_backlog.md` → Riwayat Perubahan]_
+| Perubahan | Alasan |
+|---|---|
+| | |
+
+## Pernyataan validasi
+
+Berdasarkan pemeriksaan terhadap Increment Sprint N pada lembar ini, *Product Owner* menyatakan Increment tersebut:
+
+☐ Diterima
+☐ Diterima dengan catatan: ........................................................................
+☐ Belum diterima, pekerjaan dikembalikan ke Product Backlog
+
+| | |
+|---|---|
+| Jakarta, _[tanggal]_<br>*Product Owner* (Dosen Koordinator PKL),<br><br><br><br>Bambang Satrio, S. Pd., M. Kom.<br>NIP. {{NIP_PRODUCT_OWNER}} | <br>Developer,<br><br><br><br>Deni Merdiansyah<br>NIM {{NIM_DEVELOPER}} |
+
+*Dasar penyusunan: Schwaber & Sutherland (2020) untuk komponen Sprint Review. Rujukan lengkap tercantum pada laporan.*

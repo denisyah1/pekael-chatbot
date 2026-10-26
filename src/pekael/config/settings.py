@@ -41,6 +41,7 @@ class AppConfig(BaseModel):
     ocr_min_text_chars_per_page: int = Field(default=40, ge=0)
     # 200 dpi matches the handbook scan resolution (EXP-001)
     ocr_render_dpi: int = Field(default=200, ge=72, le=600)
+    ocr_corrections_path: Path = Path("data/corrections")
     tesseract_cmd: str | None = None
     tesseract_lang: str = "ind+eng"
 

@@ -14,8 +14,9 @@ SCRUM = export_docs.SCRUM_DIR
 @pytest.mark.parametrize(
     ("path", "expected"),
     [
-        (SCRUM / "sprint-01" / "sprint_planning.md", ("SPRINT REPORT 1", "Bagian A: Sprint Planning", "Sprint Report 1: Sprint Planning")),
-        (SCRUM / "sprint-03" / "validasi_review.md", ("LEMBAR VALIDASI SPRINT REPORT 3", "Bagian C: Sprint Review", "Lembar Validasi Sprint Report 3: Sprint Review")),
+        (SCRUM / "sprint-01" / "sprint_planning.md", ("LEMBAR VALIDASI SPRINT REPORT 1", "Bagian A: Sprint Planning", "Lembar Validasi Sprint Report 1: Sprint Planning")),
+        (SCRUM / "sprint-03" / "sprint_review.md", ("LEMBAR VALIDASI SPRINT REPORT 3", "Bagian B: Sprint Review", "Lembar Validasi Sprint Report 3: Sprint Review")),
+        (SCRUM / "sprint-02" / "sprint_backlog.md", ("SPRINT REPORT 2", "Logbook dan Sprint Backlog", "Sprint Report 2: Logbook")),
         (SCRUM / "product_backlog.md", export_docs.OTHER_DOCUMENTS["product_backlog"]),
     ],
 )
@@ -23,7 +24,7 @@ def test_header_titles_per_document(path, expected):
     assert export_docs.document_titles(path) == expected
 
 
-@pytest.mark.parametrize("path", [SCRUM / "README.md", SCRUM / "templates" / "sprint_planning.md", SCRUM / "sprint-01" / "notes.md"])
+@pytest.mark.parametrize("path", [SCRUM / "README.md", SCRUM / "templates" / "sprint_planning.md", SCRUM / "sprint-01" / "validasi_planning.md"])
 def test_unknown_documents_are_skipped(path):
     assert export_docs.document_titles(path) is None
 

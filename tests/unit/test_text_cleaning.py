@@ -46,6 +46,19 @@ def test_long_line_followed_by_capitalised_word_is_still_joined():
     assert "\n" not in clean_page_text(raw)
 
 
+def test_table_rows_stay_on_their_own_lines():
+    raw = "Tingkat Penguasaan | Nilai | Bobot\n86-100 | A | 4\n76-80 | B+ | 3,3"
+
+    assert clean_page_text(raw) == raw
+
+
+def test_cleaning_is_idempotent_on_cleaned_text():
+    raw = "A. Judul\n\nKalimat panjang yang\nterbungkus.\n1. butir satu\n2. butir dua\n\nTingkat | Nilai\n86-100 | A"
+    once = clean_page_text(raw)
+
+    assert clean_page_text(once) == once
+
+
 def test_blank_line_inside_a_sentence_is_rejoined():
     raw = "sesuai dengan bidang\n\nkeilmuan/program studinya."
 

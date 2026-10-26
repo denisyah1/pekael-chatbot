@@ -109,3 +109,20 @@
 - `reference.docx` diperiksa tidak memuat NIP, NIM, nama, maupun metadata penulis template.
 - PDF hasil ekspor dirender dan dibandingkan dengan template: header, footer, tabel, dan tanda tangan sesuai.
 - `pytest` → **100 lulus, 0 gagal** (baru: `test_export_docs.py`, 10 test).
+
+## Sesi 4 — 26 Oktober 2026 (penyelarasan dokumen dan pemeriksaan OCR)
+
+**Dokumen Scrum**
+- `sprint-01/sprint_planning.md` ditulis ulang mengikuti isi dan struktur `Lembar Validasi Sprint Planning 1.docx` milik pemilik (9 bagian + pernyataan validasi + tanda tangan + dasar penyusunan). Tanda `;` pada teks asli diganti koma.
+- Dihapus: `sprint-01/validasi_planning.md`, `templates/validasi_planning.md`, `templates/validasi_review.md`. Templat baru: `templates/sprint_planning.md`, `sprint_review.md`, `sprint_retrospective.md`.
+- `export_docs.py`: header `sprint_planning`/`sprint_review`/`sprint_retrospective` → "LEMBAR VALIDASI SPRINT REPORT N" Bagian A/B/C, `sprint_backlog` → "SPRINT REPORT N, Logbook dan Sprint Backlog", `pemeriksaan_ocr` → lampiran.
+
+**Pemeriksaan OCR hal. 4–16** (gambar 110 dpi vs `page_NNN.txt`): rincian di [`scrum/sprint-01/pemeriksaan_ocr.md`](../scrum/sprint-01/pemeriksaan_ocr.md).
+
+**Implementasi koreksi (OD-17 → D-22)**
+- `PDFLoader(corrections_dir=...)`, `correction_path(source_hash, page)`, `extract_page(page, source_hash)`. Metadata baru `manually_corrected`. Konfigurasi `OCR_CORRECTIONS_PATH` (default `data/corrections`).
+- `clean_page_text`: baris berisi `|` tidak digabung (tabel), test idempoten ditambahkan.
+- `inspect_pdf.py`: `page_NNN.raw.txt` tetap teks OCR mentah, `page_NNN.txt` memakai koreksi, kolom "Koreksi manual" di laporan.
+- Draf koreksi ditulis ke `data/corrections/565a9929ea00/` untuk hal. 4, 5, 6, 8, 10, 11, 13, 14, 16.
+
+**Test**: `pytest` → **105 lulus, 0 gagal** (baru: 2 test koreksi di `test_pdf_loader.py`, 2 test di `test_text_cleaning.py`, 1 test di `test_export_docs.py`).

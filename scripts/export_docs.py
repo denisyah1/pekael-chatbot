@@ -37,23 +37,26 @@ BLANK = "____________________"
 
 # file stem -> (header title, header subtitle, footer label); {n} is the sprint number
 SPRINT_DOCUMENTS = {
-    "sprint_planning": ("SPRINT REPORT {n}", "Bagian A: Sprint Planning", "Sprint Report {n}: Sprint Planning"),
-    "validasi_planning": (
+    "sprint_planning": (
         "LEMBAR VALIDASI SPRINT REPORT {n}",
         "Bagian A: Sprint Planning",
         "Lembar Validasi Sprint Report {n}: Sprint Planning",
     ),
-    "sprint_backlog": ("SPRINT REPORT {n}", "Bagian B: Sprint Backlog dan Logbook", "Sprint Report {n}: Sprint Backlog"),
-    "sprint_review": ("SPRINT REPORT {n}", "Bagian C: Sprint Review", "Sprint Report {n}: Sprint Review"),
-    "validasi_review": (
+    "sprint_review": (
         "LEMBAR VALIDASI SPRINT REPORT {n}",
-        "Bagian C: Sprint Review",
+        "Bagian B: Sprint Review",
         "Lembar Validasi Sprint Report {n}: Sprint Review",
     ),
     "sprint_retrospective": (
+        "LEMBAR VALIDASI SPRINT REPORT {n}",
+        "Bagian C: Sprint Retrospective",
+        "Lembar Validasi Sprint Report {n}: Sprint Retrospective",
+    ),
+    "sprint_backlog": ("SPRINT REPORT {n}", "Logbook dan Sprint Backlog", "Sprint Report {n}: Logbook"),
+    "pemeriksaan_ocr": (
         "SPRINT REPORT {n}",
-        "Bagian D: Sprint Retrospective",
-        "Sprint Report {n}: Sprint Retrospective",
+        "Lampiran: Lembar Pemeriksaan Hasil OCR",
+        "Sprint Report {n}: Pemeriksaan OCR",
     ),
     "usulan_penyaringan": (
         "SPRINT REPORT {n}",
