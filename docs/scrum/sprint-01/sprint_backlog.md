@@ -21,7 +21,7 @@ Sprint Planning memuat lima tugas (lihat [Sprint Planning](sprint_planning.md) b
 | S1-T08 | 2 | PBI-01 | Skrip pemeriksa PDF + laporan ekstraksi | Done | Laporan ekstraksi Buku Pedoman PKL 2025 (lihat rincian teknis) |
 | S1-T09 | 3 | PBI-01 | Pengecekan hasil OCR 29 halaman | In Progress | [Lembar pemeriksaan OCR](pemeriksaan_ocr.md): hal. 4–16 sudah diperiksa dan dikoreksi, menunggu verifikasi Developer |
 | S1-T10 | 4, 5 | PBI-02 | Penyaringan isi + persetujuan PO | In Progress | [Usulan penyaringan](usulan_penyaringan.md) siap dibahas dengan PO |
-| S1-T11 | Tambahan (spec §12) | PBI-02 | Daftar topik pertanyaan mahasiswa | To Do | |
+| S1-T11 | Tambahan (spec §12) | PBI-02 | Daftar topik pertanyaan mahasiswa | Done | [Daftar topik pertanyaan](topik_pertanyaan.md): 30 topik dengan contoh pertanyaan, 5 pertanyaan PKL di luar buku panduan, 3 pertanyaan non-PKL. Validasi PO bersama dataset di Sprint 5 |
 | S1-T12 | Tambahan | — | Membuat skrip ekspor dokumen Scrum ke Word dan PDF sesuai template laporan (ditambahkan selama sprint atas permintaan Developer) | Done | Dokumen Sprint 1, Product Backlog, dan laporan fase Setup berhasil diekspor ke Word dan PDF |
 
 Keterangan: **Setup** = pekerjaan yang sudah tuntas pada fase Setup. **Tambahan** = pekerjaan di luar lima tugas planning: daftar topik pertanyaan diwajibkan oleh spesifikasi proyek untuk Sprint 1, dan skrip ekspor dokumen ditambahkan selama sprint.
@@ -106,3 +106,15 @@ Keterangan: **Setup** = pekerjaan yang sudah tuntas pada fase Setup. **Tambahan*
 - Developer memverifikasi lembar pemeriksaan OCR terhadap dokumen asli.
 - Membahas usulan penyaringan dan lampiran penilaian (hal. 27–28) bersama Product Owner.
 - Menyusun daftar topik pertanyaan mahasiswa (S1-T11).
+
+### 26 Oktober 2026 (sesi 4)
+
+**Dikerjakan**
+- Menyusun [daftar topik pertanyaan mahasiswa](topik_pertanyaan.md) dari isi buku panduan halaman 4–16: 30 topik beserta contoh pertanyaan dan halaman sumbernya. Jenis pertanyaan dibuat beragam: langsung, daftar, persyaratan, prosedur bertahap, angka, parafrasa, dan pertanyaan yang membutuhkan beberapa bagian buku.
+- Menambahkan contoh pertanyaan PKL yang jawabannya tidak ada di buku panduan (misalnya jadwal pendaftaran dan lowongan) serta pertanyaan di luar topik PKL, untuk menguji kemampuan chatbot menolak dengan sopan.
+
+**Hasil uji**
+- Tidak ada perubahan kode. Dokumen Sprint 1 diekspor ulang ke Word dan PDF.
+
+**Berikutnya**
+- Verifikasi hasil koreksi OCR oleh Developer, keputusan penyaringan oleh Product Owner, lalu *Sprint Review* dan *Sprint Retrospective* pada 29 Oktober 2026.

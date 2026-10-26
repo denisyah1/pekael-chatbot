@@ -58,6 +58,11 @@ SPRINT_DOCUMENTS = {
         "Lampiran: Lembar Pemeriksaan Hasil OCR",
         "Sprint Report {n}: Pemeriksaan OCR",
     ),
+    "topik_pertanyaan": (
+        "SPRINT REPORT {n}",
+        "Lampiran: Daftar Topik Pertanyaan Mahasiswa",
+        "Sprint Report {n}: Topik Pertanyaan",
+    ),
     "usulan_penyaringan": (
         "SPRINT REPORT {n}",
         "Lampiran: Usulan Penyaringan Isi Buku Pedoman",
