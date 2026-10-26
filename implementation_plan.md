@@ -2,8 +2,8 @@
 
 > **Turunan dari:** `project_spec.md` (sumber acuan utama; bila bertentangan, spec yang berlaku)
 > **Fase:** Output Phase 1 — PLAN (spec §17), menjadi pegangan Phase 2 — SETUP dan Phase 3 — BUILD
-> **Tanggal dibuat:** 2026-10-25
-> **Status:** Ditinjau dan dinyatakan lengkap oleh pemilik proyek (2026-10-25). Usulan D-04 s.d. D-08 dianggap disetujui; rincian di `docs/decision_log.md`.
+> **Tanggal dibuat:** 2026-10-23
+> **Status:** Ditinjau dan dinyatakan lengkap oleh pemilik proyek (2026-10-23). Usulan D-04 s.d. D-08 dianggap disetujui; rincian di `docs/decision_log.md`.
 
 ---
 
@@ -174,6 +174,8 @@ OD-01 s.d. OD-10 tetap seperti spec §18. Tambahan dari fase Plan:
 | OD-12 | Normalisasi L2 embedding (D-05) | Sprint 2 | Diuji bersama OD-02; disimpan di manifest indeks. |
 | OD-13 | Apakah dataset ground truth dan buku panduan boleh dipublikasikan di repo public | Sprint 5 | Default: tidak di-commit (sudah di `.gitignore`). Hanya `ground_truth.example.jsonl` yang public. |
 | OD-15 | Wrapper FAISS jangka panjang | Sprint 3 | `langchain-community` diarsipkan upstream (2026). Opsi: (a) tetap pakai 0.4.2 yang dipin; (b) `FaissVectorStore` memakai `faiss` langsung + docstore sederhana, tetap dalam workflow LangChain (`Document`, `Embeddings`). Kontrak `BaseVectorStore` membuat penggantian hanya berdampak pada satu modul. |
+| OD-16 | Bentuk hasil penyaringan isi buku panduan (PDF baru vs PDF asli + daftar halaman/bagian yang dikecualikan) | Sprint 1 | Diputuskan bersama PO (lembar validasi Sprint 1). |
+| OD-17 | Mekanisme koreksi hasil OCR yang reproducible | Sprint 1 | Usulan: file koreksi per halaman yang diterapkan otomatis saat ingestion, berversi bersama source hash. |
 | OD-14 | Butir UAT no. 3 ("rujukan pada *setiap* jawaban") vs jawaban fallback tanpa rujukan | Sebelum distribusi UAT | Dibahas bersama OD-08 dengan pembimbing. |
 
 ---

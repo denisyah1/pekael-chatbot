@@ -1,12 +1,12 @@
 # Fase Setup
 
-> **Periode:** 25 Oktober 2026
+> **Periode:** 23 Oktober 2026
 > **Status:** Selesai, dengan satu pekerjaan tertunda (uji evaluator OpenAI, menunggu saldo API)
 > **Rincian teknis:** [`docs/technical/setup_log.md`](../technical/setup_log.md) · [`docs/technical/smoke_tests.md`](../technical/smoke_tests.md)
 
 ## Apa itu fase Setup?
 
-Fase Setup adalah tahap persiapan sebelum Sprint 1. Tujuannya menyiapkan "bengkel kerja": memasang perangkat lunak yang dibutuhkan, menyusun kerangka program, dan memastikan setiap alat benar-benar bisa dipakai. Fitur chatbot belum dibuat pada tahap ini; fitur dibangun bertahap pada Sprint 1–6.
+Fase Setup adalah tahap persiapan sebelum Sprint 1. Tujuannya menyiapkan "bengkel kerja": memasang perangkat lunak yang dibutuhkan, menyusun kerangka program, dan memastikan setiap alat benar-benar bisa dipakai. Fitur chatbot belum dibuat pada tahap ini, fitur dibangun bertahap pada Sprint 1–6.
 
 ## Ringkasan Pekerjaan
 
@@ -44,10 +44,10 @@ Smoke test adalah uji singkat untuk memastikan setiap alat bisa "menyala" sebelu
 | Kendala | Penyelesaian |
 |---|---|
 | Library `langchain-community` (wadah FAISS untuk LangChain) sudah tidak dikembangkan lagi oleh pembuatnya | Versi yang terbukti berfungsi dikunci. Paket "pengganti" yang beredar ternyata tidak resmi, jadi tidak dipakai. Keputusan jangka panjang dibahas di Sprint 3 |
-| Versi terbaru `langchain-community` membuat Ragas gagal dijalankan | Diturunkan satu versi (0.4.2 → 0.4.1); semua test tetap lulus |
+| Versi terbaru `langchain-community` membuat Ragas gagal dijalankan | Diturunkan satu versi (0.4.2 → 0.4.1), semua test tetap lulus |
 | API key sempat tertulis di file contoh dan masuk commit lokal | Terdeteksi GitHub sebelum ter-upload, jadi **tidak bocor ke publik**. Riwayat commit dibersihkan, key dianjurkan diganti, dan dipasang pengaman otomatis agar tidak terulang |
 | Server Gemini sempat sibuk (error 503) | Berhasil pada percobaan kedua. Menjadi catatan agar aplikasi menampilkan pesan yang ramah saat hal ini terjadi |
-| Saldo API OpenAI kosong | Menunggu pemilik proyek mengisi saldo; pekerjaan lain tetap berjalan |
+| Saldo API OpenAI kosong | Menunggu pemilik proyek mengisi saldo, pekerjaan lain tetap berjalan |
 
 ## Catatan untuk Sprint Berikutnya
 

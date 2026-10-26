@@ -3,10 +3,10 @@
 > Rincian teknis fase Setup: perintah, versi, hasil test, dan file yang berubah.
 > Ringkasan dengan bahasa sederhana ada di [`docs/scrum/setup_phase.md`](../scrum/setup_phase.md).
 
-## Sesi 1 — 2026-10-25
+## Sesi 1 — 2026-10-23
 
 **Dikerjakan**
-- Spec dibaca dan dianalisis; `implementation_plan.md` disusun dan dinyatakan lengkap oleh pemilik proyek.
+- Spec dibaca dan dianalisis, `implementation_plan.md` disusun dan dinyatakan lengkap oleh pemilik proyek.
 - `.gitignore` diisi: secret, data penelitian, PDF, dan file bantu Claude Code dikecualikan karena repo bersifat public.
 - Python **3.11.9** dipasang via `winget` (scope user) di `C:\Users\dwiki\AppData\Local\Programs\Python\Python311\python.exe`. Python 3.13 tetap ada tetapi tidak dipakai untuk proyek ini.
 - Tesseract OCR **5.4.0.20240606** (build UB Mannheim) dipasang via `winget` di `C:\Program Files\Tesseract-OCR\`.
@@ -19,12 +19,12 @@
 
 **Berikutnya**: langkah Setup 2–5.
 
-## Sesi 2 — 2026-10-25
+## Sesi 2 — 2026-10-23
 
 **Dikerjakan**
 - Struktur folder sesuai spec §5.4 dibuat: package `src/pekael/` (config, core, models, loaders, splitters, vectorstores, services, evaluation), `scripts/`, `data/{source,processed,index,evaluation}`, `tests/{unit,integration,fixtures}`.
 - `pyproject.toml` dibuat: package `pekael` (src layout, Python `>=3.11,<3.12`), konfigurasi pytest dengan marker `live` untuk test API sungguhan yang secara default dilewati. README awal ditambahkan.
-- Virtual environment `.venv` dibuat dengan Python 3.11.9; pip ditingkatkan ke 26.2.2.
+- Virtual environment `.venv` dibuat dengan Python 3.11.9, pip ditingkatkan ke 26.2.2.
 - Dependency runtime dan dev dipasang, lalu dipin (D-11, D-12):
 
   | Paket | Versi |
@@ -33,7 +33,7 @@
   | langchain-community | 0.4.2 |
   | langchain-text-splitters | 1.1.3 |
   | langchain-google-genai | 4.4.2 |
-  | faiss-cpu | 1.15.1 (wheel pip Windows tersedia; Conda tidak diperlukan) |
+  | faiss-cpu | 1.15.1 (wheel pip Windows tersedia, Conda tidak diperlukan) |
   | numpy | 2.4.6 |
   | pymupdf | 2.0 |
   | pytesseract | 0.3.13 |
@@ -51,7 +51,7 @@
   - `test_runtime_does_not_import_evaluator_packages`: `pekael` tidak mengimpor `ragas` atau `langchain_openai` (FR-11).
   - `test_faiss_flat_l2_save_and_load`: LangChain FAISS membuat `IndexFlatL2` 768 dimensi, menyimpan dan memuat ulang, lalu menemukan dokumen yang benar dengan jarak ≈ 0.
   - `test_pymupdf_extracts_text_and_renders_page`: ekstraksi teks dan render halaman berfungsi.
-  - `test_tesseract_ocr_indonesian`: bahasa `ind` tersedia; OCR membaca "PRAKTIK KERJA LAPANGAN" dari halaman yang dirender.
+  - `test_tesseract_ocr_indonesian`: bahasa `ind` tersedia, OCR membaca "PRAKTIK KERJA LAPANGAN" dari halaman yang dirender.
 - Warning: `DeprecationWarning` bahwa `langchain-community` sedang di-sunset (lihat Hambatan).
 - `pip check` → "No broken requirements found".
 
@@ -60,24 +60,24 @@
 - `src/pekael/__init__.py` dan `__init__.py` di tiap subpackage
 - `tests/unit/test_environment.py`, `.gitkeep` di `data/*` dan `tests/fixtures/`
 
-**Keputusan**: D-11, D-12; Open Decision baru OD-15.
+**Keputusan**: D-11, D-12, Open Decision baru OD-15.
 
 **Hambatan**
 - Repo `langchain-community` diarsipkan upstream (issue langchain-ai/langchain-community#674, 2026). Wrapper FAISS LangChain berada di paket ini. Paket `langchain-faiss` di PyPI diperiksa: rilis 2024 oleh perorangan, ~1 kB, tanpa repo/provenance, dan bukan dari langchain-ai, sehingga **tidak dipakai**. Untuk saat ini `langchain-community==0.4.2` dipin karena terbukti berfungsi (OD-15).
-- PyMuPDF 2.0 mewajibkan `pymupdf4llm`, `pymupdf-layout`, dan `onnxruntime`, sehingga instalasi lebih besar. Fungsi tetap berjalan; dicatat untuk pertimbangan hosting (OD-07).
+- PyMuPDF 2.0 mewajibkan `pymupdf4llm`, `pymupdf-layout`, dan `onnxruntime`, sehingga instalasi lebih besar. Fungsi tetap berjalan, dicatat untuk pertimbangan hosting (OD-07).
 
 **Berikutnya**: langkah Setup 6–9 (`.env.example`, konfigurasi + logging, kontrak inti dan factory, unit test dasar).
 
-## Sesi 3 — 2026-10-25
+## Sesi 3 — 2026-10-23
 
 **Dikerjakan**
 - `.env.example` dibuat sesuai spec §8 dengan penyesuaian `FAISS_INDEX_PATH=data/index` (D-04) dan variabel baru `QUESTION_MAX_CHARS=500` (D-13).
 - **Konfigurasi** (`config/settings.py`): `AppConfig` (Pydantic, immutable) memvalidasi tipe dan rentang nilai, termasuk `CHUNK_OVERLAP < CHUNK_SIZE` dan `LOG_LEVEL` yang valid. Nilai kosong atau placeholder `replace_with_...` dianggap belum diisi. Secret bertipe `SecretStr` sehingga tidak tampil di `repr`/log. `missing_runtime_settings()` menyediakan daftar variabel wajib yang belum diisi (bahan status FR-08).
-- **`AppConfigurator.read_config()`**: membaca `.env` bila ada; environment variable sungguhan (secrets hosting) diprioritaskan. `create_manager_from_config()` masih kerangka (Sprint 3).
+- **`AppConfigurator.read_config()`**: membaca `.env` bila ada, environment variable sungguhan (secrets hosting) diprioritaskan. `create_manager_from_config()` masih kerangka (Sprint 3).
 - **Logging** (`config/logging_config.py`): formatter yang menyamarkan nilai secret pada pesan dan traceback.
 - **Kontrak inti dan Abstract Factory** sesuai class diagram:
-  - ABC `BaseLoader`, `BaseSplitter`, `BaseVectorStore`;
-  - `DocumentLoaderFactory.get_loader()`, `DocumentSplitterFactory.get_splitter()`, `VectorStoreFactory.get_vector_store()` yang mengembalikan `PDFLoader`, `RecursiveCharacterSplitter`, `FaissVectorStore`;
+  - ABC `BaseLoader`, `BaseSplitter`, `BaseVectorStore`,
+  - `DocumentLoaderFactory.get_loader()`, `DocumentSplitterFactory.get_splitter()`, `VectorStoreFactory.get_vector_store()` yang mengembalikan `PDFLoader`, `RecursiveCharacterSplitter`, `FaissVectorStore`,
   - kerangka `ChatbotManager`, `GeminiModel`, `OcrService` (method inti melempar `NotImplementedError` dengan keterangan sprint pengisiannya).
 - **`Chain` diimplementasikan penuh**: `add()`, `clear()`, `build()` (menyusun langkah menjadi LangChain `RunnableSequence`), `invoke()`. Langkah yang mengisi `ChainState.response` (mis. relevancy gate) menghentikan langkah berikutnya, sehingga fallback tidak memanggil Gemini.
 - **Schemas** (`core/schemas.py`): `SourceReference`, `RetrievedDocument`, `ChatbotResponse`, `ResponseStatus`, `IndexingReport`, `IngestionReport`, `ChainState`.
@@ -110,7 +110,7 @@
 
 **Berikutnya**: langkah Setup 10–12 (README instalasi, kerangka `scripts/smoke_test_models.py`, audit secret).
 
-## Sesi 4 — 2026-10-25
+## Sesi 4 — 2026-10-23
 
 **Insiden secret (ditangani sebelum publikasi)**
 - Commit lokal `726a6d7` memuat API key Gemini, API key OpenAI, dan password admin asli di `.env.example`. Commit berikutnya (`fix`) mengembalikan placeholder, tetapi nilai asli masih ada di riwayat commit.
@@ -120,8 +120,8 @@
 - Pencegahan: hook pre-commit pemindai secret (lihat di bawah).
 
 **Dikerjakan**
-- Parameter `langchain-google-genai` 4.4.2 diverifikasi dari source terpasang: `embed_documents` default `RETRIEVAL_DOCUMENT`, `embed_query` default `RETRIEVAL_QUERY` (sesuai spec §4.1 langkah 9 dan §4.3 langkah 3); dimensi diatur lewat `output_dimensionality`; nama model diterima tanpa awalan `models/`.
-- `scripts/smoke_test_models.py`: tiga panggilan API kecil tanpa retry (chat, embedding dokumen, embedding query); memeriksa dimensi = `EMBEDDING_OUTPUT_DIMENSION` dan melaporkan norma L2 vektor (bahan OD-12); pesan error disamarkan dari secret.
+- Parameter `langchain-google-genai` 4.4.2 diverifikasi dari source terpasang: `embed_documents` default `RETRIEVAL_DOCUMENT`, `embed_query` default `RETRIEVAL_QUERY` (sesuai spec §4.1 langkah 9 dan §4.3 langkah 3), dimensi diatur lewat `output_dimensionality`, nama model diterima tanpa awalan `models/`.
+- `scripts/smoke_test_models.py`: tiga panggilan API kecil tanpa retry (chat, embedding dokumen, embedding query), memeriksa dimensi = `EMBEDDING_OUTPUT_DIMENSION` dan melaporkan norma L2 vektor (bahan OD-12), pesan error disamarkan dari secret.
 - `scripts/check_secrets.py` + `.githooks/pre-commit`: memblokir commit file `.env` dan baris berisi pola key OpenAI/Google atau nilai `GEMINI_API_KEY`/`OPENAI_API_KEY`/`ADMIN_PASSWORD` non-placeholder. Mode `--all` memindai semua file yang dilacak git.
 - README berisi prasyarat Windows, instalasi, konfigurasi, perlindungan secret, pengujian, dan struktur.
 - Pemeriksaan `.env` (tanpa menampilkan nilai): `GEMINI_API_KEY` terisi, admin aktif, `OPENAI_API_KEY` terisi, `TESSERACT_CMD` kosong (Tesseract tidak ada di PATH, perlu diisi sebelum Sprint 1).
@@ -129,7 +129,7 @@
 **Hasil test**
 - `pytest` → **64 lulus, 0 gagal**, 1 warning (sunset `langchain-community`). Tambahan 14 test di `test_check_secrets.py` (deteksi key, placeholder diabaikan, file `.env` dilarang, `.env.example` di repo bersih).
 - `check_secrets.py --all` → bersih.
-- Uji hook pada repo git sementara: perubahan normal → exit 0; file `.env` dan key palsu → exit 1 dengan tiga temuan.
+- Uji hook pada repo git sementara: perubahan normal → exit 0, file `.env` dan key palsu → exit 1 dengan tiga temuan.
 - `py_compile` kedua skrip → berhasil.
 
 **File dibuat/diubah**
@@ -143,9 +143,9 @@
 - Pemilik mengaktifkan hook: `git config core.hooksPath .githooks`.
 - Pemilik mengisi `TESSERACT_CMD` di `.env`.
 - Menjalankan `smoke_test_models.py` (OD-01, OD-02) setelah disetujui.
-- Memasang dan mempin Ragas + smoke test tiga metrik (spec §10.4; OD-05, OD-06).
+- Memasang dan mempin Ragas + smoke test tiga metrik (spec §10.4, OD-05, OD-06).
 
-## Sesi 5 — 2026-10-25
+## Sesi 5 — 2026-10-23
 
 **Dikerjakan**
 - Smoke test Gemini live dijalankan (`scripts/smoke_test_models.py`). Hasil lengkap: [`smoke_tests.md`](smoke_tests.md).
@@ -167,14 +167,14 @@
 **Hasil test**
 - `pytest` → **65 lulus, 0 gagal**, tanpa warning.
 - `check_secrets.py --all` → bersih.
-- Smoke test Gemini → 3/3 lulus (percobaan ke-2; percobaan ke-1 chat gagal 503).
-- Smoke test Ragas → 0/3; semua gagal `429 insufficient_quota / credit_balance_exhausted` dari OpenAI. Komponen embedding Gemini milik Ragas diuji terpisah → berhasil.
+- Smoke test Gemini → 3/3 lulus (percobaan ke-2, percobaan ke-1 chat gagal 503).
+- Smoke test Ragas → 0/3, semua gagal `429 insufficient_quota / credit_balance_exhausted` dari OpenAI. Komponen embedding Gemini milik Ragas diuji terpisah → berhasil.
 
 **File dibuat/diubah**
 - `requirements.txt` (pin `langchain-community`), `requirements-eval.txt`, `requirements-lock.txt`
 - `scripts/smoke_test_ragas.py`, `tests/unit/test_environment.py`
 - `docs/technical/setup_log.md`, `docs/technical/smoke_tests.md`, `docs/scrum/setup_phase.md` (ditulis ulang dengan bahasa sederhana)
 
-**Keputusan**: D-16, D-17; OD-01, OD-02 (sebagian), OD-05 diselesaikan.
+**Keputusan**: D-16, D-17, OD-01, OD-02 (sebagian), OD-05 diselesaikan.
 
 **Hambatan**: saldo API OpenAI kosong, sehingga verifikasi evaluator LLM (OD-06) tertunda.

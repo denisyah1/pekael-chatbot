@@ -1,6 +1,6 @@
 # Hasil Smoke Test
 
-Smoke test memastikan setiap komponen dapat dipanggil sebelum pipeline dibangun. Spec §9.1 dan §10.4 mewajibkan hasilnya disimpan beserta model ID dan versi yang dipakai. Hasil yang sudah dicatat tidak diubah; uji ulang ditambahkan sebagai baris baru.
+Smoke test memastikan setiap komponen dapat dipanggil sebelum pipeline dibangun. Spec §9.1 dan §10.4 mewajibkan hasilnya disimpan beserta model ID dan versi yang dipakai. Hasil yang sudah dicatat tidak diubah, uji ulang ditambahkan sebagai baris baru.
 
 ## Lingkungan
 
@@ -16,12 +16,12 @@ Perintah: `.venv\Scripts\python.exe -m pytest tests/unit/test_environment.py -v`
 
 | Tanggal | Test | Hasil |
 |---|---|---|
-| 2026-10-25 | Import semua paket inti | Lulus |
-| 2026-10-25 | Aplikasi tidak memuat paket evaluator | Lulus |
-| 2026-10-25 | FAISS `IndexFlatL2` 768 dimensi: buat, simpan, muat ulang, cari | Lulus |
-| 2026-10-25 | PyMuPDF: ekstraksi teks dan render halaman | Lulus |
-| 2026-10-25 | Tesseract 5.4.0 dengan bahasa `ind`: OCR teks "PRAKTIK KERJA LAPANGAN" | Lulus |
-| 2026-10-25 | Ragas 0.4.3: import ketiga metrik, LLM factory, GoogleEmbeddings | Lulus |
+| 2026-10-23 | Import semua paket inti | Lulus |
+| 2026-10-23 | Aplikasi tidak memuat paket evaluator | Lulus |
+| 2026-10-23 | FAISS `IndexFlatL2` 768 dimensi: buat, simpan, muat ulang, cari | Lulus |
+| 2026-10-23 | PyMuPDF: ekstraksi teks dan render halaman | Lulus |
+| 2026-10-23 | Tesseract 5.4.0 dengan bahasa `ind`: OCR teks "PRAKTIK KERJA LAPANGAN" | Lulus |
+| 2026-10-23 | Ragas 0.4.3: import ketiga metrik, LLM factory, GoogleEmbeddings | Lulus |
 
 ## 2. Gemini (API sungguhan)
 
@@ -29,12 +29,12 @@ Perintah: `.venv\Scripts\python.exe scripts\smoke_test_models.py` (tanpa retry)
 
 | Tanggal | Percobaan | Uji | Model | Hasil | Waktu | Catatan |
 |---|---|---|---|---|---|---|
-| 2026-10-25 | 1 | Chat | `gemini-3.5-flash-lite` | **Gagal** | 2,65 s | `503 UNAVAILABLE`: model sedang ramai ("high demand"). Model ID dan API key valid |
-| 2026-10-25 | 1 | Embedding dokumen | `gemini-embedding-001` | Lulus | 1,74 s | `RETRIEVAL_DOCUMENT`, dimensi 768, norma L2 0,5839 |
-| 2026-10-25 | 1 | Embedding query | `gemini-embedding-001` | Lulus | 1,63 s | `RETRIEVAL_QUERY`, dimensi 768, norma L2 0,5908 |
-| 2026-10-25 | 2 | Chat | `gemini-3.5-flash-lite` | Lulus | 5,01 s | Jawaban: *"Dalam konteks perkuliahan, PKL adalah singkatan dari Praktik Kerja Lapangan."* |
-| 2026-10-25 | 2 | Embedding dokumen | `gemini-embedding-001` | Lulus | 1,66 s | dimensi 768, norma L2 0,5839 |
-| 2026-10-25 | 2 | Embedding query | `gemini-embedding-001` | Lulus | 1,81 s | dimensi 768, norma L2 0,5908 |
+| 2026-10-23 | 1 | Chat | `gemini-3.5-flash-lite` | **Gagal** | 2,65 s | `503 UNAVAILABLE`: model sedang ramai ("high demand"). Model ID dan API key valid |
+| 2026-10-23 | 1 | Embedding dokumen | `gemini-embedding-001` | Lulus | 1,74 s | `RETRIEVAL_DOCUMENT`, dimensi 768, norma L2 0,5839 |
+| 2026-10-23 | 1 | Embedding query | `gemini-embedding-001` | Lulus | 1,63 s | `RETRIEVAL_QUERY`, dimensi 768, norma L2 0,5908 |
+| 2026-10-23 | 2 | Chat | `gemini-3.5-flash-lite` | Lulus | 5,01 s | Jawaban: *"Dalam konteks perkuliahan, PKL adalah singkatan dari Praktik Kerja Lapangan."* |
+| 2026-10-23 | 2 | Embedding dokumen | `gemini-embedding-001` | Lulus | 1,66 s | dimensi 768, norma L2 0,5839 |
+| 2026-10-23 | 2 | Embedding query | `gemini-embedding-001` | Lulus | 1,81 s | dimensi 768, norma L2 0,5908 |
 
 **Temuan**
 1. `gemini-3.5-flash-lite` tersedia untuk API key ini dan menjawab dalam Bahasa Indonesia (OD-01).
@@ -48,10 +48,10 @@ Perintah: `.venv\Scripts\python.exe scripts\smoke_test_ragas.py` (1 sampel fikti
 
 | Tanggal | Metrik | Evaluator LLM | Embedding | Hasil | Catatan |
 |---|---|---|---|---|---|
-| 2026-10-25 | Faithfulness | `gpt-4o-mini` | — | **Gagal** | `429 insufficient_quota`: saldo kredit OpenAI kosong |
-| 2026-10-25 | Answer Relevancy | `gpt-4o-mini` | `gemini-embedding-001` | **Gagal** | sama |
-| 2026-10-25 | Context Recall | `gpt-4o-mini` | — | **Gagal** | sama |
-| 2026-10-25 | Komponen embedding Ragas (`GoogleEmbeddings.aembed_text`) | — | `gemini-embedding-001` | Lulus | dimensi 3072 (default), norma 1,0 |
+| 2026-10-23 | Faithfulness | `gpt-4o-mini` | — | **Gagal** | `429 insufficient_quota`: saldo kredit OpenAI kosong |
+| 2026-10-23 | Answer Relevancy | `gpt-4o-mini` | `gemini-embedding-001` | **Gagal** | sama |
+| 2026-10-23 | Context Recall | `gpt-4o-mini` | — | **Gagal** | sama |
+| 2026-10-23 | Komponen embedding Ragas (`GoogleEmbeddings.aembed_text`) | — | `gemini-embedding-001` | Lulus | dimensi 3072 (default), norma 1,0 |
 
 **Temuan**
 1. API key OpenAI valid (error 429 kuota, bukan 401 key ditolak), tetapi akun belum memiliki kredit. Verifikasi evaluator (OD-06) **tertunda** sampai pemilik mengisi saldo.

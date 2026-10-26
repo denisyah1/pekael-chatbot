@@ -21,7 +21,7 @@
 
 _[catatan]_
 
-☐ **Belum diterima**; item dikembalikan ke Product Backlog
+☐ **Belum diterima**, item dikembalikan ke Product Backlog
 
 ## Tanda Tangan
 
