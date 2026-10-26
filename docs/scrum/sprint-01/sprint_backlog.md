@@ -118,3 +118,8 @@ Keterangan: **Setup** = pekerjaan yang sudah tuntas pada fase Setup. **Tambahan*
 
 **Berikutnya**
 - Verifikasi hasil koreksi OCR oleh Developer, keputusan penyaringan oleh Product Owner, lalu *Sprint Review* dan *Sprint Retrospective* pada 29 Oktober 2026.
+
+### 26 Oktober 2026 (sesi 5)
+
+**Dikerjakan**
+- Menyusun draf Lembar Validasi Bagian B ([Sprint Review](sprint_review.md)) dan Bagian C ([Sprint Retrospective](sprint_retrospective.md)) untuk pertemuan 29 Oktober 2026. Status pencapaian Sprint Goal, keputusan, dan tanda tangan diisi saat pertemuan.
