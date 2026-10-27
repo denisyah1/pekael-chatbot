@@ -1,7 +1,7 @@
 # Product Backlog — Pekael
 
 > Sumber: proposal skripsi (Tabel Product Backlog) dan `project_spec.md` §13.
-> Product Owner: Bambang Satrio, S. Pd., M. Kom. · Terakhir diperbarui: 2026-10-23
+> Product Owner: Bambang Satrio, S. Pd., M. Kom. · Terakhir diperbarui: 2026-10-30
 
 ## Item Product Backlog (dari proposal)
 
@@ -9,7 +9,7 @@
 |---|---|---|---|---|---|
 | PBI-01 | Ekstraksi teks dari buku panduan PKL hasil scan melalui OCR | Tinggi | 1 | Teks per halaman tersedia dengan metadata halaman dan metode ekstraksi, OCR hanya untuk halaman tanpa teks digital, sampel angka/tanggal/tabel sudah diperiksa terhadap sumber asli | Dikerjakan |
 | PBI-02 | Penyaringan dan pengerucutan konten sesuai lingkup PTIK | Tinggi | 1 | Knowledge base terpilih dan disetujui PO secara tertulis | Dikerjakan |
-| PBI-03 | Text splitting dan embedding menjadi representasi vektor | Tinggi | 2 | Chunk mempertahankan metadata source/page, dimensi vektor konsisten, eksperimen parameter tercatat | Belum dimulai |
+| PBI-03 | Text splitting dan embedding menjadi representasi vektor | Tinggi | 2 | Chunk mempertahankan metadata source/page, dimensi vektor konsisten, eksperimen parameter tercatat | Dikerjakan |
 | PBI-04 | Penyimpanan embedding pada FAISS | Tinggi | 3 | Indeks `IndexFlatL2` dapat dibuat, disimpan, dan dimuat ulang pada proses baru | Belum dimulai |
 | PBI-05 | Retrieval chain menghubungkan FAISS dan Gemini API | Tinggi | 3 | Pipeline CLI menghasilkan jawaban beserta sumber, fallback berjalan untuk pertanyaan di luar cakupan | Belum dimulai |
 | PBI-06 | Antarmuka website untuk tanya-jawab | Tinggi | 4 | UI Streamlit menerima pertanyaan, menampilkan loading, jawaban, dan status error yang aman | Belum dimulai |
@@ -38,3 +38,4 @@ Nilai status: `Belum dimulai` · `Dikerjakan` · `Selesai (menunggu review)` · 
 |---|---|---|---|
 | 2026-10-23 | Product Backlog awal disusun dari proposal | Awal proyek | _[menunggu PO]_ |
 | 2026-10-23 | PBI-01 dan PBI-02 direncanakan untuk Sprint 1 (23–29 Okt 2026). Pemeriksaan awal: Buku Pedoman PKL 2025 berisi 29 halaman, seluruhnya hasil scan | Sprint 1 Planning | PO (validasi planning Sprint 1, tanda tangan fisik menyusul) |
+| 2026-10-30 | PBI-03 dimulai pada Sprint 2 (30 Okt – 6 Nov 2026). Penyelesaian PBI-02 (keputusan penyaringan) dibawa ke Sprint 2 | Sprint 2 Planning | _[menunggu PO]_ |

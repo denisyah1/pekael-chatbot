@@ -16,6 +16,22 @@ NATIVE_TEXT = "native_text"
 TESSERACT_OCR = "tesseract_ocr"
 
 
+def parse_page_ranges(spec: str | None) -> list[int] | None:
+    """Parse "4-16,27-28" into sorted 1-based page numbers. Empty or None means all pages."""
+    if spec is None or not spec.strip():
+        return None
+    pages: set[int] = set()
+    for part in spec.split(","):
+        start, dash, end = part.strip().partition("-")
+        if not start.isdigit() or (dash and not end.isdigit()):
+            raise ValueError(f"Invalid page range {part.strip()!r}, expected e.g. 4-16,27-28")
+        first, last = int(start), int(end or start)
+        if first < 1 or last < first:
+            raise ValueError(f"Invalid page range {part.strip()!r}")
+        pages.update(range(first, last + 1))
+    return sorted(pages)
+
+
 class DocumentLoadError(ValueError):
     """The source file is missing, not a PDF, encrypted, empty, or needs OCR that is not configured."""
 
@@ -44,6 +60,7 @@ class PDFLoader(BaseLoader):
         min_text_chars: int = 40,
         ocr_dpi: int = 200,
         corrections_dir: str | Path | None = None,
+        pages: list[int] | None = None,
     ) -> None:
         if min_text_chars < 0:
             raise ValueError("min_text_chars must be >= 0")
@@ -53,16 +70,21 @@ class PDFLoader(BaseLoader):
         self.min_text_chars = min_text_chars
         self.ocr_dpi = ocr_dpi
         self.corrections_dir = Path(corrections_dir) if corrections_dir else None
+        self.pages = sorted(set(pages)) if pages else None  # 1-based pages approved for the knowledge base
 
     def load(self, source_path: str | Path) -> list[Document]:
-        """Return one Document per PDF page, in page order."""
+        """Return one Document per selected PDF page (all pages if no selection), in page order."""
         path = Path(source_path)
         pdf = self.open_pdf(path)
         source_hash = file_sha256(path)
         try:
+            numbers = self.pages or list(range(1, pdf.page_count + 1))
+            outside = [n for n in numbers if n > pdf.page_count]
+            if outside:
+                raise DocumentLoadError(f"Selected pages {outside} exceed the {pdf.page_count} pages of {path.name}")
             return [
-                self.to_document(self.extract_page(page, source_hash), path.name, source_hash, pdf.page_count)
-                for page in pdf
+                self.to_document(self.extract_page(pdf[n - 1], source_hash), path.name, source_hash, pdf.page_count)
+                for n in numbers
             ]
         finally:
             pdf.close()

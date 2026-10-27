@@ -78,3 +78,9 @@ def test_read_config_without_env_file(tmp_path, monkeypatch):
     config = AppConfigurator.read_config(tmp_path / "missing.env")
 
     assert config.missing_runtime_settings() == ["GEMINI_API_KEY"]
+
+
+def test_knowledge_base_pages_are_validated():
+    assert AppConfig.from_env({"KNOWLEDGE_BASE_PAGES": "4-16"}).knowledge_base_pages == "4-16"
+    with pytest.raises(ConfigError, match="KNOWLEDGE_BASE_PAGES"):
+        AppConfig.from_env({"KNOWLEDGE_BASE_PAGES": "16-4"})

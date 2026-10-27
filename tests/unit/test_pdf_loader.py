@@ -156,3 +156,39 @@ def test_factory_passes_ocr_settings(tmp_path):
 def test_invalid_parameters(chars, dpi):
     with pytest.raises(ValueError):
         PDFLoader(min_text_chars=chars, ocr_dpi=dpi)
+
+
+def test_only_selected_pages_are_loaded(tmp_path):
+    path = _make_pdf(tmp_path / "pedoman.pdf", [NATIVE_PAGE, None, NATIVE_PAGE, NATIVE_PAGE])
+    ocr = FakeOcr()
+
+    documents = PDFLoader(ocr, pages=[3, 1]).load(path)
+
+    assert [d.metadata["page"] for d in documents] == [1, 3]
+    assert all(d.metadata["total_pages"] == 4 for d in documents)
+    assert ocr.calls == 0
+
+
+def test_selected_page_outside_document_is_an_error(tmp_path):
+    path = _make_pdf(tmp_path / "pedoman.pdf", [NATIVE_PAGE, NATIVE_PAGE])
+
+    with pytest.raises(DocumentLoadError, match="exceed"):
+        PDFLoader(pages=[2, 5]).load(path)
+
+
+@pytest.mark.parametrize(
+    ("spec", "expected"),
+    [(None, None), ("", None), ("4-6", [4, 5, 6]), ("4-6, 9,27-28", [4, 5, 6, 9, 27, 28]), ("3,3,1-2", [1, 2, 3])],
+)
+def test_parse_page_ranges(spec, expected):
+    from pekael.loaders.pdf_loader import parse_page_ranges
+
+    assert parse_page_ranges(spec) == expected
+
+
+@pytest.mark.parametrize("spec", ["a-3", "5-2", "0-3", "4-"])
+def test_parse_page_ranges_rejects_invalid(spec):
+    from pekael.loaders.pdf_loader import parse_page_ranges
+
+    with pytest.raises(ValueError):
+        parse_page_ranges(spec)

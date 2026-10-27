@@ -36,6 +36,8 @@ class AppConfig(BaseModel):
     retrieval_max_l2_distance: float | None = Field(default=None, ge=0)
     faiss_index_path: Path = Path("data/index")
     knowledge_base_path: Path = Path("data/source/handbook.pdf")
+    # PDF pages approved by the Product Owner, e.g. "4-16" (empty = all pages)
+    knowledge_base_pages: str | None = None
     pdf_max_upload_mb: int = Field(default=30, gt=0)
     question_max_chars: int = Field(default=500, gt=0)
     ocr_min_text_chars_per_page: int = Field(default=40, ge=0)
@@ -66,6 +68,14 @@ class AppConfig(BaseModel):
         if level not in logging.getLevelNamesMapping():
             raise ValueError(f"unknown log level {value!r}")
         return level
+
+    @field_validator("knowledge_base_pages")
+    @classmethod
+    def _valid_page_ranges(cls, value: str | None) -> str | None:
+        from pekael.loaders.pdf_loader import parse_page_ranges
+
+        parse_page_ranges(value)
+        return value
 
     @model_validator(mode="after")
     def _overlap_smaller_than_chunk(self) -> "AppConfig":

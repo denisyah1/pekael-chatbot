@@ -45,8 +45,8 @@ Dokumen di `docs/scrum/` ditulis dengan bahasa sederhana sebagai bahan laporan. 
 | Sprint | Periode | Sprint Goal | Planning | Review | Retro | Status |
 |---|---|---|---|---|---|---|
 | Setup | 23 Okt 2026 | Lingkungan dan kerangka kode siap dibangun | — | — | — | Selesai (uji evaluator OpenAI tertunda) |
-| 1 | 23–29 Okt 2026 | Persiapan dan validasi knowledge base | ✓ 23 Okt (tanda tangan fisik menyusul) | Draf siap (29 Okt) | Draf siap (29 Okt) | Berjalan |
-| 2 | 30 Okt – 5 Nov 2026 | Chunking dan embedding | ☐ | ☐ | ☐ | Belum dimulai |
+| 1 | 23–29 Okt 2026 | Persiapan dan validasi knowledge base | ✓ 23 Okt (tanda tangan fisik menyusul) | Draf siap (29 Okt) | Draf siap (29 Okt) | Menunggu hasil review PO |
+| 2 | 30 Okt – 6 Nov 2026 | Chunking dan embedding | Disusun 30 Okt | ☐ | ☐ | Berjalan |
 | 3 | 6 – 12 Nov 2026 | FAISS dan alur RAG inti | ☐ | ☐ | ☐ | Belum dimulai |
 | 4 | 13 – 26 Nov 2026 (rencana) | UI Streamlit dan pengujian internal | ☐ | ☐ | ☐ | Belum dimulai |
 | 5 | 27 Nov – 10 Des 2026 (rencana) | Validasi ahli dan revisi | ☐ | ☐ | ☐ | Belum dimulai |
