@@ -38,4 +38,4 @@ Nilai status: `Belum dimulai` · `Dikerjakan` · `Selesai (menunggu review)` · 
 |---|---|---|---|
 | 2026-10-23 | Product Backlog awal disusun dari proposal | Awal proyek | _[menunggu PO]_ |
 | 2026-10-23 | PBI-01 dan PBI-02 direncanakan untuk Sprint 1 (23–29 Okt 2026). Pemeriksaan awal: Buku Pedoman PKL 2025 berisi 29 halaman, seluruhnya hasil scan | Sprint 1 Planning | PO (validasi planning Sprint 1, tanda tangan fisik menyusul) |
-| 2026-10-30 | PBI-03 dimulai pada Sprint 2 (30 Okt – 6 Nov 2026). Penyelesaian PBI-02 (keputusan penyaringan) dibawa ke Sprint 2 | Sprint 2 Planning | _[menunggu PO]_ |
+| 2026-10-30 | PBI-03 dimulai pada Sprint 2 (30 Okt – 5 Nov 2026). Penyelesaian PBI-02 (keputusan penyaringan) dibawa ke Sprint 2 | Sprint 2 Planning | _[menunggu PO]_ |

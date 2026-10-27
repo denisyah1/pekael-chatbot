@@ -6,7 +6,7 @@
 | Halaman diperiksa | : 4 – 16 (halaman yang diusulkan masuk knowledge base) |
 | Tanggal pemeriksaan | : 26 Oktober 2026 |
 | Pemeriksa tahap pertama | : Claude Code (asisten AI), membandingkan gambar halaman dengan teks hasil OCR |
-| Verifikasi akhir | : Deni Merdiansyah (Developer) |
+| Verifikasi akhir | : Deni Merdiansyah (Developer), 30 Oktober 2026, koreksi dinyatakan akurat tanpa perubahan |
 
 ## Tujuan
 
@@ -33,19 +33,19 @@ Semua angka dan ketentuan penting terbaca benar oleh OCR: masa PKL minimal 4 bul
 
 | Hal. | Isi halaman | Temuan OCR | Koreksi | Diverifikasi |
 |---|---|---|---|---|
-| 4 | Latar belakang | "BABI" | "BAB I" | ☐ |
-| 5 | Latar belakang, pengertian, tujuan PKL | "/ard-skill" (huruf miring salah dibaca), subjudul "Cc.", "4.Mengembangkan" | "hard-skill", "C.", "4. Mengembangkan" | ☐ |
-| 6 | Manfaat PKL | "c.Memperoleh" (tanpa spasi) | "c. Memperoleh" | ☐ |
-| 7 | Waktu dan tempat pelaksanaan | Tidak ada | — | ☐ |
-| 8 | Tugas koordinator prodi dan koordinator PKL | Penanda butir "c." terbaca "€" dan tergabung dengan butir b | Butir c dipisah kembali | ☐ |
-| 9 | Tugas dosen pembimbing, mitra, mentor, mahasiswa | Tidak ada | — | ☐ |
-| 10 | Kewajiban mahasiswa, persyaratan peserta | "sesaina", butir "l." terbaca "1.", "Gika", "masing- masing" | "sesama", "l.", "(jika", "masing-masing" | ☐ |
-| 11 | Syarat kelulusan, tata tertib | Titik di akhir butir terbaca koma | Diganti titik | ☐ |
-| 12 | Standar operasional prosedur | Tidak ada | — | ☐ |
-| 13 | Prosedur administrasi pengajuan PKL | **Bagan 2.1 Prosedur Pengajuan PKL terbaca acak** | Ditulis ulang sebagai 7 tahapan berurutan | ☐ |
-| 14 | Prosedur pelaksanaan, sanksi | **Bagan 2.2 Prosedur Pelaksanaan PKL terbaca acak**, subjudul "Cc.", "1," | Ditulis ulang sebagai 6 tahapan berurutan, "C.", "1." | ☐ |
-| 15 | Sanksi | Tidak ada | — | ☐ |
-| 16 | Sistem penilaian | **Tabel konversi nilai hampir hilang seluruhnya**, "BAB II", "(nstrumen", "(1-5)" terpotong | Tabel 10 baris ditulis ulang, "BAB III", "(Instrumen", "(1-5)" | ☐ |
+| 4 | Latar belakang | "BABI" | "BAB I" | ☑ |
+| 5 | Latar belakang, pengertian, tujuan PKL | "/ard-skill" (huruf miring salah dibaca), subjudul "Cc.", "4.Mengembangkan" | "hard-skill", "C.", "4. Mengembangkan" | ☑ |
+| 6 | Manfaat PKL | "c.Memperoleh" (tanpa spasi) | "c. Memperoleh" | ☑ |
+| 7 | Waktu dan tempat pelaksanaan | Tidak ada | — | ☑ |
+| 8 | Tugas koordinator prodi dan koordinator PKL | Penanda butir "c." terbaca "€" dan tergabung dengan butir b | Butir c dipisah kembali | ☑ |
+| 9 | Tugas dosen pembimbing, mitra, mentor, mahasiswa | Tidak ada | — | ☑ |
+| 10 | Kewajiban mahasiswa, persyaratan peserta | "sesaina", butir "l." terbaca "1.", "Gika", "masing- masing" | "sesama", "l.", "(jika", "masing-masing" | ☑ |
+| 11 | Syarat kelulusan, tata tertib | Titik di akhir butir terbaca koma | Diganti titik | ☑ |
+| 12 | Standar operasional prosedur | Tidak ada | — | ☑ |
+| 13 | Prosedur administrasi pengajuan PKL | **Bagan 2.1 Prosedur Pengajuan PKL terbaca acak** | Ditulis ulang sebagai 7 tahapan berurutan | ☑ |
+| 14 | Prosedur pelaksanaan, sanksi | **Bagan 2.2 Prosedur Pelaksanaan PKL terbaca acak**, subjudul "Cc.", "1," | Ditulis ulang sebagai 6 tahapan berurutan, "C.", "1." | ☑ |
+| 15 | Sanksi | Tidak ada | — | ☑ |
+| 16 | Sistem penilaian | **Tabel konversi nilai hampir hilang seluruhnya**, "BAB II", "(nstrumen", "(1-5)" terpotong | Tabel 10 baris ditulis ulang, "BAB III", "(Instrumen", "(1-5)" | ☑ |
 
 ## Isi yang ditulis ulang manual
 

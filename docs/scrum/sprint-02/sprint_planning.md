@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Sprint | : Sprint 2 |
-| Periode Sprint | : 30 Oktober – 6 November 2026 |
+| Periode Sprint | : 30 Oktober – 5 November 2026 |
 | *Product Owner* (validator) | : Dosen Koordinator PKL Prodi PTIK UNJ |
 | Scrum Master | : Dosen pembimbing |
 | Developer | : Deni Merdiansyah (NIM {{NIM_DEVELOPER}}) |
@@ -37,8 +37,8 @@ Mengubah teks buku panduan PKL yang telah disaring menjadi potongan teks (*chunk
 | 2 | Menerapkan pemilihan halaman knowledge base sesuai keputusan *Product Owner* | 2 | Hanya halaman yang disetujui yang diproses | 30 – 31 Oktober 2026 |
 | 3 | Memotong teks menjadi *chunk* dengan keterangan sumber, halaman, dan bagian (judul bab/subbab) | 1 | Potongan teks berlabel sumber | 30 Oktober – 1 November 2026 |
 | 4 | Mengintegrasikan model embedding Gemini untuk dokumen dan pertanyaan, termasuk penanganan batas kuota | 1 | Vektor dokumen dan pertanyaan dengan ukuran konsisten | 1 – 3 November 2026 |
-| 5 | Percobaan ukuran potongan dan tumpang tindih memakai contoh pertanyaan dari daftar topik Sprint 1 | 1 | Catatan percobaan dan parameter awal terpilih | 3 – 5 November 2026 |
-| 6 | Mencatat statistik potongan (jumlah, potongan kosong atau ganda) dan memeriksa konsistensi ukuran vektor | 1 | Laporan potongan dan vektor | 5 – 6 November 2026 |
+| 5 | Percobaan ukuran potongan dan tumpang tindih memakai contoh pertanyaan dari daftar topik Sprint 1 | 1 | Catatan percobaan dan parameter awal terpilih | 3 – 4 November 2026 |
+| 6 | Mencatat statistik potongan (jumlah, potongan kosong atau ganda) dan memeriksa konsistensi ukuran vektor | 1 | Laporan potongan dan vektor | 4 – 5 November 2026 |
 
 ## Increment dan kriteria selesai
 
@@ -61,9 +61,9 @@ Mengubah teks buku panduan PKL yang telah disaring menjadi potongan teks (*chunk
 |---|---|---|
 | *Sprint Planning* | 30 Oktober 2026 | Peneliti, *Product Owner* |
 | Keputusan penyaringan halaman | 31 Oktober 2026 | Peneliti, *Product Owner* |
-| Pengerjaan harian (logbook) | 30 Oktober – 6 November 2026 | Peneliti |
-| *Sprint Review* | 6 November 2026 | Peneliti, *Product Owner*, Scrum Master |
-| *Sprint Retrospective* | 6 November 2026 | Peneliti, Scrum Master |
+| Pengerjaan harian (logbook) | 30 Oktober – 5 November 2026 | Peneliti |
+| *Sprint Review* | 5 November 2026 | Peneliti, *Product Owner*, Scrum Master |
+| *Sprint Retrospective* | 5 November 2026 | Peneliti, Scrum Master |
 
 ## Risiko dan penanganan
 

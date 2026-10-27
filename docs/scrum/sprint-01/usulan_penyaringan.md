@@ -35,6 +35,19 @@ Jika usulan ini disetujui, knowledge base berisi **13 halaman** (hal. 4–16), a
 3. Apakah lampiran instrumen penilaian (hal. 27–28) perlu dimasukkan?
 4. Bentuk hasil penyaringan (OD-16): PDF baru berisi halaman terpilih, atau PDF asli dengan daftar halaman yang dipakai?
 
+## Usulan tambahan dari Developer: halaman 22–25
+
+Setelah pemeriksaan ulang, Developer menilai halaman 22–25 juga penting bagi mahasiswa:
+
+| Halaman | Isi |
+|---|---|
+| 22 | Aturan penulisan sumber rujukan (APA) dan awal sistematika laporan PKL |
+| 23 | Isi Bab I dan Bab II laporan PKL |
+| 24 | Isi Bab IV laporan dan **daftar dokumen lampiran wajib** (surat permohonan, lembar konsultasi, penilaian, daftar hadir, catatan mingguan, biodata, surat keterangan atau sertifikat, berita acara) |
+| 25 | Contoh daftar isi laporan PKL |
+
+Halaman ini termasuk panduan penyusunan laporan PKL, yang pada proposal dinyatakan **di luar ruang lingkup** penelitian. Karena itu penambahannya merupakan **perubahan ruang lingkup** yang perlu disetujui *Product Owner* dan dicatat. Sampai keputusan diambil, knowledge base memakai halaman 4–16. Bila disetujui, hasil OCR halaman 22–25 diperiksa terlebih dahulu sebelum dipakai.
+
 ## Keputusan PO
 
 _[diisi setelah diskusi]_

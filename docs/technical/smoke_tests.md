@@ -57,3 +57,11 @@ Perintah: `.venv\Scripts\python.exe scripts\smoke_test_ragas.py` (1 sampel fikti
 1. API key OpenAI valid (error 429 kuota, bukan 401 key ditolak), tetapi akun belum memiliki kredit. Verifikasi evaluator (OD-06) **tertunda** sampai pemilik mengisi saldo.
 2. Embedding Gemini kompatibel dengan Ragas 0.4.3, jadi `text-embedding-3-small` tidak diperlukan (OD-05).
 3. Dimensi embedding untuk Answer Relevancy (3072) terpisah dari dimensi indeks FAISS. Metrik ini hanya membandingkan pertanyaan dengan pertanyaan, jadi tidak memengaruhi indeks.
+
+## 4. Embedding melalui wrapper Pekael (Sprint 2)
+
+| Tanggal | Uji | Hasil | Catatan |
+|---|---|---|---|
+| 2026-10-30 | `GeminiEmbeddings.embed_documents` + `embed_query` | Lulus | dimensi 768, norma 1,0000, 1,19 s |
+| 2026-10-30 | Masukan 9.000 karakter | Diterima | 0,52 s |
+| 2026-10-30 | Masukan 40.000 karakter | Diterima tanpa galat | Indikasi pemotongan diam-diam oleh layanan, wrapper kini menolak > 8.000 karakter |

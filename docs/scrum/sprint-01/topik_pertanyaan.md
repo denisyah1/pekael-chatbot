@@ -21,7 +21,7 @@ Contoh pertanyaan di bawah **belum** merupakan dataset penelitian. Jawaban acuan
 | No | Topik | Hal. | Contoh pertanyaan | Jenis pertanyaan |
 |---|---|---|---|---|
 | 1 | Pengertian PKL | 5 | Apa yang dimaksud dengan Praktik Kerja Lapangan? | Langsung |
-| 2 | Dasar hukum PKL | 4–5 | PKL di UNJ mengacu pada peraturan apa saja? | Daftar |
+| 2 | Dasar hukum PKL | 4–5, 13 | PKL di UNJ mengacu pada peraturan apa saja? | Daftar |
 | 3 | Tujuan PKL | 5–6 | Apa tujuan dilaksanakannya PKL? | Daftar |
 | 4 | Manfaat PKL | 6–7 | PKL bermanfaat apa untuk mahasiswa? Untuk mitra? | Daftar, beberapa bagian |
 | 5 | Lama pelaksanaan | 7, 14 | Berapa lama PKL harus dilaksanakan? | Angka |

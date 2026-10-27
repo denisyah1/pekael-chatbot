@@ -29,3 +29,24 @@
 - Keluaran: `data/processed/Pedoman-PKL-2025/chunks_<size>_<overlap>.jsonl` (di-ignore git).
 
 **Test**: `pytest` → **130 lulus, 0 gagal** (baru: `test_splitter.py` 13 test, pemilihan halaman 11 test di `test_pdf_loader.py`, 1 test di `test_config.py`).
+
+## Sesi 2 — 30 Oktober 2026 (lanjutan)
+
+**Embedding (S2-T06, S2-T07)** — `src/pekael/models/embeddings.py`
+- `GeminiEmbeddings(Embeddings)`: membungkus `GoogleGenerativeAIEmbeddings` 4.4.2. `embed_documents` → `task_type="RETRIEVAL_DOCUMENT"`, `embed_query` → `"RETRIEVAL_QUERY"`, keduanya `output_dimensionality=EMBEDDING_OUTPUT_DIMENSION`.
+- Validasi dimensi tiap vektor, normalisasi L2 (bisa dimatikan untuk eksperimen), batch 50 teks.
+- Coba ulang hanya untuk galat yang memuat `429`, `RESOURCE_EXHAUSTED`, `503`, `UNAVAILABLE`: maks 3 kali, jeda 20/40/60 s. Galat lain langsung `EmbeddingError` tanpa menyertakan pesan penyedia (mencegah kebocoran detail).
+- Batas masukan: teks kosong atau > 8.000 karakter ditolak sebelum memanggil API.
+- `build_embeddings(config, **overrides)`.
+
+**Uji langsung (4 panggilan)**
+- Dokumen + pertanyaan: dimensi 768, norma 1,0000, total 1,19 s, cosine dokumen–pertanyaan relevan 0,8319.
+- Teks 9.000 karakter: diterima (0,52 s). Teks 40.000 karakter: **diterima tanpa galat** (0,57 s), artinya layanan memotong masukan secara diam-diam → dasar batas 8.000 karakter.
+
+**EXP-002** — `scripts/run_chunk_experiment.py data\source\Pedoman-PKL-2025.pdf --pages 4-16`
+- Membaca pertanyaan dari `topik_pertanyaan.md` (30 dalam cakupan dengan halaman harapan, 8 luar cakupan). Cache vektor mentah per teks, normalisasi lokal per varian, FAISS `IndexFlatL2` langsung (numpy), k = `RETRIEVAL_K` = 4.
+- 140 teks ke API, 83,1 s, dua kali `Embedding service busy or quota reached` (jeda 20 s lalu 40 s) lalu berhasil. Varian 3072 dimensi: 64 teks, 19,1 s.
+- Hasil lengkap: `docs/experiment_log.md` EXP-002. Berkas mentah: `data/processed/Pedoman-PKL-2025/exp002.json`, `exp002_dim3072.json` (di-ignore git).
+- Peringkat bukan 1 pada 1000:150: no. 2 (tidak ditemukan, mengambil hal. 13), no. 12 (peringkat 2), no. 22 (3), no. 23 (2), no. 30 (2).
+
+**Test**: `pytest` → **143 lulus, 0 gagal** (baru: `test_embeddings.py` 13 test).
