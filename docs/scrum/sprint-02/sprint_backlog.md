@@ -76,3 +76,15 @@ Sprint Planning memuat enam tugas (lihat [Sprint Planning](sprint_planning.md) b
 **Berikutnya**
 - Keputusan *Product Owner* atas penyaringan halaman, termasuk usulan halaman 22–25 (S2-T02).
 - Menyiapkan *Sprint Review* dan *Sprint Retrospective* Sprint 2 (5 November 2026).
+
+### 31 Oktober 2026
+
+**Dikerjakan**
+- Menyusun draf Lembar Validasi Bagian B ([Sprint Review](sprint_review.md)) dan Bagian C ([Sprint Retrospective](sprint_retrospective.md)) untuk pertemuan 5 November 2026. Status pencapaian *Sprint Goal*, masukan *Product Owner*, keputusan validasi, dan tanda tangan diisi saat pertemuan.
+- Memeriksa tindak lanjut rencana perbaikan Sprint 1: penulisan tanggal, templat dokumen, dan pemeriksa API key sudah terlaksana. Penjadwalan validasi *Product Owner* di pertengahan sprint belum terlaksana.
+
+**Hasil uji**
+- Tidak ada perubahan program. Dokumen Sprint 2 diekspor ulang ke Word dan PDF.
+
+**Berikutnya**
+- Pertemuan dengan *Product Owner* pada 5 November 2026: *Sprint Review* Sprint 1 dan Sprint 2, keputusan penyaringan halaman (S2-T02), termasuk usulan halaman 22–25.
