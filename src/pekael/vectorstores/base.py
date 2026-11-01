@@ -5,6 +5,14 @@ from langchain_core.documents import Document
 from pekael.core.schemas import IndexingReport, RetrievedDocument
 
 
+class VectorStoreError(RuntimeError):
+    """Building, saving or searching the vector store failed."""
+
+
+class IndexNotReadyError(VectorStoreError):
+    """No usable knowledge base index exists yet (not built, missing, or built with another model)."""
+
+
 class BaseVectorStore(ABC):
     @abstractmethod
     def ingest_document(self, documents: list[Document]) -> IndexingReport:

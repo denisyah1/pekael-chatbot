@@ -20,7 +20,7 @@ Sprint Planning memuat enam tugas (lihat [Sprint Planning](sprint_planning.md) b
 | S2-T07 | 4 | PBI-03 | Penanganan batas kuota dan batas panjang masukan embedding | Done | Coba ulang otomatis terbukti saat percobaan, teks terlalu panjang ditolak dengan pesan jelas |
 | S2-T08 | 5 | PBI-03 | Percobaan ukuran potongan dan tumpang tindih dengan contoh pertanyaan (EXP-002) | Done | Catatan percobaan EXP-002, parameter awal 1.000/150 dipertahankan |
 | S2-T09 | 6 | PBI-03 | Statistik potongan dan pemeriksaan konsistensi ukuran vektor | Done | Statistik empat ukuran potongan, semua vektor berukuran 768 |
-| S2-T10 | 1 | PBI-01 | Pemeriksaan dan koreksi OCR halaman 22–25 dan 27–28 yang ditambahkan *Product Owner*, termasuk penulisan ulang tabel halaman 27–28 (ditambahkan selama sprint) | To Do | |
+| S2-T10 | 1 | PBI-01 | Pemeriksaan dan koreksi OCR halaman 22–25 dan 27–28 yang ditambahkan *Product Owner*, termasuk penulisan ulang tabel halaman 27–28 (ditambahkan selama sprint) | Dibawa ke Sprint 3 | Dikerjakan sebagai S3-T01 |
 
 ## Log Pengerjaan
 

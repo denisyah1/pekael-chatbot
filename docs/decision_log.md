@@ -33,6 +33,8 @@ Catatan keputusan teknis yang tidak tertulis di `project_spec.md` atau yang meny
 | D-25 | 2026-10-30 | `CHUNK_SIZE=1000`, `CHUNK_OVERLAP=150` dipertahankan sebagai nilai awal Sprint 3. Nilai final setelah uji kualitas jawaban (Sprint 3–5) | Diterapkan | EXP-002: perbedaan antarukuran hanya satu dari 30 pertanyaan | Sprint 2 |
 | D-26 | 2026-10-30 | Embedding: wrapper `GeminiEmbeddings` (task type dokumen/query, dimensi 768, normalisasi L2, batch 50, maks 3 kali coba ulang untuk 429/503 dengan jeda 20/40/60 detik, tolak teks > 8.000 karakter karena layanan memotong teks panjang tanpa pemberitahuan) | Diterapkan | EXP-002, uji langsung panjang masukan, spec §4.1, §9.1 (tanpa beralih ke layanan berbayar) | Sprint 2 |
 | D-27 | 2026-10-29 | Knowledge base memakai halaman PDF 4–16, 22–25, dan 27–28 (`KNOWLEDGE_BASE_PAGES=4-16,22-25,27-28`). PDF asli tidak diubah | Disetujui PO | Keputusan *Sprint Review* Sprint 1. Halaman 22–25 (sistematika laporan) dan 27–28 (instrumen penilaian) memperluas batasan spec §2.4 dan proposal, sehingga perlu disesuaikan pada batasan penelitian di laporan | Sprint 1 |
+| D-28 | 2026-11-06 | Vector store memakai wrapper LangChain `FAISS` dari `langchain-community==0.4.1` (terpin), indeks `IndexFlatL2`, penyimpanan berversi dengan penunjuk `ACTIVE` dan `manifest.json`, dua versi terakhir disimpan | Diterapkan | OD-15: wrapper berfungsi dan sudah teruji, LangChain tetap dipakai sesuai spec. Penggantian cukup di satu modul bila kelak diperlukan | Sprint 3 |
+| D-29 | 2026-11-06 | Satuan jarak yang dipakai untuk batas relevansi adalah kuadrat L2 dari `IndexFlatL2` (untuk vektor ternormalisasi = 2 − 2·cos). Angka EXP-002 memakai satuan yang sama | Diterapkan | Mencegah salah tafsir nilai `RETRIEVAL_MAX_L2_DISTANCE` | Sprint 3 |
 
 ## Penyelesaian Open Decision
 
@@ -41,6 +43,7 @@ Catatan keputusan teknis yang tidak tertulis di `project_spec.md` atau yang meny
 | OD-01 | 2026-10-23 | **Sebagian.** `gemini-3.5-flash-lite` tersedia dan menjawab dalam Bahasa Indonesia. Belum final: status free tier/kuota perlu dicek pemilik di dashboard Google AI Studio, lalu disetujui | Smoke test Gemini percobaan 2 | `technical/smoke_tests.md` §2 |
 | OD-02 | 2026-10-23 | **Sebagian.** Dimensi 768 didukung (`output_dimensionality`). Pilihan final tetap di Sprint 2 | Smoke test Gemini | `technical/smoke_tests.md` §2 |
 | OD-05 | 2026-10-23 | **Selesai.** Answer Relevancy memakai embedding Gemini lewat `ragas.embeddings.GoogleEmbeddings`, `text-embedding-3-small` tidak dipakai | Uji komponen embedding Ragas | `technical/smoke_tests.md` §3 |
+| OD-15 | 2026-11-06 | **Selesai.** Tetap memakai `langchain-community` 0.4.1 terpin untuk FAISS (D-28) | 13 test vector store lulus | `technical/sprint-03.md` |
 | OD-16 | 2026-10-29 | **Selesai.** PDF asli + daftar halaman melalui pengaturan (D-27) | Keputusan PO pada Sprint Review Sprint 1 | `scrum/sprint-01/usulan_penyaringan.md` |
 | OD-02 | 2026-10-30 | **Selesai.** Dimensi 768 (3072 hanya unggul satu pertanyaan, vektor 4 kali lebih besar) | EXP-002 | `experiment_log.md` |
 | OD-12 | 2026-10-30 | **Selesai.** Normalisasi L2 dipakai: peringkat sama, skala jarak tetap 0–2 untuk ambang | EXP-002 | `experiment_log.md` |

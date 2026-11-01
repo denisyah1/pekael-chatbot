@@ -40,7 +40,7 @@ Status pencapaian: ☐ Tercapai ☐ Tercapai sebagian ☐ Tidak tercapai
 | Pekerjaan | Alasan | Tindak lanjut |
 |---|---|---|
 | Keputusan *Product Owner* atas halaman knowledge base (S2-T02) | Selesai pada 29 Oktober 2026: halaman 4–16, 22–25, 27–28 | — |
-| Pemeriksaan OCR halaman 22–25 dan 27–28 (S2-T10) | Halaman baru ditetapkan di tengah sprint | _[diisi sesuai hasil pada 5 November 2026]_ |
+| Pemeriksaan OCR halaman 22–25 dan 27–28 (S2-T10) | Halaman baru ditetapkan di tengah sprint | Dibawa ke Sprint 3 sebagai tugas pertama (S3-T01) |
 
 ## Masukan *Product Owner*
 
