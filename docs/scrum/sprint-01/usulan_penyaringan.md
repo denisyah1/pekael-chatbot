@@ -50,4 +50,13 @@ Halaman ini termasuk panduan penyusunan laporan PKL, yang pada proposal dinyatak
 
 ## Keputusan PO
 
-_[diisi setelah diskusi]_
+Diputuskan pada *Sprint Review* Sprint 1 (29 Oktober 2026).
+
+| Halaman | Keputusan |
+|---|---|
+| 4–16 | Dipakai |
+| 22–25 | Dipakai (perubahan ruang lingkup, disetujui *Product Owner*) |
+| 27–28 | Dipakai, tabel ditulis ulang manual |
+| 1–3, 17–21, 26, 29 | Tidak dipakai |
+
+Bentuk hasil penyaringan: PDF asli tetap utuh, halaman yang dipakai ditetapkan melalui pengaturan sistem (`KNOWLEDGE_BASE_PAGES=4-16,22-25,27-28`).

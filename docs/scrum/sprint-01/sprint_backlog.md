@@ -13,14 +13,14 @@ Sprint Planning memuat lima tugas (lihat [Sprint Planning](sprint_planning.md) b
 |---|---|---|---|---|---|
 | S1-T01 | Setup | — | Repository, struktur folder, aturan keamanan API key, README awal | Done | Fase Setup ([`setup_phase.md`](../setup_phase.md)) |
 | S1-T02 | Setup | — | Pencatatan versi library dan uji FAISS | Done | Fase Setup ([`setup_phase.md`](../setup_phase.md)) |
-| S1-T03 | 1 | PBI-01 | Identitas dokumen dan validasi lingkup bersama PO | In Progress | Identitas dokumen sudah dicatat, sumber disetujui saat validasi planning |
+| S1-T03 | 1 | PBI-01 | Identitas dokumen dan validasi lingkup bersama PO | Done | Sumber disetujui pada validasi *Sprint Planning*, lingkup halaman ditetapkan pada *Sprint Review* |
 | S1-T04 | 1 | PBI-01 | Pemeriksaan teks digital vs hasil scan per halaman | Done | Laporan ekstraksi: 29 dari 29 halaman hasil scan, semua dibaca dengan OCR |
 | S1-T05 | 2 | PBI-01 | Fitur pembaca PDF + OCR | Done | Pembaca PDF berjalan pada ke-29 halaman, pengujian otomatis lulus |
 | S1-T06 | 2 | PBI-01 | OCR bahasa Indonesia + pengaturan lokasi Tesseract | Done | OCR memakai bahasa Indonesia dan Inggris, lokasi Tesseract diatur lewat konfigurasi, pengujian lulus |
 | S1-T07 | 3 | PBI-01 | Perapian teks tanpa mengubah makna | Done | Perapian spasi, baris terputus, dan judul, pengujian lulus |
 | S1-T08 | 2 | PBI-01 | Skrip pemeriksa PDF + laporan ekstraksi | Done | Laporan ekstraksi Buku Pedoman PKL 2025 (lihat rincian teknis) |
-| S1-T09 | 3 | PBI-01 | Pengecekan hasil OCR 29 halaman | In Progress | [Lembar pemeriksaan OCR](pemeriksaan_ocr.md): hal. 4–16 sudah diperiksa dan dikoreksi, menunggu verifikasi Developer |
-| S1-T10 | 4, 5 | PBI-02 | Penyaringan isi + persetujuan PO | In Progress | [Usulan penyaringan](usulan_penyaringan.md) siap dibahas dengan PO |
+| S1-T09 | 3 | PBI-01 | Pengecekan hasil OCR | Done | [Lembar pemeriksaan OCR](pemeriksaan_ocr.md): halaman 4–16 diperiksa, dikoreksi, dan diverifikasi Developer. Halaman 22–25 dan 27–28 yang ditambahkan PO diperiksa pada Sprint 2 (S2-T10) |
+| S1-T10 | 4, 5 | PBI-02 | Penyaringan isi + persetujuan PO | Done | Keputusan PO: halaman 4–16, 22–25, 27–28 ([usulan penyaringan](usulan_penyaringan.md)) |
 | S1-T11 | Tambahan (spec §12) | PBI-02 | Daftar topik pertanyaan mahasiswa | Done | [Daftar topik pertanyaan](topik_pertanyaan.md): 30 topik dengan contoh pertanyaan, 5 pertanyaan PKL di luar buku panduan, 3 pertanyaan non-PKL. Validasi PO bersama dataset di Sprint 5 |
 | S1-T12 | Tambahan | — | Membuat skrip ekspor dokumen Scrum ke Word dan PDF sesuai template laporan (ditambahkan selama sprint atas permintaan Developer) | Done | Dokumen Sprint 1, Product Backlog, dan laporan fase Setup berhasil diekspor ke Word dan PDF |
 
@@ -123,3 +123,13 @@ Keterangan: **Setup** = pekerjaan yang sudah tuntas pada fase Setup. **Tambahan*
 
 **Dikerjakan**
 - Menyusun draf Lembar Validasi Bagian B ([Sprint Review](sprint_review.md)) dan Bagian C ([Sprint Retrospective](sprint_retrospective.md)) untuk pertemuan 29 Oktober 2026. Status pencapaian Sprint Goal, keputusan, dan tanda tangan diisi saat pertemuan.
+
+### 29 Oktober 2026
+
+**Dikerjakan**
+- *Sprint Review* Sprint 1 bersama *Product Owner*: Increment diterima dan *Sprint Goal* dinyatakan tercapai.
+- *Product Owner* menetapkan halaman knowledge base: 4–16, 22–25, dan 27–28.
+- *Sprint Retrospective* Sprint 1 bersama Scrum Master: checklist akhir sprint dikonfirmasi.
+
+**Berikutnya**
+- Pemeriksaan OCR halaman 22–25 dan 27–28 dilanjutkan pada Sprint 2.

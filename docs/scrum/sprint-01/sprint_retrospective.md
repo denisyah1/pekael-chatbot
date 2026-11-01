@@ -51,11 +51,11 @@ Tidak ada, Sprint 1 adalah sprint pertama.
 
 | Butir | Status |
 |---|---|
-| *Sprint Planning* terlaksana dan divalidasi *Product Owner* | ☐ |
-| Logbook diisi setiap hari kerja aktif | ☐ |
-| *Sprint Review* terlaksana dan Increment divalidasi *Product Owner* | ☐ |
-| *Sprint Retrospective* terlaksana | ☐ |
-| Product Backlog diperbarui | ☐ |
+| *Sprint Planning* terlaksana dan divalidasi *Product Owner* | ☑ |
+| Logbook diisi setiap hari kerja aktif | ☑ |
+| *Sprint Review* terlaksana dan Increment divalidasi *Product Owner* | ☑ |
+| *Sprint Retrospective* terlaksana | ☑ |
+| Product Backlog diperbarui | ☑ |
 
 ## Konfirmasi Scrum Master
 

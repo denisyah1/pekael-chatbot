@@ -72,8 +72,8 @@ Semua angka dan ketentuan penting terbaca benar oleh OCR: masa PKL minimal 4 bul
 
 | Halaman | Alasan |
 |---|---|
-| 1–3, 17–26, 29 | Diusulkan dikecualikan dari knowledge base (lihat [Usulan Penyaringan](usulan_penyaringan.md)). Diperiksa hanya bila Product Owner memutuskan halaman tersebut dipakai. |
-| 27–28 | Lampiran instrumen penilaian (tabel), menunggu keputusan Product Owner. Bila dipakai, tabel harus ditulis ulang manual seperti halaman 16. |
+| 1–3, 17–21, 26, 29 | Tidak dipakai dalam knowledge base (keputusan *Product Owner*, 29 Oktober 2026) |
+| 22–25, 27–28 | Ditetapkan masuk knowledge base pada *Sprint Review* Sprint 1. Diperiksa pada Sprint 2 (S2-T10). Tabel halaman 27–28 ditulis ulang manual seperti halaman 16 |
 
 ## Pernyataan verifikasi
 

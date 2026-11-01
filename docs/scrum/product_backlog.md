@@ -1,14 +1,14 @@
 # Product Backlog — Pekael
 
 > Sumber: proposal skripsi (Tabel Product Backlog) dan `project_spec.md` §13.
-> Product Owner: Bambang Satrio, S. Pd., M. Kom. · Terakhir diperbarui: 2026-10-30
+> Product Owner: Bambang Satrio, S. Pd., M. Kom. · Terakhir diperbarui: 2026-11-01
 
 ## Item Product Backlog (dari proposal)
 
 | ID | Item | Prioritas | Sprint | Kriteria penerimaan | Status |
 |---|---|---|---|---|---|
 | PBI-01 | Ekstraksi teks dari buku panduan PKL hasil scan melalui OCR | Tinggi | 1 | Teks per halaman tersedia dengan metadata halaman dan metode ekstraksi, OCR hanya untuk halaman tanpa teks digital, sampel angka/tanggal/tabel sudah diperiksa terhadap sumber asli | Dikerjakan |
-| PBI-02 | Penyaringan dan pengerucutan konten sesuai lingkup PTIK | Tinggi | 1 | Knowledge base terpilih dan disetujui PO secara tertulis | Dikerjakan |
+| PBI-02 | Penyaringan dan pengerucutan konten sesuai lingkup PTIK | Tinggi | 1 | Knowledge base terpilih dan disetujui PO secara tertulis | Diterima PO |
 | PBI-03 | Text splitting dan embedding menjadi representasi vektor | Tinggi | 2 | Chunk mempertahankan metadata source/page, dimensi vektor konsisten, eksperimen parameter tercatat | Dikerjakan |
 | PBI-04 | Penyimpanan embedding pada FAISS | Tinggi | 3 | Indeks `IndexFlatL2` dapat dibuat, disimpan, dan dimuat ulang pada proses baru | Belum dimulai |
 | PBI-05 | Retrieval chain menghubungkan FAISS dan Gemini API | Tinggi | 3 | Pipeline CLI menghasilkan jawaban beserta sumber, fallback berjalan untuk pertanyaan di luar cakupan | Belum dimulai |
@@ -36,6 +36,7 @@ Nilai status: `Belum dimulai` · `Dikerjakan` · `Selesai (menunggu review)` · 
 
 | Tanggal | Perubahan | Alasan | Disetujui oleh |
 |---|---|---|---|
-| 2026-10-23 | Product Backlog awal disusun dari proposal | Awal proyek | _[menunggu PO]_ |
+| 2026-10-23 | Product Backlog awal disusun dari proposal | Awal proyek | PO |
 | 2026-10-23 | PBI-01 dan PBI-02 direncanakan untuk Sprint 1 (23–29 Okt 2026). Pemeriksaan awal: Buku Pedoman PKL 2025 berisi 29 halaman, seluruhnya hasil scan | Sprint 1 Planning | PO (validasi planning Sprint 1, tanda tangan fisik menyusul) |
-| 2026-10-30 | PBI-03 dimulai pada Sprint 2 (30 Okt – 5 Nov 2026). Penyelesaian PBI-02 (keputusan penyaringan) dibawa ke Sprint 2 | Sprint 2 Planning | _[menunggu PO]_ |
+| 2026-10-30 | PBI-03 dimulai pada Sprint 2 (30 Okt – 5 Nov 2026). Penyelesaian PBI-02 (keputusan penyaringan) dibawa ke Sprint 2 | Sprint 2 Planning | PO |
+| 2026-10-29 | Sprint 1 diterima PO. PBI-02 selesai: knowledge base memakai halaman 4–16, 22–25, 27–28. Halaman 22–25 (sistematika laporan) dan 27–28 (instrumen penilaian) menambah ruang lingkup proposal. PBI-01 berlanjut di Sprint 2 untuk pemeriksaan OCR halaman tambahan | Sprint 1 Review | PO |

@@ -17,7 +17,7 @@ Lembar ini memuat hasil *Sprint Review* Sprint 1, yaitu Increment yang dihasilka
 
 Menyiapkan teks buku panduan PKL yang telah diekstraksi dan diverifikasi, serta knowledge base yang telah disaring sesuai lingkup Prodi PTIK, sebagai dasar tahap text splitting dan embedding pada Sprint 2.
 
-Status pencapaian: ☐ Tercapai ☐ Tercapai sebagian ☐ Tidak tercapai
+Status pencapaian: ☑ Tercapai ☐ Tercapai sebagian ☐ Tidak tercapai
 
 ## Increment yang dihasilkan
 
@@ -39,15 +39,15 @@ Status pencapaian: ☐ Tercapai ☐ Tercapai sebagian ☐ Tidak tercapai
 
 | Pekerjaan | Alasan | Tindak lanjut |
 |---|---|---|
-| Verifikasi akhir koreksi OCR oleh peneliti | Menunggu pemeriksaan ulang terhadap buku asli | Diselesaikan sebelum Sprint 2 berjalan |
-| Keputusan penyaringan dan bentuk hasilnya (PDF baru atau daftar halaman) | Memerlukan keputusan *Product Owner* | Diputuskan pada *Sprint Review* ini |
-| Lampiran penilaian halaman 27–28 | Menunggu keputusan dipakai atau tidak. Jika dipakai, tabel perlu ditulis ulang manual | Dikerjakan di awal Sprint 2 bila dipakai |
+| Verifikasi akhir koreksi OCR halaman 4–16 oleh peneliti | Selesai: koreksi dinyatakan akurat | — |
+| Keputusan penyaringan | Selesai: *Product Owner* menetapkan halaman 4–16, 22–25, dan 27–28 | — |
+| Pemeriksaan OCR halaman 22–25 dan 27–28 | Halaman baru ditetapkan masuk knowledge base pada *Sprint Review* ini. Halaman 27–28 berupa tabel sehingga perlu ditulis ulang manual | Dikerjakan pada Sprint 2 (S2-T10) |
 
 ## Masukan *Product Owner*
 
-........................................................................................................................
-
-........................................................................................................................
+- Knowledge base memakai halaman **4–16, 22–25, dan 27–28** Buku Pedoman PKL 2025.
+- Halaman 22–25 (sistematika laporan PKL, termasuk daftar dokumen lampiran) dan 27–28 (instrumen penilaian) dinilai penting bagi mahasiswa sehingga ikut dipakai. Ini merupakan perubahan ruang lingkup terhadap proposal yang telah disetujui *Product Owner*.
+- Halaman 1–3, 17–21, 26, dan 29 tidak dipakai.
 
 ## Perubahan Product Backlog
 
@@ -56,12 +56,13 @@ Status pencapaian: ☐ Tercapai ☐ Tercapai sebagian ☐ Tidak tercapai
 | Menambahkan pekerjaan pemilihan halaman knowledge base ke awal Sprint 2 | Hanya halaman yang disetujui *Product Owner* yang boleh dipakai chatbot |
 | Menambahkan keterangan bagian (judul bab/subbab) pada setiap potongan teks di Sprint 2 | Memperjelas rujukan sumber pada jawaban chatbot |
 | Rujukan sumber memakai istilah "halaman PDF" | Buku panduan tidak mencetak nomor halaman |
+| Ruang lingkup knowledge base diperluas dengan halaman 22–25 dan 27–28 | Keputusan *Product Owner* pada *Sprint Review* Sprint 1 |
 
 ## Pernyataan validasi
 
 Berdasarkan pemeriksaan terhadap Increment Sprint 1 pada lembar ini, *Product Owner* menyatakan Increment tersebut:
 
-☐ Diterima
+☑ Diterima
 ☐ Diterima dengan catatan: ........................................................................
 ☐ Belum diterima, pekerjaan dikembalikan ke Product Backlog
 

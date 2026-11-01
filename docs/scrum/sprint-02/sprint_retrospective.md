@@ -22,7 +22,7 @@ Lembar ini memuat hasil *Sprint Retrospective* Sprint 2, yaitu evaluasi cara ker
 
 ## Yang perlu diperbaiki
 
-- Pertemuan dengan *Product Owner* belum terlaksana, baik untuk *Sprint Review* Sprint 1 maupun keputusan penyaringan Sprint 2. Keputusan ruang lingkup tertunda selama dua sprint.
+- Keputusan penyaringan halaman baru diperoleh di tengah Sprint 2, sehingga pemeriksaan OCR halaman tambahan menjadi pekerjaan baru di tengah sprint.
 - Label halaman pada daftar topik pertanyaan ternyata belum lengkap (satu pertanyaan). Label perlu diperiksa lebih teliti sebelum dipakai untuk dataset evaluasi Sprint 5.
 - Usulan penambahan halaman 22–25 muncul di tengah sprint. Usulan perubahan ruang lingkup sebaiknya diajukan saat *Sprint Planning* atau *Sprint Review*.
 
@@ -30,7 +30,7 @@ Lembar ini memuat hasil *Sprint Retrospective* Sprint 2, yaitu evaluasi cara ker
 
 | Hambatan | Penyebab | Dampak pada sprint |
 |---|---|---|
-| Keputusan penyaringan halaman belum diperoleh | Jadwal pertemuan dengan *Product Owner* belum ditetapkan | Knowledge base masih memakai usulan halaman 4–16 |
+| Keputusan penyaringan halaman baru diperoleh 29 Oktober 2026 | Jadwal pertemuan dengan *Product Owner* | Halaman 22–25 dan 27–28 perlu diperiksa OCR-nya di tengah sprint |
 | Layanan Gemini sempat menolak permintaan | Server sibuk atau kuota sementara penuh | Percobaan tertunda sekitar satu menit, lalu berlanjut otomatis |
 | Pertanyaan PKL yang tidak dijawab buku sulit dibedakan dari pertanyaan yang dapat dijawab | Kemiripan topik sangat tinggi | Perlu penanganan tambahan pada Sprint 3 melalui instruksi kepada Gemini |
 
@@ -47,7 +47,7 @@ Lembar ini memuat hasil *Sprint Retrospective* Sprint 2, yaitu evaluasi cara ker
 | Tindakan | Terlaksana | Catatan |
 |---|---|---|
 | Menulis waktu rencana pengerjaan dalam bentuk tanggal | ☑ | Rencana pengerjaan Sprint 2 memakai tanggal |
-| Menjadwalkan validasi *Product Owner* di pertengahan sprint | ☐ | Belum terlaksana, pertemuan belum dijadwalkan |
+| Menjadwalkan validasi *Product Owner* di pertengahan sprint | ☑ | Keputusan penyaringan diperoleh 29 Oktober 2026 |
 | Memakai templat dokumen sprint yang disepakati sejak awal sprint | ☑ | Seluruh dokumen Sprint 2 memakai format Lembar Validasi Sprint Report |
 | Menjalankan pemeriksa API key sebelum setiap penyimpanan perubahan | ☑ | Pemeriksa otomatis aktif pada repository |
 

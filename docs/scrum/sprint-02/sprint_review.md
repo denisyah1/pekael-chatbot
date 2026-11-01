@@ -39,8 +39,8 @@ Status pencapaian: ☐ Tercapai ☐ Tercapai sebagian ☐ Tidak tercapai
 
 | Pekerjaan | Alasan | Tindak lanjut |
 |---|---|---|
-| Keputusan *Product Owner* atas halaman knowledge base dan bentuk hasil penyaringan (S2-T02) | Pertemuan dengan *Product Owner* belum terlaksana | Diputuskan pada *Sprint Review* ini |
-| Usulan Developer menambahkan halaman 22–25 (sistematika laporan PKL) | Termasuk perubahan ruang lingkup proposal, perlu persetujuan *Product Owner* | Diputuskan pada *Sprint Review* ini. Bila disetujui, hasil OCR halaman tersebut diperiksa pada awal Sprint 3 |
+| Keputusan *Product Owner* atas halaman knowledge base (S2-T02) | Selesai pada 29 Oktober 2026: halaman 4–16, 22–25, 27–28 | — |
+| Pemeriksaan OCR halaman 22–25 dan 27–28 (S2-T10) | Halaman baru ditetapkan di tengah sprint | _[diisi sesuai hasil pada 5 November 2026]_ |
 
 ## Masukan *Product Owner*
 
@@ -54,7 +54,7 @@ Status pencapaian: ☐ Tercapai ☐ Tercapai sebagian ☐ Tidak tercapai
 |---|---|
 | Menambahkan instruksi kepada Gemini untuk menyatakan "informasi tidak ditemukan" pada Sprint 3 | Percobaan menunjukkan pertanyaan PKL yang jawabannya tidak ada di buku (misalnya jadwal pendaftaran) tidak dapat ditolak hanya dengan pencarian |
 | Memakai hasil jarak pencarian dari percobaan sebagai titik awal kalibrasi batas relevansi pada Sprint 3 | Pertanyaan di luar topik PKL sudah terlihat jauh berbeda dari pertanyaan PKL |
-| Keputusan ruang lingkup halaman 22–25 dicatat sebagai perubahan Product Backlog bila disetujui | Menjaga batasan penelitian tetap tertelusur |
+| Ruang lingkup knowledge base diperluas dengan halaman 22–25 dan 27–28 (disetujui 29 Oktober 2026) | Keputusan *Product Owner* |
 
 ## Pernyataan validasi
 

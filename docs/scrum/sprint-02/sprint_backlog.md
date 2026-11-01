@@ -12,7 +12,7 @@ Sprint Planning memuat enam tugas (lihat [Sprint Planning](sprint_planning.md) b
 | ID | Tugas | PBI | Pekerjaan | Status | Bukti |
 |---|---|---|---|---|---|
 | S2-T01 | 1 | PBI-01 | Verifikasi akhir koreksi OCR halaman 4–16 oleh Developer (bawaan Sprint 1) | Done | Developer membandingkan koreksi dengan buku asli dan menyatakannya akurat, tanpa perubahan |
-| S2-T02 | 1 | PBI-02 | Keputusan *Product Owner* atas halaman yang dipakai dan bentuk hasil penyaringan (bawaan Sprint 1) | To Do | Keputusan PO pada usulan penyaringan |
+| S2-T02 | 1 | PBI-02 | Keputusan *Product Owner* atas halaman yang dipakai dan bentuk hasil penyaringan (bawaan Sprint 1) | Done | Keputusan PO (29 Oktober 2026): halaman 4–16, 22–25, 27–28 melalui pengaturan |
 | S2-T03 | 2 | PBI-02 | Pemilihan halaman knowledge base lewat pengaturan | Done | Halaman dapat dipilih tanpa mengubah kode, pengujian lulus. Nilai final menunggu S2-T02 |
 | S2-T04 | 3 | PBI-03 | Pemotongan teks dengan keterangan sumber, halaman, bagian, dan nomor unik | Done | 26 potongan dari halaman 4–16 dengan label bagian yang tepat, pengujian lulus |
 | S2-T05 | 3 | PBI-03 | Skrip laporan potongan untuk beberapa ukuran sekaligus | Done | Laporan empat ukuran potongan (lihat rincian teknis) |
@@ -20,6 +20,7 @@ Sprint Planning memuat enam tugas (lihat [Sprint Planning](sprint_planning.md) b
 | S2-T07 | 4 | PBI-03 | Penanganan batas kuota dan batas panjang masukan embedding | Done | Coba ulang otomatis terbukti saat percobaan, teks terlalu panjang ditolak dengan pesan jelas |
 | S2-T08 | 5 | PBI-03 | Percobaan ukuran potongan dan tumpang tindih dengan contoh pertanyaan (EXP-002) | Done | Catatan percobaan EXP-002, parameter awal 1.000/150 dipertahankan |
 | S2-T09 | 6 | PBI-03 | Statistik potongan dan pemeriksaan konsistensi ukuran vektor | Done | Statistik empat ukuran potongan, semua vektor berukuran 768 |
+| S2-T10 | 1 | PBI-01 | Pemeriksaan dan koreksi OCR halaman 22–25 dan 27–28 yang ditambahkan *Product Owner*, termasuk penulisan ulang tabel halaman 27–28 (ditambahkan selama sprint) | To Do | |
 
 ## Log Pengerjaan
 
@@ -88,3 +89,16 @@ Sprint Planning memuat enam tugas (lihat [Sprint Planning](sprint_planning.md) b
 
 **Berikutnya**
 - Pertemuan dengan *Product Owner* pada 5 November 2026: *Sprint Review* Sprint 1 dan Sprint 2, keputusan penyaringan halaman (S2-T02), termasuk usulan halaman 22–25.
+
+### 1 November 2026
+
+**Dikerjakan**
+- Mencatat hasil *Sprint Review* dan *Sprint Retrospective* Sprint 1 (29 Oktober 2026): Sprint 1 dinyatakan selesai dan Increment diterima *Product Owner*.
+- Mencatat keputusan *Product Owner* atas halaman knowledge base: 4–16, 22–25, dan 27–28 (S2-T02 selesai). Halaman 22–25 dan 27–28 memperluas ruang lingkup proposal dan telah disetujui.
+- Menambahkan pekerjaan baru S2-T10: pemeriksaan OCR untuk halaman yang baru ditambahkan, karena hasil OCR halaman tersebut belum pernah diperiksa.
+
+**Hasil uji**
+- Tidak ada perubahan program.
+
+**Berikutnya**
+- Memeriksa dan mengoreksi OCR halaman 22–25 dan 27–28 (S2-T10), lalu menjalankan ulang laporan potongan dengan halaman final.
