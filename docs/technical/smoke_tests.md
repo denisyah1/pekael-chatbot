@@ -65,3 +65,13 @@ Perintah: `.venv\Scripts\python.exe scripts\smoke_test_ragas.py` (1 sampel fikti
 | 2026-10-30 | `GeminiEmbeddings.embed_documents` + `embed_query` | Lulus | dimensi 768, norma 1,0000, 1,19 s |
 | 2026-10-30 | Masukan 9.000 karakter | Diterima | 0,52 s |
 | 2026-10-30 | Masukan 40.000 karakter | Diterima tanpa galat | Indikasi pemotongan diam-diam oleh layanan, wrapper kini menolak > 8.000 karakter |
+
+## 5. Prompt jawaban Gemini (Sprint 3)
+
+| Tanggal | Uji | Hasil | Catatan |
+|---|---|---|---|
+| 2026-11-07 | Pertanyaan dengan jawaban di konteks | Lulus | Jawaban sesuai buku, rujukan hal. 10, 3,80 s |
+| 2026-11-07 | Pertanyaan PKL tanpa jawaban di buku | Lulus | `TIDAK_DITEMUKAN`, 9,75 s |
+| 2026-11-07 | Pertanyaan yang butuh dua bagian buku | Lulus | Rujukan hal. 16 dan 11, 9,61 s |
+| 2026-11-07 | `thinking_budget=0` | Ditolak model | `400 INVALID_ARGUMENT` |
+

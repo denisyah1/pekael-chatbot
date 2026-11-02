@@ -96,6 +96,23 @@ def test_chapter_heading_starts_a_new_section():
     assert chunks[1].metadata["section"] == "BAB III SISTEM PENILAIAN"
 
 
+def test_section_is_not_carried_across_skipped_pages():
+    pages = [_page(16, "B. Nilai Akhir\n\nTabel nilai."), _page(22, "aturan penulisan pustaka.\n\nC. SISTEMATIKA LAPORAN PKL\n\n1. Bagian Pendahuluan")]
+
+    chunks = RecursiveCharacterSplitter(30, 0).split(pages)
+
+    assert next(c for c in chunks if "aturan penulisan" in c.page_content).metadata["section"] == ""
+    assert next(c for c in chunks if "Bagian Pendahuluan" in c.page_content).metadata["section"] == "C. SISTEMATIKA LAPORAN PKL"
+
+
+def test_appendix_heading_starts_a_section_that_continues_on_the_next_page():
+    pages = [_page(27, "LAMPIRAN INSTRUMEN PENILAIAN PKL\n\nN1 Sikap"), _page(28, "N3 Seminar dan atau Laporan")]
+
+    chunks = RecursiveCharacterSplitter(1000, 0).split(pages)
+
+    assert [c.metadata["section"] for c in chunks] == ["LAMPIRAN INSTRUMEN PENILAIAN PKL"] * 2
+
+
 def test_list_items_are_not_mistaken_for_headings():
     chunks = RecursiveCharacterSplitter(1000, 0).split([_page(8, "a. Menjalin kerja sama dengan instansi.\nb. Membina program PKL.")])
 

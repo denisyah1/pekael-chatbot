@@ -80,6 +80,13 @@ def test_read_config_without_env_file(tmp_path, monkeypatch):
     assert config.missing_runtime_settings() == ["GEMINI_API_KEY"]
 
 
+def test_reasoning_effort_is_optional_and_validated():
+    assert AppConfig.from_env({}).gemini_reasoning_effort is None
+    assert AppConfig.from_env({"GEMINI_REASONING_EFFORT": "low"}).gemini_reasoning_effort == "low"
+    with pytest.raises(ConfigError, match="GEMINI_REASONING_EFFORT"):
+        AppConfig.from_env({"GEMINI_REASONING_EFFORT": "turbo"})
+
+
 def test_knowledge_base_pages_are_validated():
     assert AppConfig.from_env({"KNOWLEDGE_BASE_PAGES": "4-16"}).knowledge_base_pages == "4-16"
     with pytest.raises(ConfigError, match="KNOWLEDGE_BASE_PAGES"):

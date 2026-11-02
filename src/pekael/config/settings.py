@@ -3,6 +3,7 @@
 import logging
 from collections.abc import Mapping
 from pathlib import Path
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, SecretStr, ValidationError, field_validator, model_validator
 
@@ -26,6 +27,8 @@ class AppConfig(BaseModel):
     # Gemini runtime
     gemini_api_key: SecretStr | None = None
     gemini_chat_model: str = "gemini-3.5-flash-lite"
+    # Gemini thinking level: minimal, low, medium, high (empty = model default, EXP-003)
+    gemini_reasoning_effort: Literal["minimal", "low", "medium", "high"] | None = None
     gemini_embedding_model: str = "gemini-embedding-001"
     embedding_output_dimension: int = Field(default=768, gt=0)
 

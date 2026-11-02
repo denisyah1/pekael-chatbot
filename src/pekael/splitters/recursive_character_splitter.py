@@ -10,15 +10,18 @@ from pekael.splitters.base import BaseSplitter
 # Prefer paragraph, line, then sentence boundaries before cutting inside a sentence.
 SEPARATORS = ["\n\n", "\n", ". ", " ", ""]
 
-# Headings in the handbook: chapters ("BAB III" followed by its title line) and
-# sub-chapters ("G. Persyaratan Peserta PKL": capital letter, no closing period).
+# Headings in the handbook: chapters ("BAB III" followed by its title line), appendices
+# ("LAMPIRAN INSTRUMEN PENILAIAN PKL") and sub-chapters ("G. Persyaratan Peserta PKL":
+# capital letter, no closing period).
 CHAPTER_HEADING = re.compile(r"^BAB [IVXL]+\n[A-Z][A-Z /&,()-]{3,80}$", re.MULTILINE)
+APPENDIX_HEADING = re.compile(r"^LAMPIRAN [A-Z][A-Z /&,()-]{3,80}$", re.MULTILINE)
 SECTION_HEADING = re.compile(r"^[A-Z]\.\s+[A-Z][^.\n]{2,80}$", re.MULTILINE)
 SECTION_SEPARATOR = " / "
 
 
 def _headings(text: str) -> list[tuple[int, str]]:
     found = [(m.start(), " ".join(m.group(0).split())) for m in CHAPTER_HEADING.finditer(text)]
+    found += [(m.start(), m.group(0).strip()) for m in APPENDIX_HEADING.finditer(text)]
     found += [(m.start(), m.group(0).strip()) for m in SECTION_HEADING.finditer(text)]
     return sorted(found)
 
@@ -48,12 +51,16 @@ class RecursiveCharacterSplitter(BaseSplitter):
         """
         chunks: list[Document] = []
         section = ""  # carried over when a page starts in the middle of a sub-chapter
+        previous_page = None
         for document in documents:
             if not document.page_content.strip():
                 continue
             headings = _headings(document.page_content)
             source_hash = document.metadata.get("source_hash", "")
             page = document.metadata.get("page", 0)
+            if previous_page is not None and page != previous_page + 1:
+                section = ""  # skipped pages: the previous section does not continue here
+            previous_page = page
             for index, chunk in enumerate(self._splitter.split_documents([document]), start=1):
                 start = chunk.metadata.pop("start_index")
                 end = start + len(chunk.page_content)

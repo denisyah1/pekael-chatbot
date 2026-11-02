@@ -60,3 +60,24 @@ Catatan eksperimen yang memengaruhi hasil Ragas/UAT (NFR-06): chunking, dimensi 
 Catatan analisis:
 - Satu-satunya pertanyaan yang tidak ditemukan di semua varian (no. 2, dasar hukum PKL) mengambil halaman 13, yang memang menyebut Permendikbud No. 3 Tahun 2020. Label halaman pada daftar topik kurang lengkap dan diperbaiki menjadi 4–5, 13 setelah percobaan. Hasil di atas tetap dilaporkan sesuai label saat percobaan dijalankan.
 - Jarak potongan teratas (1000:150, dinormalisasi): pertanyaan non-PKL N1–N3 0,683–0,741, pertanyaan PKL yang tidak dijawab buku L1–L5 0,497–0,615, pertanyaan dalam cakupan maksimum 0,604 (no. 28, tabel nilai). Ambang jarak dapat memisahkan pertanyaan non-PKL, tetapi tidak cukup untuk pertanyaan PKL yang informasinya tidak ada di buku. Bahan kalibrasi ambang (OD-04) dan kebijakan prompt pada Sprint 3.
+
+### EXP-003 — Tingkat "berpikir" Gemini dan waktu jawab
+
+| | |
+|---|---|
+| Tanggal | 2026-11-07 |
+| Sprint | 3 |
+| Tujuan | Melihat apakah mengurangi tingkat berpikir model mempercepat jawaban tanpa menurunkan ketepatan (terkait butir UAT "jawaban kurang dari 5 detik") |
+| Konfigurasi | `gemini-3.5-flash-lite`, `temperature=0`, `SYSTEM_PROMPT` D-30, 4 potongan konteks per pertanyaan (diambil manual dari `chunks_1000_150.jsonl`) |
+| Data uji | 3 pertanyaan: syarat SKS (jawaban ada), batas pendaftaran (jawaban tidak ada), nilai 74 (butuh dua bagian) |
+| Prosedur | Setiap pertanyaan dikirim satu kali per pengaturan: bawaan, `reasoning_effort="minimal"`, `"low"`. `thinking_budget=0` juga dicoba |
+| Hasil | Lihat tabel. `thinking_budget=0` ditolak (`400 INVALID_ARGUMENT`) |
+| Kesimpulan | Ketiga pengaturan memberi jawaban yang benar. Waktu jawab bervariasi lebar (1,4–9,8 s) tanpa pola yang konsisten, sehingga tidak ada bukti bahwa pengaturan berpikir mempercepat jawaban. Pengaturan bawaan dipertahankan, `GEMINI_REASONING_EFFORT` disediakan untuk penyetelan. Satu pengukuran per sel belum cukup: waktu jawab diukur ulang dengan sampel lebih besar pada pipeline lengkap (Sprint 5) |
+| Keputusan terkait | D-32 |
+
+| Pengaturan | Syarat SKS | Batas pendaftaran | Nilai 74 |
+|---|---|---|---|
+| Bawaan | 3,80 s, benar | 9,75 s, ditolak | 9,61 s, benar |
+| `minimal` | 6,58 s, benar | 7,04 s, ditolak | 1,38 s, benar |
+| `low` | 5,94 s, benar | 7,52 s, ditolak | 7,01 s, benar |
+
