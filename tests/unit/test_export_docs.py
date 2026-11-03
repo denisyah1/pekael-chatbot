@@ -49,6 +49,14 @@ def test_label_value_and_signature_tables_have_no_borders(table):
     assert '<w:top w:val="nil"/>' in export_docs._format_tables(table)
 
 
+@pytest.mark.parametrize("header", [False, True])
+def test_signature_rows_are_not_split_across_pages(header):
+    result = export_docs._format_tables(_table("Bambang Satrio NIP", header=header))
+
+    assert result.count("<w:cantSplit/>") == 1
+    assert "<w:cantSplit/>" not in export_docs._format_tables(_table("Periode", header=False))
+
+
 def test_personal_values_default_to_blank(monkeypatch, tmp_path):
     monkeypatch.setattr(export_docs, "ROOT", tmp_path)
     for name in export_docs.PERSONAL_PLACEHOLDERS:

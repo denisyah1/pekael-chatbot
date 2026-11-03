@@ -58,6 +58,11 @@ SPRINT_DOCUMENTS = {
         "Lampiran: Lembar Pemeriksaan Hasil OCR",
         "Sprint Report {n}: Pemeriksaan OCR",
     ),
+    "pemeriksaan_jawaban": (
+        "SPRINT REPORT {n}",
+        "Lampiran: Lembar Pemeriksaan Contoh Jawaban",
+        "Sprint Report {n}: Pemeriksaan Jawaban",
+    ),
     "topik_pertanyaan": (
         "SPRINT REPORT {n}",
         "Lampiran: Daftar Topik Pertanyaan Mahasiswa",
@@ -285,11 +290,17 @@ def export_document(md_path: Path, pandoc: str, personal: dict[str, str]) -> Pat
 
 
 def _format_tables(document: str) -> str:
-    """Stretch tables to the text width. Signature tables and label/value tables (no header row) get no borders."""
+    """Stretch tables to the text width. Signature tables and label/value tables (no header row) get no borders.
+
+    Rows of tables holding a NIM/NIP (signature blocks) are not split across pages.
+    """
 
     def fix(match: re.Match) -> str:
         table = re.sub(r'<w:tblW [^>]*/>', '<w:tblW w:type="pct" w:w="5000"/>', match.group(0), count=1)
         text = "".join(re.findall(r"<w:t[^>]*>([^<]*)</w:t>", table))
+        if "NIM" in text or "NIP" in text:
+            table = re.sub(r"<w:tr>(?!<w:trPr>)", "<w:tr><w:trPr></w:trPr>", table)
+            table = table.replace("<w:trPr>", "<w:trPr><w:cantSplit/>")
         is_signature = "Product Owner" in text and "Developer" in text and ("NIM" in text or "NIP" in text)
         if is_signature or "<w:tblHeader" not in table:
             no_borders = "<w:tblBorders>" + "".join(

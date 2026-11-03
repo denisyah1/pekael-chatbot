@@ -75,3 +75,22 @@ Perintah: `.venv\Scripts\python.exe scripts\smoke_test_ragas.py` (1 sampel fikti
 | 2026-11-07 | Pertanyaan yang butuh dua bagian buku | Lulus | Rujukan hal. 16 dan 11, 9,61 s |
 | 2026-11-07 | `thinking_budget=0` | Ditolak model | `400 INVALID_ARGUMENT` |
 
+## 6. Alur tanya-jawab lengkap dari terminal (Sprint 3)
+
+Perintah: `scriptsuild_knowledge_base.py`, lalu `scriptssk.py "<pertanyaan>"`. Indeks `20261102T180419398924-565a9929` (19 halaman, 33 potongan, 10,4 s).
+
+| Tanggal | Uji | Hasil | Catatan |
+|---|---|---|---|
+| 2026-11-08 | Membangun knowledge base | Lulus | 33 potongan, 768 dimensi, satu panggilan embedding |
+| 2026-11-08 | Syarat SKS (langsung dan parafrasa "90 SKS") | Lulus | Rujukan hal. 10, 2,33 s dan 1,32 s |
+| 2026-11-08 | Nilai 74 (dua bagian buku) | Lulus | Rujukan hal. 16 dan 11 |
+| 2026-11-08 | Bobot N2 (halaman tambahan) | Lulus | "40%", rujukan hal. 28 |
+| 2026-11-08 | Dokumen lampiran laporan | Lulus | 8 dokumen a–h, rujukan hal. 24 |
+| 2026-11-08 | Batas pendaftaran (tidak ada di buku) | Lulus | Ditolak oleh prompt |
+| 2026-11-08 | Non-PKL (nasi goreng, machine learning) | Lulus | Ditolak ambang 0,64 tanpa memanggil Gemini, 0,75 s |
+| 2026-11-08 | Folder indeks kosong | Lulus | Status `unavailable`, "Knowledge base Pekael belum disiapkan" |
+| 2026-11-08 | API key tidak valid | Lulus | Status `unavailable`, "belum dikonfigurasi dengan benar", key tidak tercetak |
+| 2026-11-08 | Pertanyaan kosong dan 501 karakter | Lulus | Status `invalid_input`, tanpa panggilan API |
+
+Kuota habis dan timeout tidak dipicu secara langsung, keduanya diuji dengan tiruan di `tests/unit/test_rag_steps.py`.
+

@@ -81,3 +81,25 @@ Catatan analisis:
 | `minimal` | 6,58 s, benar | 7,04 s, ditolak | 1,38 s, benar |
 | `low` | 5,94 s, benar | 7,52 s, ditolak | 7,01 s, benar |
 
+### EXP-004 — Kalibrasi awal batas jarak relevansi
+
+| | |
+|---|---|
+| Tanggal | 2026-11-08 |
+| Sprint | 3 |
+| Tujuan | Menetapkan nilai awal `RETRIEVAL_MAX_L2_DISTANCE` (OD-04) dan memeriksa penolakan pertanyaan di luar cakupan pada alur lengkap |
+| Konfigurasi | Indeks `20261102T180419398924-565a9929` (halaman 4–16, 22–25, 27–28, 33 potongan, 1000:150, 768 dimensi, dinormalisasi), `RETRIEVAL_K=4`, `gemini-3.5-flash-lite`, prompt D-30 + D-35 |
+| Data uji | 30 pertanyaan dalam cakupan dan 8 di luar cakupan dari `topik_pertanyaan.md`, ditambah 6 pertanyaan dalam cakupan untuk halaman 22–28 (E1–E6 di `scripts/run_threshold_experiment.py`). Data pengembangan, bukan dataset Ragas |
+| Prosedur | Aturan ditetapkan sebelum percobaan: ambang = titik tengah antara jarak potongan teratas terbesar pada pertanyaan dalam cakupan dan terkecil pada pertanyaan non-PKL (N1–N3), dibulatkan dua desimal. Pertanyaan L1–L5 tidak diharapkan terpisah oleh jarak (EXP-002), sehingga diperiksa lewat alur lengkap. `run_threshold_experiment.py --generate` menjalankan semua 44 pertanyaan melalui alur lengkap dengan ambang tersebut |
+| Hasil | Hit@4 36/36. Jarak terbesar dalam cakupan 0,604 (no. 28), terkecil non-PKL 0,683 (N1), ambang 0,64. Jarak L1–L5 0,497–0,599, bercampur dengan pertanyaan dalam cakupan. Lihat tabel |
+| Kesimpulan | Ambang 0,64 menolak semua pertanyaan non-PKL tanpa memanggil Gemini dan tidak menolak pertanyaan dalam cakupan. Pertanyaan PKL yang tidak dijawab buku seluruhnya ditolak oleh prompt. Satu *false negative*: no. 22 ("tahapan setelah diterima di tempat PKL") ditolak Gemini walaupun halaman 14 (prosedur pelaksanaan) terambil di peringkat 3. Satu jawaban kurang lengkap: E6 (cara menghitung nilai akhir) tidak memuat rumus 30/40/30 karena halaman 28 tidak masuk 4 besar. Waktu jawab median 1,65 s, 5 dari 36 pertanyaan dalam cakupan di atas 5 s (maks 13,10 s). Jarak non-PKL dan dalam cakupan hanya berselisih 0,08, sehingga ambang diuji ulang dengan pertanyaan baru pada Sprint 5 |
+| Keputusan terkait | D-34, OD-04 |
+
+| Kelompok | Jumlah | Jarak teratas (min–maks) | Ditolak ambang | Hasil alur lengkap | Waktu (median / maks) |
+|---|---|---|---|---|---|
+| Dalam cakupan | 36 | 0,296–0,604 | 0 | 35 dijawab, 1 ditolak (no. 22) | 1,76 / 13,10 s |
+| PKL, tidak ada di buku (L) | 5 | 0,497–0,599 | 0 | 5 ditolak oleh prompt | 1,16 / 2,16 s |
+| Non-PKL (N) | 3 | 0,683–0,741 | 3 | 3 ditolak ambang | 0,50 / 0,51 s |
+
+Jawaban lengkap: [`scrum/sprint-03/pemeriksaan_jawaban.md`](scrum/sprint-03/pemeriksaan_jawaban.md). Data mentah: `data/processed/Pedoman-PKL-2025/exp004.json` (di-ignore git).
+

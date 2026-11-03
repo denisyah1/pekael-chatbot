@@ -16,10 +16,10 @@ Sprint Planning memuat tujuh tugas (lihat [Sprint Planning](sprint_planning.md) 
 | S3-T03 | 2 | PBI-04 | Penyimpanan FAISS: membangun, menyimpan berversi, memuat ulang, dan mempertahankan indeks lama bila pembangunan gagal | Done | Pengujian otomatis 13 skenario lulus |
 | S3-T04 | 3 | PBI-05 | Penghubung model Gemini untuk menyusun jawaban dan penanganan gangguan layanan | Done | Pengujian otomatis lulus, uji langsung ke Gemini berhasil |
 | S3-T05 | 4 | PBI-05 | Instruksi (prompt) untuk Gemini: menjawab hanya dari konteks, menyatakan bila informasi tidak ditemukan | Done | Uji langsung 3 pertanyaan: jawaban tepat, pertanyaan tanpa jawaban di buku ditolak, pertanyaan dua bagian digabung dengan benar |
-| S3-T06 | 4 | PBI-05 | Alur tanya-jawab berurutan beserta pemeriksaan rujukan | To Do | |
-| S3-T07 | 5 | PBI-04, PBI-05 | Perakitan komponen dan perintah terminal untuk membangun knowledge base dan bertanya | To Do | |
-| S3-T08 | 6 | PBI-05 | Kalibrasi awal batas relevansi (EXP-004) | To Do | |
-| S3-T09 | 7 | PBI-05 | Uji kondisi gagal | To Do | |
+| S3-T06 | 4 | PBI-05 | Alur tanya-jawab berurutan beserta pemeriksaan rujukan | Done | Enam langkah berjalan berurutan, pengujian otomatis 26 skenario lulus |
+| S3-T07 | 5 | PBI-04, PBI-05 | Perakitan komponen dan perintah terminal untuk membangun knowledge base dan bertanya | Done | Knowledge base dibangun (33 potongan), tanya-jawab dari terminal berhasil, dapat dimuat ulang setelah dijalankan ulang |
+| S3-T08 | 6 | PBI-05 | Kalibrasi awal batas relevansi (EXP-004) | Done | Batas awal 0,64. [Lembar pemeriksaan jawaban](pemeriksaan_jawaban.md) disiapkan untuk *Product Owner* |
+| S3-T09 | 7 | PBI-05 | Uji kondisi gagal | Done | Knowledge base belum ada, API key salah, kuota habis, layanan sibuk, hasil pencarian kosong, dan jawaban gagal menghasilkan pesan yang aman |
 
 ## Log Pengerjaan
 
@@ -62,3 +62,32 @@ Sprint Planning memuat tujuh tugas (lihat [Sprint Planning](sprint_planning.md) 
 **Berikutnya**
 - Developer memverifikasi koreksi OCR halaman tambahan (S3-T01).
 - Menyusun alur tanya-jawab berurutan dan perakitan komponen (S3-T06, S3-T07).
+
+### 8 November 2026
+
+**Dikerjakan**
+- Menyusun alur tanya-jawab dalam enam langkah berurutan: memeriksa pertanyaan, mencari potongan teks di knowledge base, memeriksa kedekatan potongan dengan pertanyaan, menyusun konteks, meminta jawaban Gemini, lalu memeriksa rujukan. Bila satu langkah tidak dapat dilanjutkan, misalnya pertanyaan kosong atau knowledge base belum ada, Pekael langsung memberi pesan yang jelas tanpa memanggil Gemini.
+- Merakit seluruh komponen menjadi satu chatbot yang dibentuk dari pengaturan, lalu membuat dua perintah terminal: membangun knowledge base dan bertanya ke Pekael.
+- Membangun knowledge base yang sebenarnya untuk pertama kali: 19 halaman, 33 potongan, sekitar 10 detik.
+- Bertanya langsung ke Pekael dari terminal. Karena Gemini kadang membuka jawaban dengan salam, instruksinya ditambah agar langsung ke inti.
+- Menentukan batas awal kedekatan (EXP-004) dengan 44 contoh pertanyaan. Aturan penentuannya ditetapkan sebelum percobaan dijalankan.
+- Menguji kondisi gagal, baik dengan tiruan layanan maupun langsung.
+- Menyiapkan [lembar pemeriksaan contoh jawaban](pemeriksaan_jawaban.md) untuk diperiksa *Product Owner* pada 10 November.
+
+**Hasil uji**
+- Pengujian otomatis: 224 lulus, 0 gagal. Pada percobaan pertama 2 pengujian gagal karena pesan "knowledge base belum disiapkan" tertimpa pesan penolakan. Kesalahan diperbaiki lalu semua lulus.
+- Dari 36 pertanyaan yang jawabannya ada di buku, semuanya menemukan halaman yang tepat, dan 35 dijawab dengan rujukan halaman. Satu pertanyaan (tahapan setelah diterima di tempat PKL) ditolak walaupun jawabannya ada di halaman 14.
+- Kelima pertanyaan PKL yang jawabannya tidak ada di buku ditolak. Ketiga pertanyaan di luar topik PKL ditolak sebelum Gemini dipanggil.
+- Batas awal kedekatan ditetapkan 0,64.
+- Waktu jawab umumnya sekitar 1,7 detik. Lima dari 36 pertanyaan memerlukan lebih dari 5 detik, paling lama 13 detik.
+- Knowledge base yang belum ada, API key yang salah, dan pertanyaan kosong atau terlalu panjang menghasilkan pesan yang jelas tanpa menampilkan rincian teknis.
+
+**Hambatan**
+- Model Gemini yang dipakai mengabaikan pengaturan agar jawaban selalu sama, sehingga jawaban bisa sedikit berbeda setiap kali ditanya. Hal ini dicatat untuk evaluasi.
+- Jawaban tentang cara menghitung nilai akhir belum memuat rumus dari halaman 28 karena halaman tersebut tidak terambil. Bahan perbaikan pada Sprint 5.
+
+**Berikutnya**
+- Developer memverifikasi koreksi OCR halaman tambahan (S3-T01).
+- Pemeriksaan contoh jawaban bersama *Product Owner* (10 November).
+- *Sprint Review* dan *Retrospective* Sprint 3 (12 November).
+

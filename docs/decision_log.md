@@ -38,6 +38,10 @@ Catatan keputusan teknis yang tidak tertulis di `project_spec.md` atau yang meny
 | D-30 | 2026-11-07 | Prompt policy: Gemini menjawab hanya dari konteks bernomor, membalas `TIDAK_DITEMUKAN` bila jawaban tidak ada (aplikasi menggantinya dengan teks fallback spec), dan menulis baris `SUMBER:` berisi nomor konteks. Rujukan dibentuk dari metadata potongan bernomor tersebut | Diterapkan | Spec §4.4, FR-04, FR-05. EXP-002: pertanyaan PKL yang tidak dijawab buku tidak dapat ditolak hanya dengan jarak | Sprint 3 |
 | D-31 | 2026-11-07 | Label bagian direset bila ada halaman yang dilewati, judul `LAMPIRAN ...` dikenali sebagai bagian | Diterapkan | Halaman knowledge base kini tidak berurutan (4–16, 22–25, 27–28) | Sprint 3 |
 | D-32 | 2026-11-07 | `GEMINI_REASONING_EFFORT` dapat diatur, bawaan kosong (pengaturan model) | Diterapkan | EXP-003: tidak ada percepatan yang konsisten, ketepatan sama | Sprint 3 |
+| D-33 | 2026-11-08 | Alur tanya-jawab terdiri dari enam langkah tetap (`validate_input`, `retrieve`, `relevancy_gate`, `build_prompt`, `generate`, `validate_citations`). Langkah yang tidak dapat dilanjutkan langsung mengembalikan status (pertanyaan tidak valid, knowledge base belum ada, di luar cakupan, layanan bermasalah) tanpa memanggil Gemini. Pesan untuk pengguna dikumpulkan di `core/messages.py` tanpa detail teknis. Bila Gemini tidak menulis baris `SUMBER:` yang valid, semua potongan konteks dijadikan rujukan. Teks pertanyaan tidak ditulis ke log | Diterapkan | Spec §4.3, §12 Sprint 3, FR-04, FR-05, FR-08, NFR-04, NFR-07 | Sprint 3 |
+| D-34 | 2026-11-08 | Nilai awal `RETRIEVAL_MAX_L2_DISTANCE=0.64` di `.env`. Aturan ditetapkan sebelum percobaan: titik tengah antara jarak terbesar pertanyaan dalam cakupan dan jarak terkecil pertanyaan non-PKL. `.env.example` tetap kosong sesuai spec §8. Nilai final ditetapkan pada Sprint 5 sebelum evaluasi | Diterapkan, nilai awal | EXP-004 | Sprint 3 |
+| D-35 | 2026-11-08 | Aturan prompt no. 1 ditambah "tanpa salam pembuka atau perkenalan diri" | Diterapkan | Uji langsung: Gemini membuka jawaban dengan "Halo, saya Pekael" | Sprint 3 |
+| D-36 | 2026-11-08 | `temperature=0` tetap dikirim, tetapi `gemini-3.5-flash-lite` mengabaikannya (model memakai pengaturan sampling tetap). Jawaban dapat sedikit berbeda antarpemanggilan, sehingga hasil evaluasi dicatat bersama tanggal, model, dan build indeks | Dicatat | Peringatan `langchain-google-genai` saat uji langsung. Model tidak diganti (FIXED) | Sprint 3 |
 
 ## Penyelesaian Open Decision
 
@@ -52,4 +56,5 @@ Catatan keputusan teknis yang tidak tertulis di `project_spec.md` atau yang meny
 | OD-12 | 2026-10-30 | **Selesai.** Normalisasi L2 dipakai: peringkat sama, skala jarak tetap 0–2 untuk ambang | EXP-002 | `experiment_log.md` |
 | OD-03 | 2026-10-30 | **Sebagian.** 1000:150 sebagai nilai awal, final setelah uji jawaban | EXP-002 | `experiment_log.md` |
 | OD-17 | 2026-10-26 | **Selesai.** File koreksi per halaman (D-22) | Lembar pemeriksaan OCR Sprint 1 | `scrum/sprint-01/pemeriksaan_ocr.md` |
+| OD-04 | 2026-11-08 | **Sebagian.** `k=4` dan ambang awal 0,64 (D-34). Final pada Sprint 5 | EXP-004 | `experiment_log.md` |
 | OD-06 | — | **Tertunda.** Saldo OpenAI kosong (429 `insufficient_quota`) | Smoke test Ragas | `technical/smoke_tests.md` §3 |

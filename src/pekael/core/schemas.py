@@ -36,6 +36,8 @@ class ChatbotResponse:
     answer: str
     status: ResponseStatus
     sources: tuple[SourceReference, ...] = ()
+    # Distances of the retrieved chunks, for logs and threshold calibration, not shown to students
+    distances: tuple[float, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -68,6 +70,7 @@ class ChainState:
 
     question: str
     retrieved: list[RetrievedDocument] = field(default_factory=list)
+    distances: tuple[float, ...] = ()  # of every retrieved chunk, before the relevancy gate
     context: str = ""
     prompt: str = ""
     answer: str = ""
