@@ -66,3 +66,13 @@
 
 **Test**: `pytest` → **224 lulus, 0 gagal** (baru: `tests/unit/test_rag_steps.py` 26, `tests/unit/test_chatbot_manager.py` 9, `tests/integration/test_rag_pipeline.py` 2, `test_export_docs.py` 2). Run pertama: 2 gagal (`test_index_not_ready_returns_status_without_calling_llm`, `test_question_before_build_reports_missing_knowledge_base`) karena cabang `IndexNotReadyError` tidak berhenti sehingga pesan tertimpa fallback. Diperbaiki dengan `return state`.
 
+## Sesi 4 — 9 November 2026
+
+**Uji pembangunan ulang (kriteria Increment 1)**
+- `build_knowledge_base.py` kedua → build `20261104T043244948591-565a9929` (timestamp UTC asli), 33 potongan, 9,9 s. `versions/` berisi 2 build (`keep_versions=2`), `ACTIVE` menunjuk build baru. Isi potongan sama dengan build sebelumnya. EXP-004 dijalankan pada build `20261102T180419398924-565a9929`, yang masih tersimpan.
+- `GEMINI_API_KEY=invalid-key-for-test` (variabel lingkungan sementara, `.env` tidak diubah) + `build_knowledge_base.py` → `Gagal, knowledge base lama tetap dipakai: Building the index failed: EmbeddingError`, exit 1. `ACTIVE` sebelum dan sesudah sama, tidak ada folder `.building-*` tersisa.
+- `ask.py "Berapa lama PKL dilaksanakan?"` sesudahnya → `answered`, rujukan hal. 14 dan 7, 1,44 s.
+
+**Dokumen**: draf `scrum/sprint-03/sprint_review.md` dan `sprint_retrospective.md` (status pencapaian, validasi PO, dan checklist SM dikosongkan).
+
+**Test**: tidak ada perubahan kode, `pytest` → 224 lulus.

@@ -91,3 +91,21 @@ Sprint Planning memuat tujuh tugas (lihat [Sprint Planning](sprint_planning.md) 
 - Pemeriksaan contoh jawaban bersama *Product Owner* (10 November).
 - *Sprint Review* dan *Retrospective* Sprint 3 (12 November).
 
+### 9 November 2026
+
+**Dikerjakan**
+- Menguji langsung pembangunan ulang knowledge base: versi baru dipakai dan versi sebelumnya tetap disimpan sebagai cadangan.
+- Menguji langsung pembangunan yang gagal dengan API key yang sengaja salah: knowledge base yang sedang dipakai tidak berubah dan Pekael tetap dapat menjawab.
+- Menyusun draf [Sprint Review](sprint_review.md) dan [Sprint Retrospective](sprint_retrospective.md) Sprint 3 untuk 12 November.
+
+**Hasil uji**
+- Bangun ulang selesai dalam sekitar 10 detik dengan 33 potongan, dua versi tersimpan.
+- Bangun yang gagal menampilkan "knowledge base lama tetap dipakai". Pertanyaan "Berapa lama PKL dilaksanakan?" sesudahnya tetap dijawab "minimal 4 bulan/satu semester" dengan rujukan halaman 14 dan 7.
+
+**Hambatan**
+- Tidak ada.
+
+**Berikutnya**
+- Developer memverifikasi koreksi OCR halaman tambahan (S3-T01).
+- Pemeriksaan contoh jawaban bersama *Product Owner* (10 November).
+- *Sprint Review* dan *Retrospective* Sprint 3 (12 November).

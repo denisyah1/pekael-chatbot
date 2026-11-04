@@ -91,6 +91,8 @@ Perintah: `scriptsuild_knowledge_base.py`, lalu `scriptssk.py "<pertanyaan>"`.
 | 2026-11-08 | Folder indeks kosong | Lulus | Status `unavailable`, "Knowledge base Pekael belum disiapkan" |
 | 2026-11-08 | API key tidak valid | Lulus | Status `unavailable`, "belum dikonfigurasi dengan benar", key tidak tercetak |
 | 2026-11-08 | Pertanyaan kosong dan 501 karakter | Lulus | Status `invalid_input`, tanpa panggilan API |
+| 2026-11-09 | Bangun ulang knowledge base | Lulus | Build baru aktif, build lama tetap tersimpan (2 versi) |
+| 2026-11-09 | Bangun dengan API key tidak valid | Lulus | Gagal dengan pesan aman, `ACTIVE` tidak berubah, pertanyaan sesudahnya tetap dijawab |
 
 Kuota habis dan timeout tidak dipicu secara langsung, keduanya diuji dengan tiruan di `tests/unit/test_rag_steps.py`.
 
