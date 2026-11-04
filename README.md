@@ -77,6 +77,22 @@ Isi `.env` dengan nilai asli. File ini di-ignore oleh Git dan **tidak boleh** di
 
 Nilai kosong atau yang masih berawalan `replace_with_` dianggap belum diisi. Pada hosting, isi variabel yang sama melalui secrets manager platform.
 
+## Menjalankan Pekael
+
+Bangun knowledge base sekali (dan setiap kali buku pedoman atau pengaturan potongan berubah):
+
+```powershell
+.\.venv\Scripts\python.exe scripts\build_knowledge_base.py
+```
+
+Jalankan website secara lokal, lalu buka http://localhost:8501:
+
+```powershell
+.\.venv\Scripts\streamlit.exe run app.py
+```
+
+Hentikan dengan `Ctrl+C`. Tanpa website, pertanyaan dapat diajukan dari terminal dengan `scripts\ask.py "pertanyaan"`.
+
 ## Perlindungan Secret
 
 Aktifkan hook pre-commit sekali setiap clone:

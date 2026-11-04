@@ -24,12 +24,12 @@ Lembar ini melanjutkan pemeriksaan hasil OCR Sprint 1 untuk halaman yang ditamba
 
 | Hal. | Isi halaman | Temuan OCR | Koreksi | Diverifikasi |
 |---|---|---|---|---|
-| 22 | Aturan penulisan rujukan, awal sistematika laporan | Garis titik-titik contoh kutipan terbaca "M cereeseeteeeeeeseaees", subjudul "C. SISTEMATIKA LAPORAN PKL" terbaca "G SISTEMATIKA" | Garis titik-titik dan "C." dipulihkan | ☐ |
-| 23 | Isi Bab I–III laporan | Satu kalimat terpotong baris kosong | Kalimat disambung. Salah ketik asli "masiswa" dipertahankan | ☐ |
-| 24 | Isi Bab IV laporan dan dokumen lampiran | Huruf penanda daftar a–h hilang, muncul sisa acak "S Pp", "a 9", "Boo mh 9" | Daftar 8 dokumen lampiran ditulis ulang dengan penanda a–h | ☐ |
-| 25 | Contoh sistematika laporan | Seluruh butir tergabung dalam satu baris, "BAB III" terbaca "BAB IH" | Disusun ulang per butir | ☐ |
-| 27 | Instrumen penilaian N1 (Sikap) dan N2 (Kompetensi Profesional) | Tabel teracak, "Kerjasama Tim" terbaca "[Selim Tim", "PENILAIAN" terbaca "PENILAJAN" | Tabel dan rumus nilai ditulis ulang. Salah ketik asli "Remtang Nilai" dipertahankan | ☐ |
-| 28 | Instrumen penilaian N3 (Seminar dan Laporan) dan nilai akhir | Tabel teracak, judul baris N3 hilang, "Penyajian" terbaca "Penygim" | Tabel, rumus nilai, dan rumus nilai akhir ditulis ulang. Salah ketik asli "audinece" dipertahankan | ☐ |
+| 22 | Aturan penulisan rujukan, awal sistematika laporan | Garis titik-titik contoh kutipan terbaca "M cereeseeteeeeeeseaees", subjudul "C. SISTEMATIKA LAPORAN PKL" terbaca "G SISTEMATIKA" | Garis titik-titik dan "C." dipulihkan | ☑ |
+| 23 | Isi Bab I–III laporan | Satu kalimat terpotong baris kosong | Kalimat disambung. Salah ketik asli "masiswa" dipertahankan | ☑ |
+| 24 | Isi Bab IV laporan dan dokumen lampiran | Huruf penanda daftar a–h hilang, muncul sisa acak "S Pp", "a 9", "Boo mh 9" | Daftar 8 dokumen lampiran ditulis ulang dengan penanda a–h | ☑ |
+| 25 | Contoh sistematika laporan | Seluruh butir tergabung dalam satu baris, "BAB III" terbaca "BAB IH" | Disusun ulang per butir | ☑ |
+| 27 | Instrumen penilaian N1 (Sikap) dan N2 (Kompetensi Profesional) | Tabel teracak, "Kerjasama Tim" terbaca "[Selim Tim", "PENILAIAN" terbaca "PENILAJAN" | Tabel dan rumus nilai ditulis ulang. Salah ketik asli "Remtang Nilai" dipertahankan | ☑ |
+| 28 | Instrumen penilaian N3 (Seminar dan Laporan) dan nilai akhir | Tabel teracak, judul baris N3 hilang, "Penyajian" terbaca "Penygim" | Tabel, rumus nilai, dan rumus nilai akhir ditulis ulang. Salah ketik asli "audinece" dipertahankan | ☑ |
 
 ## Isi yang ditulis ulang manual
 

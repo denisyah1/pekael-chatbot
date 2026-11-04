@@ -17,7 +17,7 @@ Lembar ini memuat hasil *Sprint Review* Sprint 3, yaitu Increment yang dihasilka
 
 Menghasilkan alur tanya-jawab Pekael yang berjalan lengkap tanpa antarmuka: knowledge base tersimpan di FAISS dan dapat dimuat ulang, pertanyaan dicarikan potongan teks yang relevan, Gemini menyusun jawaban hanya dari potongan tersebut beserta rujukan halaman, dan pertanyaan di luar cakupan dijawab dengan pesan penolakan, sebagai dasar antarmuka Streamlit pada Sprint 4.
 
-Status pencapaian: ☐ Tercapai ☐ Tercapai sebagian ☐ Tidak tercapai
+Status pencapaian: ☑ Tercapai ☐ Tercapai sebagian ☐ Tidak tercapai
 
 ## Increment yang dihasilkan
 
@@ -41,7 +41,7 @@ Status pencapaian: ☐ Tercapai ☐ Tercapai sebagian ☐ Tidak tercapai
 
 | Pekerjaan | Alasan | Tindak lanjut |
 |---|---|---|
-| Verifikasi koreksi OCR halaman 22–25 dan 27–28 (S3-T01) | Menunggu pemeriksaan Developer terhadap buku asli | Diselesaikan sebelum *Sprint Review*. Bila belum, dibawa ke Sprint 4 sebagai tugas pertama |
+| Verifikasi koreksi OCR halaman 22–25 dan 27–28 (S3-T01) | Selesai diverifikasi Developer sebelum *Sprint Review* | — |
 
 ## Temuan dari pemeriksaan jawaban
 
@@ -69,7 +69,7 @@ Status pencapaian: ☐ Tercapai ☐ Tercapai sebagian ☐ Tidak tercapai
 
 Berdasarkan pemeriksaan terhadap Increment Sprint 3 pada lembar ini, *Product Owner* menyatakan Increment tersebut:
 
-☐ Diterima
+☑ Diterima
 ☐ Diterima dengan catatan: ........................................................................
 ☐ Belum diterima, pekerjaan dikembalikan ke Product Backlog
 

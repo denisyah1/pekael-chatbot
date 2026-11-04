@@ -23,7 +23,7 @@ Lembar ini memuat hasil *Sprint Retrospective* Sprint 3, yaitu evaluasi cara ker
 
 ## Yang perlu diperbaiki
 
-- Verifikasi koreksi OCR halaman tambahan belum selesai saat seluruh tugas lain selesai. Pemeriksaan oleh Developer perlu dijadwalkan pada hari pertama sprint.
+- Verifikasi koreksi OCR halaman tambahan baru selesai menjelang *Sprint Review*, setelah seluruh tugas lain selesai. Pemeriksaan oleh Developer perlu dijadwalkan pada hari pertama sprint.
 - Pertanyaan contoh untuk halaman 22–28 baru berjumlah 6. Halaman tersebut perlu lebih banyak contoh pertanyaan pada dataset evaluasi.
 - Pemeriksaan ulang label halaman pada daftar topik pertanyaan (rencana perbaikan Sprint 2) belum dilakukan bersama Developer.
 
@@ -55,11 +55,11 @@ Lembar ini memuat hasil *Sprint Retrospective* Sprint 3, yaitu evaluasi cara ker
 
 | Butir | Status |
 |---|---|
-| *Sprint Planning* terlaksana dan divalidasi *Product Owner* | ☐ |
-| Logbook diisi setiap hari kerja aktif | ☐ |
-| *Sprint Review* terlaksana dan Increment divalidasi *Product Owner* | ☐ |
-| *Sprint Retrospective* terlaksana | ☐ |
-| Product Backlog diperbarui | ☐ |
+| *Sprint Planning* terlaksana dan divalidasi *Product Owner* | ☑ |
+| Logbook diisi setiap hari kerja aktif | ☑ |
+| *Sprint Review* terlaksana dan Increment divalidasi *Product Owner* | ☑ |
+| *Sprint Retrospective* terlaksana | ☑ |
+| Product Backlog diperbarui | ☑ |
 
 ## Konfirmasi Scrum Master
 

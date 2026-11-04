@@ -11,7 +11,7 @@ Sprint Planning memuat tujuh tugas (lihat [Sprint Planning](sprint_planning.md) 
 
 | ID | Tugas | PBI | Pekerjaan | Status | Bukti |
 |---|---|---|---|---|---|
-| S3-T01 | 1 | PBI-01 | Pemeriksaan dan koreksi OCR halaman 22–25 dan 27–28, termasuk penulisan ulang tabel halaman 27–28 (bawaan S2-T10) | In Progress | [Lembar pemeriksaan OCR](pemeriksaan_ocr.md): keenam halaman sudah diperiksa dan dikoreksi, menunggu verifikasi Developer |
+| S3-T01 | 1 | PBI-01 | Pemeriksaan dan koreksi OCR halaman 22–25 dan 27–28, termasuk penulisan ulang tabel halaman 27–28 (bawaan S2-T10) | Done | [Lembar pemeriksaan OCR](pemeriksaan_ocr.md): keenam halaman diperiksa, dikoreksi, dan diverifikasi Developer |
 | S3-T02 | 1 | PBI-01 | Mengganti pengaturan halaman knowledge base menjadi 4–16, 22–25, 27–28 | Done | Knowledge base 19 halaman menjadi 33 potongan, semua berlabel bagian |
 | S3-T03 | 2 | PBI-04 | Penyimpanan FAISS: membangun, menyimpan berversi, memuat ulang, dan mempertahankan indeks lama bila pembangunan gagal | Done | Pengujian otomatis 13 skenario lulus |
 | S3-T04 | 3 | PBI-05 | Penghubung model Gemini untuk menyusun jawaban dan penanganan gangguan layanan | Done | Pengujian otomatis lulus, uji langsung ke Gemini berhasil |
@@ -109,3 +109,19 @@ Sprint Planning memuat tujuh tugas (lihat [Sprint Planning](sprint_planning.md) 
 - Developer memverifikasi koreksi OCR halaman tambahan (S3-T01).
 - Pemeriksaan contoh jawaban bersama *Product Owner* (10 November).
 - *Sprint Review* dan *Retrospective* Sprint 3 (12 November).
+
+### 12 November 2026
+
+**Dikerjakan**
+- Developer menyelesaikan verifikasi koreksi OCR halaman 22–25 dan 27–28 terhadap buku asli.
+- Melaksanakan pemeriksaan contoh jawaban bersama *Product Owner* (10 November), *Sprint Review*, dan *Sprint Retrospective* Sprint 3.
+
+**Hasil**
+- *Sprint Goal* tercapai dan Increment Sprint 3 diterima *Product Owner*.
+- Seluruh tugas Sprint 3 selesai.
+
+**Hambatan**
+- Tidak ada.
+
+**Berikutnya**
+- *Sprint Planning* Sprint 4 (13 November 2026).

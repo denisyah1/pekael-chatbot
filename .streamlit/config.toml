@@ -1,0 +1,14 @@
+# Pekael look: plain, light, UNJ green as the only accent colour (Sprint 4).
+[theme]
+base = "light"
+primaryColor = "#1F6F43"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F3F5F4"
+textColor = "#1E2522"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"
+
+[browser]
+gatherUsageStats = false

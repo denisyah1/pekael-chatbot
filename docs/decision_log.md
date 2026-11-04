@@ -42,6 +42,7 @@ Catatan keputusan teknis yang tidak tertulis di `project_spec.md` atau yang meny
 | D-34 | 2026-11-08 | Nilai awal `RETRIEVAL_MAX_L2_DISTANCE=0.64` di `.env`. Aturan ditetapkan sebelum percobaan: titik tengah antara jarak terbesar pertanyaan dalam cakupan dan jarak terkecil pertanyaan non-PKL. `.env.example` tetap kosong sesuai spec §8. Nilai final ditetapkan pada Sprint 5 sebelum evaluasi | Diterapkan, nilai awal | EXP-004 | Sprint 3 |
 | D-35 | 2026-11-08 | Aturan prompt no. 1 ditambah "tanpa salam pembuka atau perkenalan diri" | Diterapkan | Uji langsung: Gemini membuka jawaban dengan "Halo, saya Pekael" | Sprint 3 |
 | D-36 | 2026-11-08 | `temperature=0` tetap dikirim, tetapi `gemini-3.5-flash-lite` mengabaikannya (model memakai pengaturan sampling tetap). Jawaban dapat sedikit berbeda antarpemanggilan, sehingga hasil evaluasi dicatat bersama tanggal, model, dan build indeks | Dicatat | Peringatan `langchain-google-genai` saat uji langsung. Model tidak diganti (FIXED) | Sprint 3 |
+| D-37 | 2026-11-13 | Tampilan mahasiswa berbentuk formulir tanya-jawab (kolom pertanyaan + tombol Kirim), bukan gelembung chat. Tanpa avatar, ikon robot, atau istilah "AI"/"asisten virtual". Jawaban terbaru di atas, sumber ditulis "halaman PDF" (spec §4.2), kutipan dalam expander. Satu warna aksen hijau di atas latar putih. Rancangan awal, dievaluasi Developer (S4-T04) | Diterapkan, menunggu evaluasi | Permintaan pemilik agar tampilan natural dan sederhana, spec §12 Sprint 4, NFR-05 | Sprint 4 |
 
 ## Penyelesaian Open Decision
 
