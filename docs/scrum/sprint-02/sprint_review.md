@@ -17,7 +17,7 @@ Lembar ini memuat hasil *Sprint Review* Sprint 2, yaitu Increment yang dihasilka
 
 Mengubah teks buku panduan PKL yang telah disaring menjadi potongan teks (*chunk*) yang tetap membawa keterangan sumber dan halaman, lalu menjadi representasi vektor menggunakan model embedding Gemini, dengan ukuran potongan awal yang dipilih berdasarkan percobaan, sebagai dasar penyimpanan FAISS dan alur tanya-jawab pada Sprint 3.
 
-Status pencapaian: ☐ Tercapai ☐ Tercapai sebagian ☐ Tidak tercapai
+Status pencapaian: ☑ Tercapai ☐ Tercapai sebagian ☐ Tidak tercapai
 
 ## Increment yang dihasilkan
 
@@ -60,7 +60,7 @@ Status pencapaian: ☐ Tercapai ☐ Tercapai sebagian ☐ Tidak tercapai
 
 Berdasarkan pemeriksaan terhadap Increment Sprint 2 pada lembar ini, *Product Owner* menyatakan Increment tersebut:
 
-☐ Diterima
+☑ Diterima
 ☐ Diterima dengan catatan: ........................................................................
 ☐ Belum diterima, pekerjaan dikembalikan ke Product Backlog
 

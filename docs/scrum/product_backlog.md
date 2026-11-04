@@ -9,7 +9,7 @@
 |---|---|---|---|---|---|
 | PBI-01 | Ekstraksi teks dari buku panduan PKL hasil scan melalui OCR | Tinggi | 1 | Teks per halaman tersedia dengan metadata halaman dan metode ekstraksi, OCR hanya untuk halaman tanpa teks digital, sampel angka/tanggal/tabel sudah diperiksa terhadap sumber asli | Diterima PO |
 | PBI-02 | Penyaringan dan pengerucutan konten sesuai lingkup PTIK | Tinggi | 1 | Knowledge base terpilih dan disetujui PO secara tertulis | Diterima PO |
-| PBI-03 | Text splitting dan embedding menjadi representasi vektor | Tinggi | 2 | Chunk mempertahankan metadata source/page, dimensi vektor konsisten, eksperimen parameter tercatat | Dikerjakan |
+| PBI-03 | Text splitting dan embedding menjadi representasi vektor | Tinggi | 2 | Chunk mempertahankan metadata source/page, dimensi vektor konsisten, eksperimen parameter tercatat | Diterima PO |
 | PBI-04 | Penyimpanan embedding pada FAISS | Tinggi | 3 | Indeks `IndexFlatL2` dapat dibuat, disimpan, dan dimuat ulang pada proses baru | Diterima PO |
 | PBI-05 | Retrieval chain menghubungkan FAISS dan Gemini API | Tinggi | 3 | Pipeline CLI menghasilkan jawaban beserta sumber, fallback berjalan untuk pertanyaan di luar cakupan | Diterima PO |
 | PBI-06 | Antarmuka website untuk tanya-jawab | Tinggi | 4 | UI Streamlit menerima pertanyaan, menampilkan loading, jawaban, dan status error yang aman | Dikerjakan |

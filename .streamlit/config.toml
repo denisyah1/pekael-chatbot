@@ -1,11 +1,12 @@
-# Pekael look: plain, light, UNJ green as the only accent colour (Sprint 4).
+# Pekael look: dark navy and grey blue, light periwinkle tint (Sprint 4, D-38).
+# Fonts, wordmark and motion are in src/pekael/ui/theme.py.
 [theme]
-base = "light"
-primaryColor = "#1F6F43"
-backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F3F5F4"
-textColor = "#1E2522"
-font = "sans serif"
+base = "dark"
+primaryColor = "#C8D7FF"
+backgroundColor = "#0A1222"
+secondaryBackgroundColor = "#111C31"
+textColor = "#E7ECF4"
+borderColor = "#22324F"
 
 [client]
 toolbarMode = "minimal"

@@ -117,6 +117,16 @@ def test_questions_are_independent():
     assert seen == [("satu", [], ""), ("dua", [], "")]
 
 
+def test_progress_reports_only_steps_that_run():
+    """Empty retrieval ends the chain early, so later steps are not reported to the UI."""
+    reported = []
+
+    response = _manager().generate_response("Berapa SKS minimal?", on_step=reported.append)
+
+    assert response.status is ResponseStatus.OUT_OF_SCOPE
+    assert reported == ["validate_input", "retrieve"]
+
+
 def test_create_manager_requires_gemini_key():
     with pytest.raises(ConfigError, match="GEMINI_API_KEY"):
         AppConfigurator.create_manager_from_config(AppConfig.from_env({}))

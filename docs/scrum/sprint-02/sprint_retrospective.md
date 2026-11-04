@@ -55,11 +55,11 @@ Lembar ini memuat hasil *Sprint Retrospective* Sprint 2, yaitu evaluasi cara ker
 
 | Butir | Status |
 |---|---|
-| *Sprint Planning* terlaksana dan divalidasi *Product Owner* | ☐ |
-| Logbook diisi setiap hari kerja aktif | ☐ |
-| *Sprint Review* terlaksana dan Increment divalidasi *Product Owner* | ☐ |
-| *Sprint Retrospective* terlaksana | ☐ |
-| Product Backlog diperbarui | ☐ |
+| *Sprint Planning* terlaksana dan divalidasi *Product Owner* | ☑ |
+| Logbook diisi setiap hari kerja aktif | ☑ |
+| *Sprint Review* terlaksana dan Increment divalidasi *Product Owner* | ☑ |
+| *Sprint Retrospective* terlaksana | ☑ |
+| Product Backlog diperbarui | ☑ |
 
 ## Konfirmasi Scrum Master
 

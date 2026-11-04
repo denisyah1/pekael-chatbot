@@ -103,3 +103,16 @@ Catatan analisis:
 
 Jawaban lengkap: [`scrum/sprint-03/pemeriksaan_jawaban.md`](scrum/sprint-03/pemeriksaan_jawaban.md). Data mentah: `data/processed/Pedoman-PKL-2025/exp004.json` (di-ignore git).
 
+### EXP-005 — Model `gemini-3.5-flash` sebagai pengganti `gemini-3.5-flash-lite`
+
+| | |
+|---|---|
+| Tanggal | 2026-11-15 |
+| Sprint | 4 |
+| Tujuan | Memeriksa apakah `gemini-3.5-flash` layak menggantikan `gemini-3.5-flash-lite` yang sedang lambat (OD-01) |
+| Konfigurasi | Sama dengan EXP-004 (indeks 33 potongan, `RETRIEVAL_K=4`, ambang 0,64, prompt D-30 + D-35), hanya `GEMINI_CHAT_MODEL=gemini-3.5-flash`, `GEMINI_TIMEOUT_SECONDS=30` |
+| Data uji | 44 pertanyaan EXP-004 |
+| Prosedur | `run_threshold_experiment.py --generate --pause 6 --output .../exp005.json`, jeda 6 detik antarpanggilan |
+| Hasil | 13 dari 36 pertanyaan dalam cakupan dijawab (4,0–28,1 s), 2 gagal setelah 9,8 dan 15,0 s, lalu semua permintaan berikutnya ditolak dalam ±1 s. Pesan server: `429 RESOURCE_EXHAUSTED`, `GenerateRequestsPerDayPerProjectPerModel-FreeTier`, batas 20 permintaan per hari. Pertanyaan non-PKL tetap ditolak ambang tanpa memanggil Gemini. `gemini-3.5-flash-lite` pada saat yang sama menjawab dalam 18,95 s |
+| Kesimpulan | Kuota gratis `gemini-3.5-flash` (20 permintaan per hari) tidak mencukupi pengujian maupun UAT, dan waktu jawab pada alur lengkap tidak lebih cepat. Model dikembalikan ke `gemini-3.5-flash-lite` |
+| Keputusan terkait | D-40, OD-01 |

@@ -29,6 +29,8 @@ class AppConfig(BaseModel):
     gemini_chat_model: str = "gemini-3.5-flash-lite"
     # Gemini thinking level: minimal, low, medium, high (empty = model default, EXP-003)
     gemini_reasoning_effort: Literal["minimal", "low", "medium", "high"] | None = None
+    # Seconds to wait for one Gemini answer; a timed-out request is not retried
+    gemini_timeout_seconds: float = Field(default=30.0, gt=0, le=120)
     gemini_embedding_model: str = "gemini-embedding-001"
     embedding_output_dimension: int = Field(default=768, gt=0)
 

@@ -63,7 +63,10 @@ class AppConfigurator:
             },
         )
         llm = GeminiModel(
-            config.gemini_chat_model, config.gemini_api_key, reasoning_effort=config.gemini_reasoning_effort
+            config.gemini_chat_model,
+            config.gemini_api_key,
+            timeout=config.gemini_timeout_seconds,
+            reasoning_effort=config.gemini_reasoning_effort,
         )
         return ChatbotManager(
             SYSTEM_PROMPT,

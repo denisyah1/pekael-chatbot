@@ -43,6 +43,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--generate", action="store_true", help="also answer every question with Gemini")
     parser.add_argument("--pause", type=float, default=4.0, help="seconds between Gemini calls (free-tier rate limit)")
+    parser.add_argument("--output", help="result file (default: data/processed/<pdf name>/exp004.json)")
     args = parser.parse_args()
 
     config = AppConfigurator.read_config()
@@ -94,10 +95,10 @@ def main() -> int:
             print(f"{r['id']:>4} {r['status']:>12} {r['seconds']:>5.2f} s  rujukan {cited}")
             time.sleep(args.pause)
 
-    out = Path("data/processed") / Path(config.knowledge_base_path).stem / "exp004.json"
+    out = Path(args.output) if args.output else Path("data/processed") / Path(config.knowledge_base_path).stem / "exp004.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps({
-        "experiment": "EXP-004", "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "experiment": out.stem.upper().replace("EXP", "EXP-"), "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "build_id": store.active_build_id(), "chat_model": config.gemini_chat_model, "k": k,
         "threshold": threshold, "in_scope_max": in_max, "non_pkl_min": n_min, "questions": rows,
     }, indent=2, ensure_ascii=False), encoding="utf-8")

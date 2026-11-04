@@ -80,6 +80,13 @@ def test_read_config_without_env_file(tmp_path, monkeypatch):
     assert config.missing_runtime_settings() == ["GEMINI_API_KEY"]
 
 
+def test_gemini_timeout_is_configurable_and_bounded():
+    assert AppConfig.from_env({}).gemini_timeout_seconds == 30
+    assert AppConfig.from_env({"GEMINI_TIMEOUT_SECONDS": "45"}).gemini_timeout_seconds == 45
+    with pytest.raises(ConfigError, match="GEMINI_TIMEOUT_SECONDS"):
+        AppConfig.from_env({"GEMINI_TIMEOUT_SECONDS": "0"})
+
+
 def test_reasoning_effort_is_optional_and_validated():
     assert AppConfig.from_env({}).gemini_reasoning_effort is None
     assert AppConfig.from_env({"GEMINI_REASONING_EFFORT": "low"}).gemini_reasoning_effort == "low"

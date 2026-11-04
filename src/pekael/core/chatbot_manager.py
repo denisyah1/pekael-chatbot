@@ -5,7 +5,10 @@ There is deliberately no conversation memory: every question is answered indepen
 
 import logging
 import time
+from collections.abc import Callable
 from pathlib import Path
+
+from langchain_core.callbacks import BaseCallbackHandler
 
 from pekael.core import messages
 from pekael.core.chain import Chain
@@ -18,6 +21,19 @@ from pekael.splitters.base import BaseSplitter
 from pekael.vectorstores.base import BaseVectorStore
 
 logger = logging.getLogger(__name__)
+
+
+class _StepReporter(BaseCallbackHandler):
+    """Report each Chain step that actually runs (skipped steps are not reported)."""
+
+    def __init__(self, step_names: list[str], on_step: Callable[[str], None]) -> None:
+        self.step_names = set(step_names)
+        self.on_step = on_step
+
+    def on_chain_start(self, serialized, inputs, **kwargs) -> None:
+        name = kwargs.get("name")
+        if name in self.step_names and getattr(inputs, "response", None) is None:
+            self.on_step(name)
 
 
 class ChatbotManager:
@@ -62,11 +78,15 @@ class ChatbotManager:
             warnings=warnings,
         )
 
-    def generate_response(self, message: str) -> ChatbotResponse:
-        """Answer one question on its own; errors become a safe status response, never an answer."""
+    def generate_response(self, message: str, on_step: Callable[[str], None] | None = None) -> ChatbotResponse:
+        """Answer one question on its own; errors become a safe status response, never an answer.
+
+        ``on_step`` receives the name of each step as it starts, so the UI can show progress.
+        """
         started = time.perf_counter()
+        config = {"callbacks": [_StepReporter(self.chain.step_names, on_step)]} if on_step else None
         try:
-            response = self.chain.invoke(ChainState(question=message)).response
+            response = self.chain.invoke(ChainState(question=message), config=config).response
         except Exception:  # a step failed in a way it did not handle itself
             logger.exception("Unexpected error while answering")
             response = None

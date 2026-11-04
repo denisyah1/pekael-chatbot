@@ -96,3 +96,13 @@ Perintah: `scriptsuild_knowledge_base.py`, lalu `scriptssk.py "<pertanyaan>"`.
 
 Kuota habis dan timeout tidak dipicu secara langsung, keduanya diuji dengan tiruan di `tests/unit/test_rag_steps.py`.
 
+## 7. Kecepatan model Gemini (Sprint 4)
+
+| Tanggal | Model | Hasil | Catatan |
+|---|---|---|---|
+| 2026-11-15 | `gemini-3.5-flash-lite` | 10,72–44,15 s, satu `504 DEADLINE_EXCEEDED` | Pertanyaan satu kata, tanpa konteks |
+| 2026-11-15 | `gemini-3.5-flash` | 3,45–5,30 s | Pertanyaan yang sama |
+| 2026-11-15 | `gemini-2.5-flash-lite`, `gemini-2.5-flash` | `404 NOT_FOUND` | Tidak tersedia untuk pengguna baru |
+| 2026-11-15 | `gemini-3.5-flash` (alur lengkap, EXP-005) | 13/36 dijawab, lalu 429 | Kuota gratis 20 permintaan per hari |
+| 2026-11-15 | `gemini-3.5-flash-lite` (alur lengkap, per langkah) | Gemini 22,8–28,8 s, pencarian 0,5 s | Hampir seluruh waktu di Gemini |
+| 2026-11-15 | `gemini-3.5-flash-lite` (streaming) | Token pertama 13,91 s, selesai 14,07 s | Menunggu sebelum token pertama |

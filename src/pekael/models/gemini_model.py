@@ -23,8 +23,10 @@ OTHER = "other"
 _MARKERS = [
     (QUOTA, ("429", "RESOURCE_EXHAUSTED", "quota")),
     (AUTH, ("401", "403", "API_KEY_INVALID", "API key not valid", "PERMISSION_DENIED")),
-    (UNAVAILABLE, ("503", "UNAVAILABLE", "500", "INTERNAL", "DEADLINE_EXCEEDED", "timed out", "Timeout")),
+    (UNAVAILABLE, ("503", "UNAVAILABLE", "500", "INTERNAL", "504", "DEADLINE_EXCEEDED", "timed out", "Timeout")),
 ]
+# A request that already used up the whole timeout is not retried: retrying only doubles the wait.
+_TIMEOUT_MARKERS = ("504", "DEADLINE_EXCEEDED", "timed out", "Timeout")
 
 
 class LLMError(RuntimeError):
@@ -36,6 +38,11 @@ class LLMError(RuntimeError):
 def classify_error(exc: Exception) -> str:
     text = f"{type(exc).__name__} {exc}"
     return next((kind for kind, markers in _MARKERS if any(m in text for m in markers)), OTHER)
+
+
+def is_timeout(exc: Exception) -> bool:
+    text = f"{type(exc).__name__} {exc}"
+    return any(marker in text for marker in _TIMEOUT_MARKERS)
 
 
 def _text(reply) -> str:
@@ -81,14 +88,14 @@ class GeminiModel:
         self._client = client
 
     def generate_response(self, prompt: str, system_prompt: str | None = None) -> str:
-        """Return the model's answer text. Only a temporarily unavailable service is retried."""
+        """Return the model's answer text. Only a temporarily unavailable service is retried, never a timeout."""
         messages = ([SystemMessage(system_prompt)] if system_prompt else []) + [HumanMessage(prompt)]
         for attempt in range(self.max_retries + 1):
             try:
                 text = _text(self._client.invoke(messages))
             except Exception as exc:  # provider SDKs raise several error types
                 kind = classify_error(exc)
-                if kind == UNAVAILABLE and attempt < self.max_retries:
+                if kind == UNAVAILABLE and not is_timeout(exc) and attempt < self.max_retries:
                     logger.warning("Gemini temporarily unavailable, retrying")
                     self._sleep(self.retry_wait_seconds)
                     continue

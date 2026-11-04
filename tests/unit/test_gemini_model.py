@@ -77,6 +77,18 @@ def test_quota_error_is_not_retried():
     assert model.waits == []
 
 
+@pytest.mark.parametrize("error", [RuntimeError("504 DEADLINE_EXCEEDED"), TimeoutError("Request timed out")])
+def test_timeout_is_not_retried(error):
+    """A timed-out request already waited the full timeout; retrying would double the wait (62 s seen live)."""
+    client = FakeChat(failures=[error])
+    model = _model(client)
+
+    with pytest.raises(LLMError) as info:
+        model.generate_response("x")
+    assert info.value.kind == UNAVAILABLE
+    assert len(client.calls) == 1 and model.waits == []
+
+
 def test_unavailable_after_retries_raises_llm_error():
     client = FakeChat(failures=[RuntimeError("503 UNAVAILABLE")] * 2)
 

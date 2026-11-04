@@ -1,12 +1,16 @@
 """Student question page (spec §12 Sprint 4, FR-01, FR-05, FR-08, FR-10, NFR-05).
 
-Plain academic look: a question box, the answer, and the handbook pages it came from.
+Flow: intro ("PKL, dibaca pe·ka·el") -> question page with examples and handbook facts ->
+answers with the handbook pages they came from. Every wait shows what Pekael is doing.
 Questions and answers stay visible only for the current browser session and are never
 sent back to the model (no conversation memory).
 """
 
 import logging
+import random
+from html import escape
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 
 import streamlit as st
@@ -18,23 +22,16 @@ from pekael.core.chatbot_manager import ChatbotManager
 from pekael.core.schemas import ChatbotResponse, ResponseStatus, SourceReference
 from pekael.models.embeddings import EmbeddingError
 from pekael.models.gemini_model import LLMError
+from pekael.ui import content, theme
 from pekael.vectorstores.base import IndexNotReadyError
 
 logger = logging.getLogger(__name__)
 
-TITLE = "Pekael"
-SUBTITLE = (
-    "Layanan informasi Praktik Kerja Lapangan (PKL) Prodi Pendidikan Teknik Informatika dan Komputer, "
-    "Universitas Negeri Jakarta. Jawaban disusun dari Buku Pedoman PKL."
-)
-PLACEHOLDER = "Contoh: Berapa SKS minimal untuk bisa mengikuti PKL?"
-NOTE = (
-    "Jawaban disusun dari buku pedoman dan dapat keliru. Untuk keputusan resmi, "
-    "periksa buku pedoman atau hubungi koordinator PKL."
-)
-NOT_CONFIGURED = "Layanan Pekael belum dapat digunakan karena pengaturan belum lengkap. Silakan hubungi admin."
-NOT_READY = "Buku pedoman belum dimuat ke Pekael, sehingga pertanyaan belum dapat dijawab. Silakan hubungi admin."
 HISTORY_KEY = "history"
+INTRO_KEY = "intro_done"
+NOTICE_KEY = "notice"
+BOOTED_KEY = "booted"
+MONTHS = ("Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember")
 
 
 @dataclass(frozen=True)
@@ -56,98 +53,185 @@ def get_manager() -> ChatbotManager:
     return AppConfigurator.create_manager_from_config(get_config())
 
 
-def document_name(source_file: str) -> str:
-    """'Pedoman-PKL-2025.pdf' -> 'Pedoman PKL 2025'."""
-    return Path(source_file).stem.replace("-", " ").replace("_", " ")
-
-
-def pages_line(sources: tuple[SourceReference, ...]) -> str:
-    by_document: dict[str, list[int]] = {}
-    for source in sources:
-        pages = by_document.setdefault(document_name(source.source_file), [])
-        if source.page not in pages:
-            pages.append(source.page)
-    parts = [f"{name}, halaman PDF {', '.join(str(p) for p in sorted(pages))}" for name, pages in by_document.items()]
-    return "Sumber: " + " · ".join(parts)
-
-
-def render_sources(sources: tuple[SourceReference, ...]) -> None:
-    st.caption(pages_line(sources))
-    with st.expander("Lihat kutipan dari buku pedoman"):
-        for source in sources:
-            heading = f"Halaman PDF {source.page}"
-            if source.section:
-                heading += f" · {source.section}"
-            st.markdown(f"**{heading}**")
-            st.caption(source.snippet or "")
-
-
-def render_exchange(item: Exchange) -> None:
-    with st.container(border=True):
-        st.markdown(f"**{item.question}**")
-        status = item.response.status
-        if status is ResponseStatus.ANSWERED:
-            st.markdown(item.response.answer)
-            if item.response.sources:
-                render_sources(item.response.sources)
-        elif status is ResponseStatus.OUT_OF_SCOPE:
-            st.info(item.response.answer)
-        else:
-            st.warning(item.response.answer)
-
-
 def load_manager() -> tuple[ChatbotManager | None, str | None]:
     """Return the manager, or a message explaining why questions cannot be answered yet."""
     try:
         manager = get_manager()
     except (ConfigError, EmbeddingError, LLMError) as exc:  # e.g. GEMINI_API_KEY not set
         logger.error("Pekael is not configured: %s", type(exc).__name__)
-        return None, NOT_CONFIGURED
+        return None, content.NOT_CONFIGURED
     if getattr(manager.vector_store, "is_ready", False):
         return manager, None
     try:
         manager.vector_store.load()
     except IndexNotReadyError as exc:
         logger.warning("Knowledge base not ready: %s", exc)
-        return manager, NOT_READY
+        return manager, content.NOT_READY
     return manager, None
+
+
+# ---------- formatting ----------
+
+def document_name(source_file: str) -> str:
+    """'Pedoman-PKL-2025.pdf' -> 'Pedoman PKL 2025'."""
+    return Path(source_file).stem.replace("-", " ").replace("_", " ")
+
+
+def page_ranges(pages: list[int]) -> str:
+    """[4, 5, 6, 9] -> '4–6, 9'."""
+    ranges: list[list[int]] = []
+    for page in sorted(set(pages)):
+        if ranges and page == ranges[-1][1] + 1:
+            ranges[-1][1] = page
+        else:
+            ranges.append([page, page])
+    return ", ".join(f"{a}–{b}" if a != b else str(a) for a, b in ranges)
+
+
+def readable_date(iso: str) -> str:
+    moment = datetime.fromisoformat(iso)
+    return f"{moment.day} {MONTHS[moment.month - 1]} {moment.year}"
+
+
+def source_pages(sources: tuple[SourceReference, ...]) -> list[int]:
+    return sorted({s.page for s in sources})
+
+
+# ---------- sections ----------
+
+def render_intro() -> None:
+    slot = st.empty()
+    with slot.container():
+        st.markdown(theme.intro(), unsafe_allow_html=True)
+        started = st.button("Mulai bertanya", key="pk-start")
+    if started:
+        slot.empty()  # remove the intro at once, so only the loading screen shows
+        st.session_state[INTRO_KEY] = True
+        st.rerun()
+
+
+def render_sidebar(manager: ChatbotManager | None) -> None:
+    manifest = getattr(manager.vector_store, "manifest", None) if manager else None
+    with st.sidebar:
+        st.markdown(theme.wordmark(), unsafe_allow_html=True)
+        steps = "".join(
+            f'<div class="pk-step"><b>{i}</b><div><strong>{title}</strong>{text}</div></div>'
+            for i, (title, text) in enumerate(content.HOW_IT_WORKS, start=1)
+        )
+        st.markdown(f'<div class="pk-side"><h4>Cara kerja</h4>{steps}<h4>Sumber jawaban</h4></div>', unsafe_allow_html=True)
+        if manifest:
+            name = document_name(manifest["sources"][0]["source_file"]) if manifest.get("sources") else "Buku pedoman"
+            st.markdown(
+                f'<div class="pk-src"><strong>{escape(name)}</strong><br>Halaman PDF {page_ranges(manifest["pages"])}<br>'
+                f'{manifest["chunk_count"]} potongan teks · dimuat {readable_date(manifest["created_at"])}</div>',
+                unsafe_allow_html=True,
+            )
+        else:
+            st.markdown('<div class="pk-src">Buku pedoman belum dimuat.</div>', unsafe_allow_html=True)
+        st.write("")
+        if st.button("Percakapan baru", key="pk-clear", icon=":material/refresh:", use_container_width=True):
+            st.session_state[HISTORY_KEY] = []
+            st.rerun()
+        if st.button("Putar intro lagi", key="pk-replay", icon=":material/play_circle:", type="tertiary"):
+            st.session_state[INTRO_KEY] = False
+            st.rerun()
+
+
+def render_welcome(disabled: bool) -> str | None:
+    """Greeting, example questions and handbook facts. Returns a clicked example question."""
+    st.markdown(theme.greeting(content.GREETING, content.GREETING_SUB), unsafe_allow_html=True)
+    st.markdown(theme.label("Coba tanyakan"), unsafe_allow_html=True)
+    chosen = None
+    columns = st.columns(2)
+    for i, example in enumerate(content.EXAMPLES):
+        with columns[i % 2]:
+            if st.button(example, key=f"pk-ex-{i}", disabled=disabled, use_container_width=True):
+                chosen = example
+    st.markdown(theme.label("Sekilas PKL"), unsafe_allow_html=True)
+    st.markdown(theme.facts_grid(), unsafe_allow_html=True)
+    return chosen
+
+
+def render_exchange(index: int, item: Exchange) -> None:
+    st.markdown(theme.question_bubble(item.question), unsafe_allow_html=True)
+    response = item.response
+    if response.status is ResponseStatus.ANSWERED:
+        with st.container(key=f"pk-a-{index}"):
+            st.markdown('<div class="pk-from">Dari buku pedoman</div>', unsafe_allow_html=True)
+            st.markdown(response.answer)
+            if response.sources:
+                document = document_name(response.sources[0].source_file)
+                st.markdown(theme.page_tabs(source_pages(response.sources), document), unsafe_allow_html=True)
+                with st.expander("Lihat kutipan dari buku pedoman"):
+                    for source in response.sources:
+                        st.markdown(theme.quote(source.page, source.section, source.snippet), unsafe_allow_html=True)
+    else:
+        warn = response.status is not ResponseStatus.OUT_OF_SCOPE
+        label = "Perlu dicoba lagi" if warn else "Tidak ada di buku pedoman"
+        with st.container(key=f"pk-a-out-{index}"):
+            st.markdown(f'<div class="pk-from">{label}</div>', unsafe_allow_html=True)
+            css = "pk-status pk-warn" if warn else "pk-status"
+            st.markdown(f'<div class="{css}">{escape(response.answer)}</div>', unsafe_allow_html=True)
+            st.write("")
+
+
+def answer(manager: ChatbotManager, question: str, history: list[Exchange]) -> None:
+    st.markdown(theme.question_bubble(question), unsafe_allow_html=True)
+    placeholder = st.empty()
+    names = list(content.STEP_LABELS)
+    fact = random.choice(content.FACTS)
+    hint = f"Sambil menunggu: {fact.figure}, {fact.text[0].lower()}{fact.text[1:-1]} (hal. {fact.page})"
+
+    def report(step: str) -> None:
+        note = content.SLOW_HINT if step == "generate" else hint
+        placeholder.markdown(theme.loading(content.STEP_LABELS[step], names.index(step), len(names), note), unsafe_allow_html=True)
+
+    report(names[0])
+    response = manager.generate_response(question, on_step=report)
+    placeholder.empty()
+    if response.status is ResponseStatus.INVALID_INPUT:
+        st.session_state[NOTICE_KEY] = response.answer
+    else:
+        history.append(Exchange(question.strip(), response))
+    st.rerun()
 
 
 def main() -> None:
     st.set_page_config(page_title="Pekael · Informasi PKL PTIK UNJ", page_icon=":material/menu_book:", layout="centered")
-    st.title(TITLE)
-    st.write(SUBTITLE)
+    st.markdown(theme.style(), unsafe_allow_html=True)
 
+    if not st.session_state.get(INTRO_KEY):
+        render_intro()
+        return
+
+    boot = st.empty()
+    if not st.session_state.get(BOOTED_KEY):  # only the first page view waits for the handbook
+        boot.markdown(theme.boot(), unsafe_allow_html=True)
     manager, problem = load_manager()
+    boot.empty()
+    st.session_state[BOOTED_KEY] = True
+
+    render_sidebar(manager)
+    manifest = getattr(manager.vector_store, "manifest", None) if manager and not problem else None
+    pill = f"{document_name(manifest['sources'][0]['source_file'])} · {len(manifest['pages'])} halaman" if manifest else "Buku pedoman belum siap"
+    st.markdown(theme.top_bar(pill, problem is None), unsafe_allow_html=True)
+
     history: list[Exchange] = st.session_state.setdefault(HISTORY_KEY, [])
-    max_chars = get_config().question_max_chars if manager else 500  # config may be invalid
-
-    with st.form("question_form", clear_on_submit=True, border=False):
-        question = st.text_area(
-            "Pertanyaan tentang PKL",
-            placeholder=PLACEHOLDER,
-            max_chars=max_chars,
-            height=100,
-            disabled=problem is not None,
-        )
-        sent = st.form_submit_button("Kirim", type="primary", disabled=problem is not None)
-
     if problem:
-        st.warning(problem)
-    elif sent:
-        with st.spinner("Mencari jawaban di buku pedoman..."):
-            response = manager.generate_response(question)
-        if response.status is ResponseStatus.INVALID_INPUT:
-            st.warning(response.answer)
-        else:
-            history.insert(0, Exchange(question.strip(), response))
+        st.warning(problem, icon=":material/info:")
 
-    for item in history:
-        render_exchange(item)
+    chosen = render_welcome(problem is not None) if not history else None
+    for index, item in enumerate(history):
+        render_exchange(index, item)
 
-    if history and st.button("Hapus riwayat", type="tertiary"):
-        history.clear()
-        st.rerun()
+    notice = st.session_state.pop(NOTICE_KEY, None)
+    if notice:
+        st.toast(notice, icon=":material/edit_note:")
 
-    st.divider()
-    st.caption(NOTE)
+    max_chars = get_config().question_max_chars if manager else 500  # config may be invalid
+    typed = st.chat_input(content.PLACEHOLDER, max_chars=max_chars, disabled=problem is not None, submit_mode="disable")
+    question = typed or chosen
+    if question and manager and not problem:
+        answer(manager, question, history)
+
+    st.markdown(f'<div class="pk-note">{escape(content.NOTE)}</div>', unsafe_allow_html=True)

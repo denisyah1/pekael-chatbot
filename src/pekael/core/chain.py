@@ -9,7 +9,7 @@ import operator
 from collections.abc import Callable
 from functools import reduce
 
-from langchain_core.runnables import Runnable, RunnableLambda
+from langchain_core.runnables import Runnable, RunnableConfig, RunnableLambda
 
 from pekael.core.schemas import ChainState
 
@@ -51,7 +51,8 @@ class Chain:
         self._runnable = reduce(operator.or_, runnables)
         return self._runnable
 
-    def invoke(self, input_data: ChainState) -> ChainState:
+    def invoke(self, input_data: ChainState, config: RunnableConfig | None = None) -> ChainState:
+        """Run the steps; ``config`` is passed to LangChain (e.g. callbacks that report progress)."""
         if self._runnable is None:
             self.build()
-        return self._runnable.invoke(input_data)
+        return self._runnable.invoke(input_data, config=config)
