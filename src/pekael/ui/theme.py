@@ -44,7 +44,7 @@ html, body, .stApp, p, li, label, h1, h2, h3, h4, button, input, textarea,
   font-family: var(--pk-sans) !important;
 }
 /* serif accents (more specific than the rule above) */
-.stApp .pk-word .pk-v, .stApp .pk-spoken b, .stApp .pk-hello .pk-soft, .stApp .pk-intro .pk-float {
+.stApp .pk-word .pk-v, .stApp .pk-spoken b, .stApp .pk-hello .pk-soft, .stApp .pk-admin-hello .pk-soft, .stApp .pk-intro .pk-float {
   font-family: var(--pk-serif) !important;
 }
 
@@ -203,6 +203,81 @@ header[data-testid="stHeader"] { background: transparent; }
 .pk-src strong { color: var(--pk-text); }
 .pk-note { font-size: 0.75rem; color: var(--pk-slate); text-align: center; margin-top: 2rem; }
 
+/* ---------- chat columns (question right, answer left) ---------- */
+.pk-q { flex-direction: column; align-items: flex-end; margin: 1.3rem 0 0.5rem; }
+.pk-q div { max-width: min(78%, 34rem); }
+.pk-time { font-size: 0.68rem; color: var(--pk-slate); margin-top: 0.25rem; }
+.pk-q .pk-time { padding-right: 0.3rem; }
+[class*="st-key-pk-a-"] { width: fit-content !important; max-width: min(86%, 38rem) !important; margin-right: auto; }
+[class*="st-key-pk-a-"] .pk-time { text-align: right; margin: 0.1rem 0 0.2rem; }
+.pk-loading { width: fit-content; max-width: min(86%, 38rem); }
+@media (max-width: 640px) { [class*="st-key-pk-a-"] { max-width: 92% !important; } .pk-q div { max-width: 88%; } }
+
+/* ---------- admin: library card login ---------- */
+.pk-card-wrap { max-width: 27rem; margin: 5vh auto 0; }
+.pk-card {
+  position: relative; overflow: hidden; background: var(--pk-surface); border: 1px solid var(--pk-line); border-bottom: 0;
+  border-radius: 22px 22px 0 0; padding: 1.5rem 1.6rem 1rem 2.1rem;
+  background-image: repeating-linear-gradient(to bottom, transparent 0 27px, rgba(166, 180, 203, 0.07) 27px 28px);
+}
+.pk-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 7px; background: linear-gradient(var(--pk-tint), var(--pk-tint-deep) 55%, var(--pk-sand)); }
+.pk-card::after { content: ""; position: absolute; right: 1.3rem; top: 1.25rem; width: 0.85rem; height: 0.85rem; border-radius: 50%; background: var(--pk-bg); box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6); }
+.pk-card-kicker { font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--pk-slate); }
+.pk-card-title { display: flex; align-items: baseline; gap: 0.55rem; margin: 0.35rem 0 0.15rem; }
+.pk-card-title .pk-word { font-size: 2.1rem; }
+.pk-card-title em { font-family: var(--pk-serif); font-style: italic; color: var(--pk-sand); font-size: 1.35rem; }
+.pk-card-sub { color: var(--pk-slate-soft); font-size: 0.85rem; margin-bottom: 0.9rem; }
+.pk-card-row { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--pk-slate); border-top: 1px dashed var(--pk-line); padding-top: 0.55rem; letter-spacing: 0.08em; }
+.pk-stamp {
+  position: absolute; right: 1.1rem; bottom: 2.6rem; transform: rotate(-11deg); border: 2px dashed rgba(241, 217, 184, 0.55);
+  color: rgba(241, 217, 184, 0.75); font-size: 0.62rem; font-weight: 800; letter-spacing: 0.22em; padding: 0.3rem 0.6rem; border-radius: 6px;
+  animation: pk-stamp 0.6s cubic-bezier(.2, 1.6, .4, 1) 0.4s both;
+}
+.st-key-pk-login { max-width: 27rem; margin: 0 auto; background: var(--pk-surface); border: 1px solid var(--pk-line); border-top: 0; border-radius: 0 0 22px 22px; padding: 0.2rem 1.6rem 1.3rem 2.1rem; position: relative; }
+.st-key-pk-login::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 7px; background: var(--pk-sand); border-radius: 0 0 0 22px; }
+.st-key-pk-login [data-testid="stTextInput"] input { background: var(--pk-bg) !important; border-radius: 12px !important; }
+.st-key-pk-login [data-testid="stFormSubmitButton"] button { width: 100%; background: var(--pk-tint) !important; color: var(--pk-bg) !important; border: 0 !important; border-radius: 12px !important; font-weight: 700 !important; }
+.pk-back { text-align: center; margin-top: 1.1rem; font-size: 0.82rem; }
+.pk-back a { color: var(--pk-slate-soft) !important; text-decoration: none; }
+.pk-back a:hover { color: var(--pk-tint) !important; }
+
+/* ---------- admin: dashboard ---------- */
+.pk-admin-hello { margin: 0.2rem 0 1.2rem; }
+.pk-admin-hello .pk-h { font-size: clamp(1.5rem, 4.6vw, 1.9rem); font-weight: 800; letter-spacing: -0.03em; color: var(--pk-text); }
+.pk-admin-hello .pk-soft { font-style: italic; font-weight: 400; color: var(--pk-sand); font-variation-settings: "SOFT" 100, "WONK" 1; }
+.pk-admin-hello p { color: var(--pk-slate-soft); margin: 0.3rem 0 0; font-size: 0.9rem; }
+.pk-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.7rem; }
+@media (max-width: 640px) { .pk-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.pk-stat { background: var(--pk-surface); border: 1px solid var(--pk-line); border-radius: 16px; padding: 0.85rem 0.95rem; }
+.pk-stat small { display: block; font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--pk-slate); }
+.pk-stat strong { display: block; font-size: 1.45rem; font-weight: 800; color: var(--pk-text); letter-spacing: -0.02em; margin: 0.25rem 0 0.1rem; }
+.pk-stat span { font-size: 0.75rem; color: var(--pk-slate-soft); word-break: break-word; }
+.pk-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(2.6rem, 1fr)); gap: 0.4rem; }
+.pk-tile {
+  position: relative; aspect-ratio: 3 / 4; border-radius: 6px 10px 10px 6px; border: 1px dashed var(--pk-line);
+  display: flex; align-items: flex-end; justify-content: center; padding-bottom: 0.3rem; font-size: 0.72rem; color: var(--pk-slate);
+}
+.pk-tile.on { border: 1px solid rgba(200, 215, 255, 0.35); color: var(--pk-bg); font-weight: 700; background: rgba(200, 215, 255, var(--pk-fill)); }
+.pk-tile.on.light { color: var(--pk-text); }
+.pk-tile.on::before { content: ""; position: absolute; left: 3px; top: 3px; bottom: 3px; width: 2px; border-radius: 2px; background: rgba(10, 18, 34, 0.25); }
+.pk-tile i { position: absolute; top: 0.3rem; right: 0.35rem; font-style: normal; font-size: 0.6rem; opacity: 0.8; }
+.pk-legend { display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.72rem; color: var(--pk-slate); margin-top: 0.6rem; }
+.pk-legend b { display: inline-block; width: 0.8rem; height: 0.8rem; border-radius: 3px; vertical-align: -2px; margin-right: 0.35rem; }
+.pk-ver { display: flex; gap: 0.9rem; padding: 0.8rem 0; border-bottom: 1px solid var(--pk-line); }
+.pk-ver .dot { flex: none; width: 0.75rem; height: 0.75rem; border-radius: 50%; margin-top: 0.35rem; border: 2px solid var(--pk-slate); }
+.pk-ver.active .dot { border-color: #7FD1A8; background: #7FD1A8; box-shadow: 0 0 0 4px rgba(127, 209, 168, 0.15); }
+.pk-ver strong { color: var(--pk-text); font-size: 0.92rem; }
+.pk-ver span { display: block; font-size: 0.78rem; color: var(--pk-slate-soft); line-height: 1.5; }
+.pk-ver em { font-style: normal; font-size: 0.68rem; color: #7FD1A8; border: 1px solid rgba(127, 209, 168, 0.4); border-radius: 99px; padding: 0.05rem 0.5rem; margin-left: 0.4rem; }
+.pk-report { background: var(--pk-surface); border: 1px solid var(--pk-line); border-left: 3px solid #7FD1A8; border-radius: 14px; padding: 0.9rem 1rem; font-size: 0.85rem; color: var(--pk-slate-soft); line-height: 1.6; }
+.pk-report.fail { border-left-color: var(--pk-sand); }
+.pk-report b { color: var(--pk-text); }
+.pk-kv { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1.2rem; font-size: 0.85rem; }
+.pk-kv dt { color: var(--pk-slate); }
+.pk-kv dd { margin: 0; color: var(--pk-text); word-break: break-word; }
+[data-testid="stTabs"] button p { font-size: 0.88rem !important; }
+@keyframes pk-stamp { from { opacity: 0; transform: rotate(-11deg) scale(1.8); } to { opacity: 1; transform: rotate(-11deg) scale(1); } }
+
 /* ---------- motion ---------- */
 @keyframes pk-fade { to { opacity: 1; } }
 @keyframes pk-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -293,8 +368,13 @@ def facts_grid() -> str:
     return f'<div class="pk-facts pk-enter">{cards}</div>'
 
 
-def question_bubble(question: str) -> str:
-    return f'<div class="pk-q"><div>{escape(question)}</div></div>'
+def question_bubble(question: str, time: str = "") -> str:
+    stamp = f'<span class="pk-time">{escape(time)}</span>' if time else ""
+    return f'<div class="pk-q"><div>{escape(question)}</div>{stamp}</div>'
+
+
+def time_stamp(time: str) -> str:
+    return f'<div class="pk-time">{escape(time)}</div>'
 
 
 def page_tabs(pages: list[int], document: str) -> str:
@@ -321,3 +401,64 @@ def loading(text: str, step: int = 0, total: int = 0, hint: str = "") -> str:
 
 def boot() -> str:
     return _html(f"""<div class="pk-boot">{wordmark()}<div class="pk-dots">Menyiapkan buku pedoman</div></div>""")
+
+
+# ---------- admin ----------
+
+def login_card(card_number: str) -> str:
+    return _html(f"""
+        <div class="pk-card-wrap"><div class="pk-card">
+          <div class="pk-card-kicker">Kartu pengelola · Pekael</div>
+          <div class="pk-card-title">{wordmark()}<em>ruang admin</em></div>
+          <div class="pk-card-sub">Khusus pengelola buku pedoman. Masuk untuk mengganti buku, melihat versi, dan menguji jawaban.</div>
+          <div class="pk-card-row"><span>NO. {escape(card_number)}</span><span>PTIK · UNJ</span></div>
+          <div class="pk-stamp">RUANG ADMIN</div>
+        </div></div>""")
+
+
+def admin_hello(name: str) -> str:
+    return _html(f"""
+        <div class="pk-admin-hello pk-enter"><div class="pk-h">Halo, <span class="pk-soft">{escape(name)}</span>.</div>
+        <p>Semua perubahan di sini langsung dipakai mahasiswa.</p></div>""")
+
+
+def stats(items: list[tuple[str, str, str]]) -> str:
+    cards = "".join(
+        f'<div class="pk-stat"><small>{escape(label)}</small><strong>{escape(value)}</strong><span>{escape(note)}</span></div>'
+        for label, value, note in items
+    )
+    return f'<div class="pk-stats pk-enter">{cards}</div>'
+
+
+def page_map(total_pages: int, chunks_per_page: dict[int, int]) -> str:
+    """One tile per PDF page: lit and brighter with more chunks, dashed when not in the knowledge base."""
+    most = max(chunks_per_page.values(), default=1)
+    tiles = []
+    for page in range(1, max(total_pages, max(chunks_per_page, default=0)) + 1):
+        count = chunks_per_page.get(page, 0)
+        if count:
+            fill = 0.25 + 0.65 * count / most
+            light = " light" if fill < 0.5 else ""
+            tiles.append(f'<div class="pk-tile on{light}" style="--pk-fill:{fill:.2f}" title="Halaman {page}: {count} potongan">'
+                         f'<i>{count}</i>{page}</div>')
+        else:
+            tiles.append(f'<div class="pk-tile" title="Halaman {page}: tidak dipakai">{page}</div>')
+    legend = ('<div class="pk-legend"><span><b style="background:rgba(200,215,255,.9)"></b>dipakai, makin terang makin banyak potongan</span>'
+              '<span><b style="border:1px dashed #22324F"></b>tidak dipakai</span><span>angka kecil = jumlah potongan</span></div>')
+    return f'<div class="pk-map">{"".join(tiles)}</div>{legend}'
+
+
+def version_row(title: str, detail: str, active: bool) -> str:
+    badge = "<em>aktif</em>" if active else ""
+    css = "pk-ver active" if active else "pk-ver"
+    return f'<div class="{css}"><div class="dot"></div><div><strong>{escape(title)}</strong>{badge}<span>{escape(detail)}</span></div></div>'
+
+
+def report_box(lines: list[str], failed: bool = False) -> str:
+    body = "<br>".join(lines)  # lines are built from escaped values by the caller
+    return f'<div class="pk-report{" fail" if failed else ""}">{body}</div>'
+
+
+def key_values(rows: list[tuple[str, str]]) -> str:
+    items = "".join(f"<dt>{escape(k)}</dt><dd>{escape(v)}</dd>" for k, v in rows)
+    return f'<dl class="pk-kv">{items}</dl>'

@@ -27,3 +27,8 @@ def test_login_disabled_when_not_configured(username, password):
 
     assert not auth.is_configured
     assert not auth.verify(username or "", "")
+
+
+@pytest.mark.parametrize(("username", "password"), [("Admin", "s3cret-Pass"), (" admin ", " s3cret-Pass "), ("ADMIN", "s3cret-Pass\n")])
+def test_case_of_username_and_surrounding_spaces_are_ignored(auth, username, password):
+    assert auth.verify(username, password)

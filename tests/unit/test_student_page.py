@@ -109,7 +109,7 @@ def test_answer_shows_bubble_page_tabs_quotes_and_progress(app):
     html = _html(at)
     assert manager.questions == ["Berapa SKS minimal?"]
     assert manager.reported == ["validate_input", "retrieve", "generate"]
-    assert '<div class="pk-q"><div>Berapa SKS minimal?</div></div>' in html
+    assert '<div class="pk-q"><div>Berapa SKS minimal?</div><span class="pk-time">' in html  # question on the right, with time
     assert "Minimal 100 SKS." in html
     assert '<span class="pk-page">hal. 10</span><span class="pk-page">hal. 13</span>' in html
     assert at.expander[0].label == "Lihat kutipan dari buku pedoman"

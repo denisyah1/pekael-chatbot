@@ -98,3 +98,16 @@ def test_knowledge_base_pages_are_validated():
     assert AppConfig.from_env({"KNOWLEDGE_BASE_PAGES": "4-16"}).knowledge_base_pages == "4-16"
     with pytest.raises(ConfigError, match="KNOWLEDGE_BASE_PAGES"):
         AppConfig.from_env({"KNOWLEDGE_BASE_PAGES": "16-4"})
+
+
+def test_environment_override_of_admin_settings_is_reported_by_name(monkeypatch, caplog):
+    monkeypatch.setenv("ADMIN_USERNAME", "admin-dari-terminal")
+    monkeypatch.delenv("ADMIN_PASSWORD", raising=False)
+
+    names = AppConfigurator.overridden_settings({"ADMIN_USERNAME": "admin1", "ADMIN_PASSWORD": "x"})
+
+    assert names == ["ADMIN_USERNAME"]
+    with caplog.at_level("WARNING", logger="pekael.config.app_configurator"):
+        AppConfigurator.read_config("tidak-ada.env")
+    assert "ADMIN_USERNAME" in caplog.text and "admin-dari-terminal" not in caplog.text
+

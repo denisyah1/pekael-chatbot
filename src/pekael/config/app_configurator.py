@@ -1,5 +1,6 @@
 """Reads configuration and assembles the chatbot (class diagram: AppConfigurator)."""
 
+import logging
 import os
 from pathlib import Path
 
@@ -17,6 +18,10 @@ from pekael.splitters.factory import DocumentSplitterFactory
 from pekael.vectorstores.factory import VectorStoreFactory
 
 DEFAULT_ENV_FILE = Path(".env")
+# Settings whose origin is worth logging when a real environment variable overrides .env
+WATCHED_OVERRIDES = ("ADMIN_USERNAME", "ADMIN_PASSWORD", "GEMINI_API_KEY", "GEMINI_CHAT_MODEL")
+
+logger = logging.getLogger(__name__)
 
 
 class AppConfigurator:
@@ -30,8 +35,19 @@ class AppConfigurator:
         env_file = Path(config_path) if config_path else DEFAULT_ENV_FILE
         file_values = dotenv_values(env_file) if env_file.is_file() else {}
         merged = {key: value for key, value in file_values.items() if value is not None}
+        overridden = AppConfigurator.overridden_settings(file_values)
+        if overridden:  # names only, never values
+            logger.warning("Environment variables override .env for: %s", ", ".join(overridden))
         merged.update(os.environ)
         return AppConfig.from_env(merged)
+
+    @staticmethod
+    def overridden_settings(file_values: dict) -> list[str]:
+        """Watched settings set in the process environment with a value different from .env."""
+        return [
+            name for name in WATCHED_OVERRIDES
+            if name in os.environ and os.environ[name] != (file_values.get(name) or "")
+        ]
 
     @staticmethod
     def create_manager_from_config(config: AppConfig) -> ChatbotManager:

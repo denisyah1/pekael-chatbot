@@ -13,6 +13,7 @@ squared L2 values returned by IndexFlatL2: smaller means closer, they are not pr
 import json
 import os
 import shutil
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -95,7 +96,9 @@ class FaissVectorStore(BaseVectorStore):
 
     def _manifest(self, build_id: str, documents: list[Document], store: FAISS) -> dict:
         sources = sorted({(d.metadata.get("source_file"), d.metadata.get("source_hash")) for d in documents}, key=str)
-        pages = sorted({d.metadata["page"] for d in documents if "page" in d.metadata})
+        per_page = Counter(d.metadata["page"] for d in documents if "page" in d.metadata)
+        pages = sorted(per_page)
+        total_pages = max((d.metadata.get("total_pages", 0) for d in documents), default=0)
         return {
             "build_id": build_id,
             "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -107,6 +110,8 @@ class FaissVectorStore(BaseVectorStore):
             "normalized": getattr(self.embeddings, "normalize", None),
             "chunk_count": len(documents),
             "pages": pages,
+            "chunks_per_page": {str(p): per_page[p] for p in pages},
+            "total_pages": total_pages,
             "sources": [{"source_file": f, "source_hash": h} for f, h in sources],
             **self.build_info,
         }
@@ -162,6 +167,53 @@ class FaissVectorStore(BaseVectorStore):
     def _load_folder(self, folder: Path) -> FAISS:
         # The docstore is a pickle written by this application only, never an uploaded file.
         return FAISS.load_local(str(folder), self.embeddings, allow_dangerous_deserialization=True)
+
+    def versions(self) -> list[dict]:
+        """Manifests of the stored builds, newest first, each with ``active`` set."""
+        folder = self.index_path / VERSIONS_DIR
+        if not folder.is_dir():
+            return []
+        active = self.active_build_id()
+        found = []
+        for build in sorted(folder.iterdir(), key=lambda p: p.name, reverse=True):
+            manifest_file = build / MANIFEST_FILE
+            if build.is_dir() and not build.name.startswith(TEMP_PREFIX) and manifest_file.is_file():
+                manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+                found.append({**manifest, "active": build.name == active})
+        return found
+
+    def activate_version(self, build_id: str) -> None:
+        """Switch back to a stored build after checking that it loads with the configured model."""
+        folder = self.index_path / VERSIONS_DIR / build_id
+        manifest_file = folder / MANIFEST_FILE
+        if not manifest_file.is_file():
+            raise IndexNotReadyError(f"Build {build_id} does not exist")
+        manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+        expected_model = getattr(self.embeddings, "model", None)
+        if expected_model and manifest.get("embedding_model") != expected_model:
+            raise IndexNotReadyError(f"Build {build_id} uses {manifest.get('embedding_model')}, configured model is {expected_model}")
+        try:
+            store = self._load_folder(folder)
+        except Exception as exc:
+            raise IndexNotReadyError(f"Build {build_id} could not be loaded") from exc
+        self._activate(build_id)
+        self._store, self.manifest = store, manifest
+
+    def chunks_per_page(self) -> dict[int, int]:
+        """Number of chunks per PDF page of the active index (from the manifest, or the docstore for older builds)."""
+        if self.manifest and "chunks_per_page" in self.manifest:
+            return {int(p): n for p, n in self.manifest["chunks_per_page"].items()}
+        if self._store is None:
+            return {}
+        counts = Counter(doc.metadata.get("page") for doc in self._store.docstore._dict.values())
+        return {p: n for p, n in sorted(counts.items()) if p is not None}
+
+    def total_pages(self) -> int:
+        if self.manifest and self.manifest.get("total_pages"):
+            return int(self.manifest["total_pages"])
+        if self._store is None:
+            return 0
+        return max((doc.metadata.get("total_pages", 0) for doc in self._store.docstore._dict.values()), default=0)
 
     # ---------- searching ----------
 

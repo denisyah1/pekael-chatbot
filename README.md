@@ -91,6 +91,8 @@ Jalankan website secara lokal, lalu buka http://localhost:8501:
 .\.venv\Scripts\streamlit.exe run app.py
 ```
 
+Ruang admin ada di http://localhost:8501/admin. Akun dibaca dari `ADMIN_USERNAME` dan `ADMIN_PASSWORD` di `.env`, login nonaktif bila keduanya kosong.
+
 Hentikan dengan `Ctrl+C`. Tanpa website, pertanyaan dapat diajukan dari terminal dengan `scripts\ask.py "pertanyaan"`.
 
 ## Perlindungan Secret

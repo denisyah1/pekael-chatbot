@@ -8,6 +8,10 @@ secondaryBackgroundColor = "#111C31"
 textColor = "#E7ECF4"
 borderColor = "#22324F"
 
+[server]
+# Same limit as PDF_MAX_UPLOAD_MB (admin upload)
+maxUploadSize = 30
+
 [client]
 toolbarMode = "minimal"
 

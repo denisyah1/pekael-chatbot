@@ -21,7 +21,7 @@ class FakeEmbeddings(DeterministicFakeEmbedding):
 
 
 class PageLoader(BaseLoader):
-    def load(self, source_path):
+    def load(self, source_path, *, pages=None, on_page=None):
         return [
             Document(text, metadata={"source_file": "pedoman.pdf", "source_hash": "565a9929ea00", "page": page,
                                      "extraction_method": "tesseract_ocr", "manually_corrected": True})

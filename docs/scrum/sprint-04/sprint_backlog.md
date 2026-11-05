@@ -14,11 +14,11 @@ Sprint Planning memuat delapan tugas (lihat [Sprint Planning](sprint_planning.md
 | S4-T01 | 1 | PBI-06 | Pemeriksaan ulang label halaman daftar topik dan penambahan contoh pertanyaan halaman 22–28 | To Do | |
 | S4-T02 | 2 | PBI-06 | Halaman tanya-jawab mahasiswa | In Progress | Tampilan pertama selesai, menunggu evaluasi Developer |
 | S4-T03 | 3 | PBI-07 | Rujukan dokumen, halaman PDF, bagian, dan kutipan | In Progress | Tampil pada setiap jawaban, menunggu evaluasi Developer |
-| S4-T04 | 4 | PBI-06, PBI-07 | Evaluasi dan perbaikan tampilan pertama | In Progress | Evaluasi pertama Developer: tampilan dirancang ulang (tema gelap, intro, informasi umum, tanda proses), menunggu evaluasi kedua |
-| S4-T05 | 5 | PBI-08 | Login satu akun admin | To Do | |
-| S4-T06 | 6 | PBI-08 | Halaman admin untuk mengganti buku panduan dan laporan pembangunan | To Do | |
-| S4-T07 | 7 | PBI-06 | Pembatasan panjang pertanyaan dan pencegahan pengiriman berulang | In Progress | Batas 500 karakter aktif. Kolom pertanyaan terkunci selama jawaban disusun, sehingga pertanyaan tidak terkirim berulang |
-| S4-T08 | 8 | PBI-06, PBI-07, PBI-08 | Pengujian otomatis tampilan dan uji seluruh penggunaan dari website | In Progress | 12 pengujian otomatis halaman mahasiswa lulus |
+| S4-T04 | 4 | PBI-06, PBI-07 | Evaluasi dan perbaikan tampilan pertama | In Progress | Evaluasi kedua Developer: pertanyaan di kanan dan jawaban di kiri seperti aplikasi percakapan, menunggu evaluasi berikutnya |
+| S4-T05 | 5 | PBI-08 | Login satu akun admin | Done | Satu akun dari pengaturan lokal, salah kata sandi lima kali mengunci formulir 30 detik |
+| S4-T06 | 6 | PBI-08 | Halaman admin untuk mengganti buku panduan dan laporan pembangunan | In Progress | Ruang admin selesai dibuat, menunggu evaluasi Developer dan uji unggah buku dari website |
+| S4-T07 | 7 | PBI-06 | Pembatasan panjang pertanyaan dan pencegahan pengiriman berulang | Done | Batas 500 karakter, kolom pertanyaan terkunci selama jawaban disusun, pertanyaan yang sama dijawab dari simpanan |
+| S4-T08 | 8 | PBI-06, PBI-07, PBI-08 | Pengujian otomatis tampilan dan uji seluruh penggunaan dari website | In Progress | 12 pengujian halaman mahasiswa dan 14 pengujian ruang admin lulus |
 
 ## Log Pengerjaan
 
@@ -98,3 +98,36 @@ Sprint Planning memuat delapan tugas (lihat [Sprint Planning](sprint_planning.md
 
 **Berikutnya**
 - Evaluasi kedua tampilan oleh Developer (S4-T04).
+
+### 16 November 2026
+
+**Dikerjakan**
+- Developer menanyakan apakah knowledge base dibangun ulang setiap website dijalankan. Knowledge base hanya dibangun sekali lalu dimuat dari penyimpanan dalam 0,05 detik. Waktu tunggu jawaban seluruhnya berasal dari Gemini.
+- Developer menetapkan tetap memakai `gemini-3.5-flash-lite` dan meminta efisiensi. Ditambahkan simpanan jawaban: pertanyaan yang sama persis (huruf besar-kecil, spasi, dan tanda tanya diabaikan) dijawab dari simpanan tanpa memanggil Gemini. Simpanan hanya berisi pasangan pertanyaan dan jawaban per versi knowledge base, bukan riwayat percakapan, dan dikosongkan saat knowledge base diganti. Jawaban gagal tidak disimpan.
+- Evaluasi kedua tampilan oleh Developer: pertanyaan tampil di kanan dan jawaban di kiri seperti aplikasi percakapan, masing-masing dengan jam.
+- Membuat ruang admin di alamat `/admin` dengan konsep kartu perpustakaan:
+  - halaman masuk berbentuk kartu pengelola dengan punggung buku, garis kertas, dan stempel "RUANG ADMIN",
+  - ringkasan buku aktif, jumlah halaman, potongan, dan versi,
+  - peta halaman buku: setiap halaman PDF tampil sebagai satu ubin, makin terang makin banyak potongan, halaman yang tidak dipakai bergaris putus-putus,
+  - mengganti buku pedoman dengan unggahan PDF (maksimal 30 MB, wajib dicentang sudah disetujui *Product Owner*) atau membangun ulang buku yang sedang dipakai, lengkap dengan tanda proses per halaman dan laporan hasil,
+  - riwayat versi dengan tombol untuk mengaktifkan kembali versi sebelumnya,
+  - uji pertanyaan lengkap dengan jarak potongan dan batas relevansi,
+  - ringkasan pengaturan tanpa menampilkan kata sandi dan API key.
+- Developer meminta nama pengguna dan kata sandi admin ditulis langsung di kode. Karena repository bersifat publik, kata sandi di kode dapat dibaca siapa pun. Akun yang diminta tetap dipakai, tetapi disimpan di pengaturan lokal yang tidak ikut ke repository.
+
+**Hasil uji**
+- Pengujian otomatis: 274 lulus, 0 gagal, termasuk 14 pengujian simpanan jawaban, kemajuan pembangunan, dan riwayat versi, serta 14 pengujian ruang admin.
+- Uji dari website: pertanyaan "Berapa lama PKL dilaksanakan?" pertama kali dijawab dalam 6,1 detik, saat ditanyakan ulang dijawab dalam 1,0 detik dari simpanan. Pertanyaan di luar topik PKL ditolak dalam 2,0 detik.
+- Tangkapan layar ukuran laptop dan ponsel: percakapan, halaman masuk admin, ringkasan dan peta halaman, riwayat versi, dan pengaturan.
+
+- Developer mencoba masuk ruang admin dan ditolak. Pengaturan akun terbaca benar dan akun yang diminta lolos pemeriksaan, sehingga penolakan berasal dari teks yang dimasukkan. Agar spasi yang ikut tersalin dan huruf besar pada nama pengguna tidak menggagalkan login, spasi di awal dan akhir kini diabaikan dan nama pengguna tidak membedakan huruf besar-kecil. Kata sandi tetap harus sama persis.
+- Developer masih ditolak. Login diuji ulang dengan pengaturan asli dan dengan mengetik langsung di browser, keduanya berhasil masuk. Dugaan penyebab adalah isian otomatis browser yang tampil di layar tetapi tidak terkirim. Isian otomatis kini dimatikan, dan bila kolom terkirim kosong muncul pesan untuk mengetik ulang secara manual tanpa dihitung sebagai percobaan gagal.
+- Developer masih ditolak. Ditambahkan perintah pemeriksa login yang dijalankan di terminal Developer untuk menunjukkan asal pengaturan akun dan bagian yang tidak cocok, tanpa menampilkan kata sandi.
+
+**Hambatan**
+- Tidak ada.
+
+**Berikutnya**
+- Evaluasi tampilan percakapan dan ruang admin oleh Developer.
+- Uji mengganti buku pedoman dari website (S4-T06).
+- Pemeriksaan ulang label halaman daftar topik (S4-T01).

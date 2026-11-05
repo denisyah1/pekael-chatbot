@@ -18,7 +18,7 @@ from pekael.vectorstores.faiss_vector_store import FaissVectorStore
 
 
 class FakeLoader(BaseLoader):
-    def load(self, source_path):
+    def load(self, source_path, *, pages=None, on_page=None):
         return [
             Document("Halaman empat.", metadata={"source_file": "pedoman.pdf", "source_hash": "abc", "page": 4,
                                                  "extraction_method": "tesseract_ocr", "manually_corrected": True}),

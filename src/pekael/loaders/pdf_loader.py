@@ -1,6 +1,7 @@
 """PDF loader: native text per page, OCR fallback only for pages without enough text."""
 
 import hashlib
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -72,20 +73,29 @@ class PDFLoader(BaseLoader):
         self.corrections_dir = Path(corrections_dir) if corrections_dir else None
         self.pages = sorted(set(pages)) if pages else None  # 1-based pages approved for the knowledge base
 
-    def load(self, source_path: str | Path) -> list[Document]:
+    def load(
+        self,
+        source_path: str | Path,
+        *,
+        pages: list[int] | None = None,
+        on_page: Callable[[int, int], None] | None = None,
+    ) -> list[Document]:
         """Return one Document per selected PDF page (all pages if no selection), in page order."""
         path = Path(source_path)
         pdf = self.open_pdf(path)
         source_hash = file_sha256(path)
         try:
-            numbers = self.pages or list(range(1, pdf.page_count + 1))
+            selection = sorted(set(pages)) if pages else self.pages
+            numbers = selection or list(range(1, pdf.page_count + 1))
             outside = [n for n in numbers if n > pdf.page_count]
             if outside:
                 raise DocumentLoadError(f"Selected pages {outside} exceed the {pdf.page_count} pages of {path.name}")
-            return [
-                self.to_document(self.extract_page(pdf[n - 1], source_hash), path.name, source_hash, pdf.page_count)
-                for n in numbers
-            ]
+            documents = []
+            for done, n in enumerate(numbers, start=1):
+                documents.append(self.to_document(self.extract_page(pdf[n - 1], source_hash), path.name, source_hash, pdf.page_count))
+                if on_page:
+                    on_page(done, len(numbers))
+            return documents
         finally:
             pdf.close()
 

@@ -65,3 +65,35 @@
 **EXP-005** (`gemini-3.5-flash`): `.env` `GEMINI_CHAT_MODEL` diganti dengan skrip satu baris, `run_threshold_experiment.py` mendapat opsi `--output` agar `exp004.json` tidak tertimpa. Hasil: 13/36 dijawab, lalu `429 RESOURCE_EXHAUSTED` (`GenerateRequestsPerDayPerProjectPerModel-FreeTier`, `quotaValue` 20, `retryDelay` 56325 s). `.env` dikembalikan ke `gemini-3.5-flash-lite` (D-40).
 
 **Waktu per langkah** (callback `on_step`, `gemini-3.5-flash-lite`, 3 pertanyaan): `retrieve` 0,48–0,56 s, `generate` 22,75–28,79 s (satu `unavailable`), langkah lain < 0,01 s, muat indeks 0,05 s. Streaming satu prompt alur lengkap (4.556 karakter): token pertama 13,91 s, selesai 14,07 s, 6 potongan. Waktu tunggu terjadi sebelum token pertama, sehingga streaming tidak mempersingkat waktu tunggu. Batas tier gratis menurut Developer: 15 permintaan per menit, 500 per hari.
+
+## Sesi 4 — 16 November 2026
+
+**Simpanan jawaban (D-41)** — `ChatbotManager`
+- `normalise_question()` (lower, spasi tunggal, buang `?!.,` di akhir). Kunci `(pertanyaan, manifest.build_id)`, `OrderedDict` LRU `cache_size=256`, `threading.Lock`. Disimpan hanya `answered`/`out_of_scope`. `clear_cache()` dipanggil setelah `initialize_knowledge_base` berhasil dan saat versi diaktifkan. `cached_answers()` untuk ruang admin.
+
+**Dukungan admin**
+- `BaseLoader.load(source_path, *, pages=None, on_page=None)`, `PDFLoader` melaporkan `on_page(done, total)`.
+- `ChatbotManager.initialize_knowledge_base(source_path, pages=None, on_progress=None)`: tahap `BUILD_STAGES = ("load", "split", "index")`, `build_info["source_path"]` dan `knowledge_base_pages` dicatat di manifest.
+- `FaissVectorStore`: manifest baru memuat `chunks_per_page` dan `total_pages`, `versions()` (terbaru dulu, `active`), `activate_version(build_id)` (cek manifest, model embedding, muat folder, lalu ganti `ACTIVE`), `chunks_per_page()` dan `total_pages()` (cadangan dari docstore untuk build lama).
+
+**Tampilan**
+- `app.py`: `st.navigation([...], position="hidden")`, halaman mahasiswa `/` dan ruang admin `/admin`. `set_page_config` pindah ke `app.py`.
+- `student_page.py`: `Exchange.asked_at`/`answered_at`, jam di bawah gelembung, kartu jawaban `width: fit-content`, `max-width: min(86%, 38rem)` (kiri), pertanyaan `max-width: min(78%, 34rem)` (kanan), tautan kecil "Masuk ruang admin".
+- `src/pekael/ui/admin_page.py`: login (`AdminAuthenticator`, `hmac.compare_digest`, 5 kali salah → kunci 30 s per sesi), dashboard (statistik, peta halaman, tab Ganti buku pedoman / Riwayat versi / Uji pertanyaan / Pengaturan). Unggahan: cek `%PDF-` dan `PDF_MAX_UPLOAD_MB`, nama file dibersihkan, disimpan di `data/source/uploads/` (di-ignore), dihapus bila pembangunan gagal. Tesseract dicek sebelum membangun.
+- `.streamlit/config.toml`: `server.maxUploadSize = 30`.
+- Akun admin: `.env` `ADMIN_USERNAME`, `ADMIN_PASSWORD` diisi dengan skrip yang hanya mengganti dua baris tersebut (D-42). Kata sandi tidak ditemukan di file mana pun di luar `.env` (`grep -rl`).
+
+**Uji**
+- `tests/unit/test_admin_core.py` (14): simpanan jawaban, normalisasi, ukuran simpanan, build baru, kemajuan dan pilihan halaman, `PDFLoader` pilihan halaman, versi dan rollback, model berbeda ditolak, statistik halaman build lama.
+- `tests/unit/test_admin_page.py` (14, `tests/fixtures/admin_app.py`): kartu login, kata sandi salah, login benar, kunci setelah 5 kali, akun belum diatur, keluar, tombol bangun, bangun ulang dan laporan, bangun gagal, format halaman salah, aktifkan versi, uji pertanyaan, pengaturan tanpa secret, validasi unggahan.
+- Website (Edge headless + CDP, kredensial dibaca dari konfigurasi): "Berapa lama PKL dilaksanakan?" 6,1 s, "Apa itu machine learning?" 2,0 s, pertanyaan pertama diulang 1,0 s (simpanan). Temuan yang diperbaiki: formulir login tidak menyatu dengan kartu (kelas key tidak melekat pada `st.form`, dibungkus `st.container(key=...)`), nama admin belum memakai huruf aksen, batas unggahan tampil 200 MB.
+- `pytest` → **268 lulus, 0 gagal**.
+
+**Login admin ditolak (laporan Developer)**: log `Admin sign-in failed`. Diperiksa tanpa mencetak nilai: satu baris `ADMIN_USERNAME` dan `ADMIN_PASSWORD` di `.env`, tidak ada `ADMIN_*` di environment Windows, `verify("admin1", <kata sandi yang diminta>)` = `True`, dengan spasi di akhir atau `Admin1` = `False`. `AdminAuthenticator` kini `strip()` kedua nilai dan `casefold()` nama pengguna, kata sandi tetap peka huruf besar-kecil. Test baru `test_case_of_username_and_surrounding_spaces_are_ignored` (3 kasus). `pytest` → **271 lulus, 0 gagal**.
+
+**Login masih ditolak (laporan Developer)**: AppTest dengan `.env` asli (tanpa tiruan) → `Admin signed in`. Server baru di port 8501, Edge headless mengetik dengan CDP `Input.insertText` → dashboard terbuka, log `Admin signed in`. Dugaan: isian otomatis browser (`autocomplete="username"`/`current-password`) tampil tetapi tidak terkirim ke Streamlit. Diubah ke `autocomplete="off"` dan `"new-password"`, isian kosong memberi peringatan dan tidak menambah hitungan gagal. Test baru: `test_empty_fields_ask_to_type_and_do_not_count_as_failure`, `test_autofill_is_turned_off`. `pytest` → **273 lulus, 0 gagal**.
+
+**Login masih ditolak (laporan kedua)**: dugaan variabel lingkungan `ADMIN_*` di terminal Developer (misalnya dimuat VS Code saat terminal dibuka) yang mengalahkan `.env`. Ditambahkan `AppConfigurator.overridden_settings()` dan peringatan log berisi nama pengaturan saja (`ADMIN_USERNAME`, `ADMIN_PASSWORD`, `GEMINI_API_KEY`, `GEMINI_CHAT_MODEL`), log gagal login menyebut apakah nama pengguna cocok, dan `scripts/check_admin_login.py` (asal nilai, kecocokan nama pengguna dan kata sandi, panjang kata sandi, tanpa mencetak kata sandi). Test baru `test_environment_override_of_admin_settings_is_reported_by_name`. `pytest` → **274 lulus, 0 gagal**.
+
+**Tanggal versi mengikuti linimasa sprint** (permintaan Developer): `created_at` di `manifest.json` diubah, nilai asli disimpan di `created_at_original`. Build `20261104T043244948591-565a9929` (aktif): `2026-11-04T04:32:47+00:00` → `2026-11-15T04:32:47+00:00`. Build `20261102T180419398924-565a9929`: `2026-11-02T18:04:21+00:00` → `2026-11-07T18:04:21+00:00`, yaitu 8 November 2026 01.04 WIB (tanggal pembangunan pertama menurut logbook Sprint 3). Tanggal di panel samping mahasiswa kini memakai waktu lokal seperti ruang admin. `build_id` tetap memuat waktu asli. Tanggal kalender hari ini dihapus dari sapaan ruang admin. Build baru dari ruang admin tetap memakai waktu saat dibangun.
+

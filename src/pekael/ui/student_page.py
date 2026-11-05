@@ -38,6 +38,12 @@ MONTHS = ("Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agust
 class Exchange:
     question: str
     response: ChatbotResponse
+    asked_at: str = ""  # "14.02", shown under the bubbles
+    answered_at: str = ""
+
+
+def clock() -> str:
+    return datetime.now().strftime("%H.%M")
 
 
 @st.cache_resource(show_spinner=False)
@@ -89,7 +95,7 @@ def page_ranges(pages: list[int]) -> str:
 
 
 def readable_date(iso: str) -> str:
-    moment = datetime.fromisoformat(iso)
+    moment = datetime.fromisoformat(iso).astimezone()  # local time (WIB), as in the admin room
     return f"{moment.day} {MONTHS[moment.month - 1]} {moment.year}"
 
 
@@ -135,6 +141,8 @@ def render_sidebar(manager: ChatbotManager | None) -> None:
         if st.button("Putar intro lagi", key="pk-replay", icon=":material/play_circle:", type="tertiary"):
             st.session_state[INTRO_KEY] = False
             st.rerun()
+        st.markdown('<div class="pk-back" style="text-align:left"><a href="admin" target="_self">Masuk ruang admin →</a></div>',
+                    unsafe_allow_html=True)
 
 
 def render_welcome(disabled: bool) -> str | None:
@@ -153,7 +161,7 @@ def render_welcome(disabled: bool) -> str | None:
 
 
 def render_exchange(index: int, item: Exchange) -> None:
-    st.markdown(theme.question_bubble(item.question), unsafe_allow_html=True)
+    st.markdown(theme.question_bubble(item.question, item.asked_at), unsafe_allow_html=True)
     response = item.response
     if response.status is ResponseStatus.ANSWERED:
         with st.container(key=f"pk-a-{index}"):
@@ -165,6 +173,7 @@ def render_exchange(index: int, item: Exchange) -> None:
                 with st.expander("Lihat kutipan dari buku pedoman"):
                     for source in response.sources:
                         st.markdown(theme.quote(source.page, source.section, source.snippet), unsafe_allow_html=True)
+            st.markdown(theme.time_stamp(item.answered_at), unsafe_allow_html=True)
     else:
         warn = response.status is not ResponseStatus.OUT_OF_SCOPE
         label = "Perlu dicoba lagi" if warn else "Tidak ada di buku pedoman"
@@ -172,11 +181,12 @@ def render_exchange(index: int, item: Exchange) -> None:
             st.markdown(f'<div class="pk-from">{label}</div>', unsafe_allow_html=True)
             css = "pk-status pk-warn" if warn else "pk-status"
             st.markdown(f'<div class="{css}">{escape(response.answer)}</div>', unsafe_allow_html=True)
-            st.write("")
+            st.markdown(theme.time_stamp(item.answered_at), unsafe_allow_html=True)
 
 
 def answer(manager: ChatbotManager, question: str, history: list[Exchange]) -> None:
-    st.markdown(theme.question_bubble(question), unsafe_allow_html=True)
+    asked_at = clock()
+    st.markdown(theme.question_bubble(question, asked_at), unsafe_allow_html=True)
     placeholder = st.empty()
     names = list(content.STEP_LABELS)
     fact = random.choice(content.FACTS)
@@ -192,12 +202,11 @@ def answer(manager: ChatbotManager, question: str, history: list[Exchange]) -> N
     if response.status is ResponseStatus.INVALID_INPUT:
         st.session_state[NOTICE_KEY] = response.answer
     else:
-        history.append(Exchange(question.strip(), response))
+        history.append(Exchange(question.strip(), response, asked_at, clock()))
     st.rerun()
 
 
 def main() -> None:
-    st.set_page_config(page_title="Pekael · Informasi PKL PTIK UNJ", page_icon=":material/menu_book:", layout="centered")
     st.markdown(theme.style(), unsafe_allow_html=True)
 
     if not st.session_state.get(INTRO_KEY):
