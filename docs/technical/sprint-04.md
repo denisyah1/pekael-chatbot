@@ -97,3 +97,21 @@
 
 **Tanggal versi mengikuti linimasa sprint** (permintaan Developer): `created_at` di `manifest.json` diubah, nilai asli disimpan di `created_at_original`. Build `20261104T043244948591-565a9929` (aktif): `2026-11-04T04:32:47+00:00` → `2026-11-15T04:32:47+00:00`. Build `20261102T180419398924-565a9929`: `2026-11-02T18:04:21+00:00` → `2026-11-07T18:04:21+00:00`, yaitu 8 November 2026 01.04 WIB (tanggal pembangunan pertama menurut logbook Sprint 3). Tanggal di panel samping mahasiswa kini memakai waktu lokal seperti ruang admin. `build_id` tetap memuat waktu asli. Tanggal kalender hari ini dihapus dari sapaan ruang admin. Build baru dari ruang admin tetap memakai waktu saat dibangun.
 
+## Sesi 5 — 17 November 2026
+
+**Jadwal (D-44)**: Sprint 4–6 masing-masing 1 minggu. Diperbarui: `docs/scrum/README.md`, `sprint-04/sprint_planning.md` (periode, waktu tugas, tugas 9, jadwal review/retro 19 Nov), `sprint-04/sprint_backlog.md`, `product_backlog.md`, `decision_log.md`.
+
+**Respons arahan (S4-T09, D-45)** — `src/pekael/core/prompts.py`
+- Aturan prompt no. 5: `TIDAK_DITEMUKAN` di baris pertama, lalu 2–3 kalimat arahan (sapaan "kamu", tanpa menebak, tanpa menyatakan informasi tidak ada, boleh menyebut informasi terkait dari konteks, satu pihak yang sesuai: Koordinator PKL, Admin Prodi PTIK, Koordinator Program Studi/Kaprodi, tanpa tanggal, nama, kontak, atau aturan di luar konteks). Aturan no. 7: `SUMBER: -` bila tidak ada konteks yang dipakai.
+- `ParsedAnswer.redirect`, `parse_answer` mengenali penanda di baris pertama dan menyimpan sisa teks serta nomor `SUMBER`.
+- `REDIRECT_MESSAGES` (4) dan `OFF_TOPIC_MESSAGES` (4), `pick_message(question, options)` memilih berdasarkan `crc32` pertanyaan yang dinormalisasi, sehingga stabil per pertanyaan. `FALLBACK_MESSAGE = REDIRECT_MESSAGES[0]` (menggantikan teks fallback spec §4.4 atas permintaan PO).
+- `DISCOURAGED_PHRASES` dan `usable_redirect()` (tidak kosong, ≤ 700 karakter, tanpa ungkapan terlarang).
+- `rag_steps.py`: hasil pencarian kosong dan penolakan ambang memakai `OFF_TOPIC_MESSAGES`. `validate_citations` memakai arahan model bila `usable_redirect`, bila tidak `REDIRECT_MESSAGES`, rujukan dari nomor `SUMBER` arahan. Status tetap `out_of_scope` sehingga simpanan jawaban dan evaluasi tidak berubah.
+- `student_page.py`: label "Saran dari Pekael", arahan ditampilkan sebagai teks biasa beserta penanda halaman bila ada.
+
+**Uji langsung** (`scripts/ask.py`, `gemini-3.5-flash-lite`)
+- Putaran 1 (11 pertanyaan): L1 "...tidak tersedia pada panduan ini...", L4 "...belum tercantum di dalam pedoman...", beberapa arahan menyalin daftar peran dari prompt, sapaan "Anda" dan "kamu" bercampur. N1–N3 memakai kalimat siap pakai (0,41–0,52 s). Pertanyaan dalam cakupan tidak berubah (100 SKS hal. 10, nilai 74 hal. 16 dan 11). No. 22 tetap diarahkan, tidak dijawab.
+- Perbaikan: `DISCOURAGED_PHRASES` ditambah `tidak tersedia`, `tidak tercantum`, `belum tercantum`, `tidak terdapat`, `tidak ada di`, `tidak dijelaskan`. Prompt: sapaan "kamu", tidak menyatakan informasi tidak ada, pilih satu pihak tanpa menyalin daftar.
+- Putaran 2 (7 pertanyaan): 5 arahan tanpa ungkapan terlarang, sapaan "kamu", pihak berbeda sesuai topik (pendaftaran, lowongan, nama koordinator, format laporan → Admin Prodi PTIK, kerja paruh waktu → Koordinator PKL), 1,52–2,85 s. Pertanyaan dalam cakupan: lama PKL hal. 14 dan 7, dokumen lampiran hal. 24.
+
+**Test**: `test_prompts.py` (pesan siap pakai, kontak di prompt, pilihan pesan stabil dan bervariasi, ungkapan terlarang, arahan kosong atau terlalu panjang, arahan model dan rujukannya), `test_rag_steps.py` (arahan model dipakai, ungkapan terlarang diganti, ambang memakai pesan di luar topik), `test_student_page.py` (label). `pytest` → **296 lulus, 0 gagal**.

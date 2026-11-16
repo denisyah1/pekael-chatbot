@@ -43,3 +43,5 @@ Nilai status: `Belum dimulai` · `Dikerjakan` · `Selesai (menunggu review)` · 
 | 2026-11-06 | PBI-04 dan PBI-05 dimulai pada Sprint 3 (6 – 12 Nov 2026). Pemeriksaan OCR halaman 22–25 dan 27–28 (lanjutan PBI-01) dibawa dari Sprint 2 | Sprint 3 Planning | PO |
 | 2026-11-12 | Sprint 3 diterima PO. PBI-01 selesai (OCR seluruh halaman knowledge base terverifikasi), PBI-04 dan PBI-05 selesai. Uji ulang jumlah potongan, ukuran potongan, dan batas kedekatan dicatat untuk Sprint 5 (SUP-02) | Sprint 3 Review | PO |
 | 2026-11-13 | PBI-06, PBI-07, dan PBI-08 dimulai pada Sprint 4 (13 – 26 Nov 2026) | Sprint 4 Planning | PO |
+| 2026-11-17 | Sprint 4–6 dipadatkan menjadi 1 minggu: Sprint 4 13–19 Nov, Sprint 5 20–26 Nov, Sprint 6 27 Nov–3 Des 2026 | Efisiensi waktu, mengikuti Sprint 1–3 | Developer, PO |
+| 2026-11-17 | PBI-06 ditambah respons arahan untuk pertanyaan yang jawabannya tidak ada di buku pedoman: ramah, bervariasi, dan mengarahkan ke admin prodi, koordinator program studi, atau koordinator PKL | Masukan bimbingan *Product Owner* | PO |

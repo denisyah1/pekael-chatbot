@@ -116,3 +116,17 @@ Jawaban lengkap: [`scrum/sprint-03/pemeriksaan_jawaban.md`](scrum/sprint-03/peme
 | Hasil | 13 dari 36 pertanyaan dalam cakupan dijawab (4,0–28,1 s), 2 gagal setelah 9,8 dan 15,0 s, lalu semua permintaan berikutnya ditolak dalam ±1 s. Pesan server: `429 RESOURCE_EXHAUSTED`, `GenerateRequestsPerDayPerProjectPerModel-FreeTier`, batas 20 permintaan per hari. Pertanyaan non-PKL tetap ditolak ambang tanpa memanggil Gemini. `gemini-3.5-flash-lite` pada saat yang sama menjawab dalam 18,95 s |
 | Kesimpulan | Kuota gratis `gemini-3.5-flash` (20 permintaan per hari) tidak mencukupi pengujian maupun UAT, dan waktu jawab pada alur lengkap tidak lebih cepat. Model dikembalikan ke `gemini-3.5-flash-lite` |
 | Keputusan terkait | D-40, OD-01 |
+
+### EXP-006 — Respons arahan untuk pertanyaan yang jawabannya tidak ada di buku
+
+| | |
+|---|---|
+| Tanggal | 2026-11-17 |
+| Sprint | 4 |
+| Tujuan | Memeriksa respons arahan pengganti teks fallback (D-45): ramah, bervariasi, mengarahkan ke pihak yang tepat, tanpa menebak, dan tanpa mengubah jawaban dalam cakupan |
+| Konfigurasi | Indeks `20261104T043244948591-565a9929`, `RETRIEVAL_K=4`, ambang 0,64, `gemini-3.5-flash-lite`, prompt D-30 + D-35 + D-45 |
+| Data uji | L1–L5 dan N1–N3 dari `topik_pertanyaan.md`, 1 pertanyaan baru (kerja paruh waktu selama PKL), 5 pertanyaan dalam cakupan |
+| Prosedur | Dua putaran `scripts/ask.py`. Prompt diperketat di antara putaran berdasarkan temuan putaran pertama |
+| Hasil | Putaran 1: 2 dari 5 arahan masih memakai "tidak tersedia" dan "belum tercantum", sapaan bercampur. Putaran 2: 5 dari 5 arahan tanpa ungkapan terlarang, sapaan "kamu", pihak yang dituju sesuai topik. N1–N3 memakai kalimat siap pakai. Jawaban dalam cakupan tetap sama dengan rujukan yang sama |
+| Kesimpulan | Respons arahan memenuhi permintaan PO pada contoh yang diuji. Jumlah contoh kecil, sehingga respons arahan ikut diperiksa pada pengujian Sprint 5 |
+| Keputusan terkait | D-45 |

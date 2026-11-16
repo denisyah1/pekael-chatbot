@@ -133,7 +133,7 @@ def test_question_text_is_escaped(app):
 
 def test_out_of_scope_and_service_problem_are_labelled(app):
     at = _ask(app(FakeManager(ChatbotResponse(FALLBACK_MESSAGE, ResponseStatus.OUT_OF_SCOPE))), "Apa itu machine learning?")
-    assert "Tidak ada di buku pedoman" in _html(at)
+    assert "Saran dari Pekael" in _html(at)
     assert not at.expander
 
     at = _ask(app(FakeManager(ChatbotResponse("Pekael sedang sibuk.", ResponseStatus.UNAVAILABLE))), "Berapa SKS?")

@@ -176,11 +176,16 @@ def render_exchange(index: int, item: Exchange) -> None:
             st.markdown(theme.time_stamp(item.answered_at), unsafe_allow_html=True)
     else:
         warn = response.status is not ResponseStatus.OUT_OF_SCOPE
-        label = "Perlu dicoba lagi" if warn else "Tidak ada di buku pedoman"
+        label = "Perlu dicoba lagi" if warn else "Saran dari Pekael"
         with st.container(key=f"pk-a-out-{index}"):
             st.markdown(f'<div class="pk-from">{label}</div>', unsafe_allow_html=True)
-            css = "pk-status pk-warn" if warn else "pk-status"
-            st.markdown(f'<div class="{css}">{escape(response.answer)}</div>', unsafe_allow_html=True)
+            if warn:
+                st.markdown(f'<div class="pk-status pk-warn">{escape(response.answer)}</div>', unsafe_allow_html=True)
+            else:  # a redirection written in plain text, possibly citing related handbook pages
+                st.markdown(response.answer)
+                if response.sources:
+                    document = document_name(response.sources[0].source_file)
+                    st.markdown(theme.page_tabs(source_pages(response.sources), document), unsafe_allow_html=True)
             st.markdown(theme.time_stamp(item.answered_at), unsafe_allow_html=True)
 
 

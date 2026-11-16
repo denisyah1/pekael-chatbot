@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Sprint | : Sprint 4 |
-| Periode Sprint | : 13 – 26 November 2026 |
+| Periode Sprint | : 13 – 19 November 2026 |
 | *Product Owner* (validator) | : Dosen Koordinator PKL Prodi PTIK UNJ |
 | Scrum Master | : Dosen pembimbing |
 | Developer | : Deni Merdiansyah (NIM {{NIM_DEVELOPER}}) |
@@ -34,14 +34,15 @@ Menghasilkan website Pekael yang dapat dipakai secara lokal: mahasiswa dapat men
 
 | No | Tugas | PBI terkait | Keluaran | Waktu |
 |---|---|---|---|---|
-| 1 | Memeriksa ulang label halaman daftar topik pertanyaan dan menambah contoh pertanyaan untuk halaman 22–28 (rencana perbaikan Sprint 3) | 1 | Daftar topik yang diperbarui | 13 November 2026 |
+| 1 | Memeriksa ulang label halaman daftar topik pertanyaan dan menambah contoh pertanyaan untuk halaman 22–28 (rencana perbaikan Sprint 3) | 1 | Daftar topik yang diperbarui | 17 November 2026 |
 | 2 | Merancang dan membuat halaman tanya-jawab mahasiswa: kolom pertanyaan, tanda proses, jawaban, dan pesan gangguan | 1 | Tampilan pertama halaman mahasiswa | 13 – 15 November 2026 |
 | 3 | Menampilkan rujukan nama dokumen, halaman PDF, bagian, dan kutipan singkat | 2 | Rujukan pada setiap jawaban | 13 – 15 November 2026 |
-| 4 | Evaluasi tampilan pertama oleh Developer dan perbaikannya | 1, 2 | Tampilan yang disepakati | 16 – 17 November 2026 |
-| 5 | Login satu akun admin dari pengaturan, tanpa pendaftaran akun | 3 | Halaman login admin | 18 – 19 November 2026 |
-| 6 | Halaman admin untuk mengunggah atau mengganti buku panduan beserta laporan pembangunan knowledge base | 3 | Pembaruan knowledge base dari website | 19 – 21 November 2026 |
-| 7 | Pembatasan panjang pertanyaan dan pencegahan pengiriman berulang | 1 | Pengaman penggunaan layanan | 22 November 2026 |
-| 8 | Pengujian otomatis tampilan dan uji seluruh penggunaan mahasiswa dan admin dari website, termasuk waktu jawab | 1, 2, 3 | Hasil pengujian internal | 23 – 25 November 2026 |
+| 4 | Evaluasi tampilan pertama oleh Developer dan perbaikannya | 1, 2 | Tampilan yang disepakati | 14 – 17 November 2026 |
+| 5 | Login satu akun admin dari pengaturan, tanpa pendaftaran akun | 3 | Halaman login admin | 16 November 2026 |
+| 6 | Halaman admin untuk mengunggah atau mengganti buku panduan beserta laporan pembangunan knowledge base | 3 | Pembaruan knowledge base dari website | 16 – 18 November 2026 |
+| 7 | Pembatasan panjang pertanyaan dan pencegahan pengiriman berulang | 1 | Pengaman penggunaan layanan | 14 – 16 November 2026 |
+| 8 | Pengujian otomatis tampilan dan uji seluruh penggunaan mahasiswa dan admin dari website, termasuk waktu jawab | 1, 2, 3 | Hasil pengujian internal | 18 – 19 November 2026 |
+| 9 | Respons yang ramah dan bervariasi untuk pertanyaan yang jawabannya tidak ada di buku pedoman, mengarahkan ke admin prodi, koordinator program studi, atau koordinator PKL (permintaan *Product Owner* 17 November 2026) | 1 | Respons arahan | 17 – 18 November 2026 |
 
 ## Increment dan kriteria selesai
 
@@ -63,10 +64,10 @@ Menghasilkan website Pekael yang dapat dipakai secara lokal: mahasiswa dapat men
 | Peristiwa | Waktu | Pelaksana |
 |---|---|---|
 | *Sprint Planning* | 13 November 2026 | Peneliti, *Product Owner* |
-| Pengerjaan harian (logbook) | 13 – 26 November 2026 | Peneliti |
+| Pengerjaan harian (logbook) | 13 – 19 November 2026 | Peneliti |
 | Evaluasi tampilan pertama | 16 November 2026 | Peneliti |
-| *Sprint Review* | 26 November 2026 | Peneliti, *Product Owner*, Scrum Master |
-| *Sprint Retrospective* | 26 November 2026 | Peneliti, Scrum Master |
+| *Sprint Review* | 19 November 2026 | Peneliti, *Product Owner*, Scrum Master |
+| *Sprint Retrospective* | 19 November 2026 | Peneliti, Scrum Master |
 
 ## Risiko dan penanganan
 

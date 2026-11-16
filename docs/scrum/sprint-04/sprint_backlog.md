@@ -1,13 +1,13 @@
 # Sprint Backlog — Sprint 4
 
 > **Sprint Goal:** Menghasilkan website Pekael yang dapat dipakai secara lokal: mahasiswa dapat mengetik pertanyaan dan menerima jawaban beserta rujukan halaman buku panduan melalui tampilan yang sederhana dan mudah dipahami, admin dapat masuk dengan satu akun lalu memperbarui buku panduan tanpa menghilangkan knowledge base yang sedang dipakai, dan seluruh fungsi diuji sebelum validasi ahli pada Sprint 5.
-> **Periode:** 13 – 26 November 2026
+> **Periode:** 13 – 19 November 2026
 > **Status task:** `To Do` · `In Progress` · `Done` · `Blocked`
 > **Rincian teknis:** [`docs/technical/sprint-04.md`](../../technical/sprint-04.md)
 
 ## Task
 
-Sprint Planning memuat delapan tugas (lihat [Sprint Planning](sprint_planning.md) bagian 4). Kolom **Tugas** menunjukkan nomor tugas pada Sprint Planning.
+Sprint Planning memuat sembilan tugas (lihat [Sprint Planning](sprint_planning.md) bagian 4). Kolom **Tugas** menunjukkan nomor tugas pada Sprint Planning.
 
 | ID | Tugas | PBI | Pekerjaan | Status | Bukti |
 |---|---|---|---|---|---|
@@ -18,6 +18,7 @@ Sprint Planning memuat delapan tugas (lihat [Sprint Planning](sprint_planning.md
 | S4-T05 | 5 | PBI-08 | Login satu akun admin | Done | Satu akun dari pengaturan lokal, salah kata sandi lima kali mengunci formulir 30 detik |
 | S4-T06 | 6 | PBI-08 | Halaman admin untuk mengganti buku panduan dan laporan pembangunan | In Progress | Ruang admin selesai dibuat, menunggu evaluasi Developer dan uji unggah buku dari website |
 | S4-T07 | 7 | PBI-06 | Pembatasan panjang pertanyaan dan pencegahan pengiriman berulang | Done | Batas 500 karakter, kolom pertanyaan terkunci selama jawaban disusun, pertanyaan yang sama dijawab dari simpanan |
+| S4-T09 | 9 | PBI-06 | Respons arahan untuk pertanyaan yang jawabannya tidak ada di buku pedoman (permintaan *Product Owner*) | Done | Uji langsung 5 pertanyaan PKL yang jawabannya tidak ada di buku dan 3 pertanyaan di luar topik PKL, menunggu tinjauan *Product Owner* |
 | S4-T08 | 8 | PBI-06, PBI-07, PBI-08 | Pengujian otomatis tampilan dan uji seluruh penggunaan dari website | In Progress | 12 pengujian halaman mahasiswa dan 14 pengujian ruang admin lulus |
 
 ## Log Pengerjaan
@@ -131,3 +132,25 @@ Sprint Planning memuat delapan tugas (lihat [Sprint Planning](sprint_planning.md
 - Evaluasi tampilan percakapan dan ruang admin oleh Developer.
 - Uji mengganti buku pedoman dari website (S4-T06).
 - Pemeriksaan ulang label halaman daftar topik (S4-T01).
+
+### 17 November 2026
+
+**Dikerjakan**
+- Mencatat keputusan pemilik: Sprint 4 sampai Sprint 6 masing-masing menjadi 1 minggu (Sprint 4 13–19 November, Sprint 5 20–26 November, Sprint 6 27 November–3 Desember 2026). *Sprint Planning* Sprint 4 disesuaikan dengan periode baru.
+- Menindaklanjuti masukan bimbingan *Product Owner*: pertanyaan yang jawabannya tidak ada di buku pedoman tidak lagi dijawab dengan kalimat penolakan yang sama setiap kali. Pekael kini menulis 2–3 kalimat yang ramah sesuai topik pertanyaan dan mengarahkan mahasiswa ke pihak yang tepat: Koordinator PKL, Admin Prodi PTIK, atau Koordinator Program Studi (Kaprodi). Pekael tetap tidak menebak jawabannya dan tidak menyebut tanggal, nama, atau nomor kontak yang tidak ada di buku. Bila ada informasi terkait di buku, halamannya ikut ditampilkan.
+- Pertanyaan di luar topik PKL dijawab dengan salah satu dari beberapa kalimat ajakan kembali ke topik PKL, tanpa memanggil Gemini.
+- Ungkapan seperti "tidak dapat dijawab", "tidak ditemukan", "tidak tersedia", "di luar cakupan", dan "knowledge base" dicegah. Bila Gemini tetap memakainya, kalimat diganti dengan arahan siap pakai.
+- Label jawaban arahan di halaman mahasiswa diganti dari "Tidak ada di buku pedoman" menjadi "Saran dari Pekael".
+
+**Hasil uji**
+- Pengujian otomatis: 296 lulus, 0 gagal.
+- Uji langsung pertama: arahan sudah ramah, tetapi dua jawaban masih memakai "tidak tersedia" dan "belum tercantum", sebagian menyalin daftar tugas pihak yang dituju, dan sapaan bercampur "Anda" dan "kamu". Instruksi diperketat.
+- Uji langsung kedua: lima pertanyaan PKL yang jawabannya tidak ada di buku dijawab dengan arahan yang berbeda-beda tanpa kalimat penolakan, misalnya batas pendaftaran diarahkan ke Admin Prodi PTIK dan kerja paruh waktu selama PKL ke Koordinator PKL. Jawaban untuk pertanyaan yang ada di buku tidak berubah.
+
+**Hambatan**
+- Tidak ada.
+
+**Berikutnya**
+- *Product Owner* meninjau contoh respons arahan.
+- Menyiapkan penambahan knowledge base dari *Product Owner* setelah bimbingan.
+- Pemeriksaan ulang label halaman daftar topik (S4-T01), uji mengganti buku dari website (S4-T06), dan pengujian seluruh penggunaan (S4-T08).

@@ -12,7 +12,7 @@ Folder ini adalah catatan resmi pelaksanaan Scrum untuk penelitian skripsi Pekae
 
 ## Ritme
 
-- 6 sprint menghasilkan **satu MVP** (spec §12). Sprint 1–3 masing-masing 1 minggu karena pengembangan dimulai lebih lambat dari rencana, Sprint 4–6 masing-masing 2 minggu (D-19).
+- 6 sprint menghasilkan **satu MVP** (spec §12). Seluruh sprint masing-masing 1 minggu. Sprint 1–3 dipadatkan karena pengembangan dimulai lebih lambat dari rencana (D-19), Sprint 4–6 menyusul dipadatkan pada 17 November 2026 (D-44).
 - **Awal sprint:** Sprint Planning → Lembar Validasi Sprint Report Bagian A ditandatangani PO → sprint dimulai.
 - **Selama sprint:** setiap sesi kerja dicatat di `sprint_backlog.md` sprint tersebut (bagian *Log Pengerjaan*).
 - **Akhir sprint:** Sprint Review → Lembar Validasi Bagian B (PO) → Sprint Retrospective → Lembar Validasi Bagian C (Scrum Master) → Product Backlog diperbarui.
@@ -48,9 +48,9 @@ Dokumen di `docs/scrum/` ditulis dengan bahasa sederhana sebagai bahan laporan. 
 | 1 | 23–29 Okt 2026 | Persiapan dan validasi knowledge base | ✓ 23 Okt | ✓ 29 Okt | ✓ 29 Okt | Selesai, diterima PO |
 | 2 | 30 Okt – 5 Nov 2026 | Chunking dan embedding | ✓ 30 Okt | ✓ 5 Nov | ✓ 5 Nov | Selesai, diterima PO |
 | 3 | 6 – 12 Nov 2026 | FAISS dan alur RAG inti | ✓ 6 Nov | ✓ 12 Nov | ✓ 12 Nov | Selesai, diterima PO |
-| 4 | 13 – 26 Nov 2026 | UI Streamlit dan pengujian internal | Disusun 13 Nov | ☐ | ☐ | Berjalan |
-| 5 | 27 Nov – 10 Des 2026 (rencana) | Validasi ahli dan revisi | ☐ | ☐ | ☐ | Belum dimulai |
-| 6 | 11 – 24 Des 2026 (rencana) | Deployment, Ragas, UAT, analisis | ☐ | ☐ | ☐ | Belum dimulai |
+| 4 | 13 – 19 Nov 2026 | UI Streamlit dan pengujian internal | Disusun 13 Nov | ☐ | ☐ | Berjalan |
+| 5 | 20 – 26 Nov 2026 (rencana) | Validasi ahli dan revisi | ☐ | ☐ | ☐ | Belum dimulai |
+| 6 | 27 Nov – 3 Des 2026 (rencana) | Deployment, Ragas, UAT, analisis | ☐ | ☐ | ☐ | Belum dimulai |
 
 ## Aturan Pencatatan
 

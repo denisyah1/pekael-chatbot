@@ -12,7 +12,16 @@ import re
 
 from pekael.core import messages
 from pekael.core.chain import Chain
-from pekael.core.prompts import FALLBACK_MESSAGE, SYSTEM_PROMPT, build_user_prompt, format_context, parse_answer
+from pekael.core.prompts import (
+    OFF_TOPIC_MESSAGES,
+    REDIRECT_MESSAGES,
+    SYSTEM_PROMPT,
+    build_user_prompt,
+    format_context,
+    parse_answer,
+    pick_message,
+    usable_redirect,
+)
 from pekael.core.schemas import ChainState, ChatbotResponse, ResponseStatus, RetrievedDocument, SourceReference
 from pekael.models.gemini_model import AUTH, QUOTA, UNAVAILABLE, GeminiModel, LLMError, classify_error
 from pekael.vectorstores.base import BaseVectorStore, IndexNotReadyError
@@ -106,7 +115,7 @@ class RagSteps:
                 state.response = ChatbotResponse(messages.RETRIEVAL_FAILED, ResponseStatus.ERROR)
             return state
         if not state.retrieved:
-            state.response = ChatbotResponse(FALLBACK_MESSAGE, ResponseStatus.OUT_OF_SCOPE)
+            state.response = ChatbotResponse(pick_message(state.question, OFF_TOPIC_MESSAGES), ResponseStatus.OUT_OF_SCOPE)
         return state
 
     def relevancy_gate(self, state: ChainState) -> ChainState:
@@ -115,7 +124,8 @@ class RagSteps:
             state.retrieved = [item for item in state.retrieved if item.distance <= self.max_distance]
         if not state.retrieved:
             logger.info("Relevancy gate rejected question, nearest distance %.3f", min(state.distances))
-            state.response = ChatbotResponse(FALLBACK_MESSAGE, ResponseStatus.OUT_OF_SCOPE, distances=state.distances)
+            text = pick_message(state.question, OFF_TOPIC_MESSAGES)
+            state.response = ChatbotResponse(text, ResponseStatus.OUT_OF_SCOPE, distances=state.distances)
         return state
 
     def build_prompt(self, state: ChainState) -> ChainState:
@@ -135,10 +145,22 @@ class RagSteps:
         return state
 
     def validate_citations(self, state: ChainState) -> ChainState:
-        """Turn the model output into a response whose sources come only from retrieved chunks."""
+        """Turn the model output into a response whose sources come only from retrieved chunks.
+
+        When the handbook has no answer, the model's own redirection is kept if it avoids the
+        discouraged wording, otherwise a ready-made one is used (D-45). Related handbook pages
+        the redirection mentions are cited like any answer.
+        """
         parsed = parse_answer(state.answer, len(state.retrieved))
         if parsed.not_found:
-            state.response = ChatbotResponse(FALLBACK_MESSAGE, ResponseStatus.OUT_OF_SCOPE, distances=state.distances)
+            if usable_redirect(parsed.redirect):
+                text = parsed.redirect
+            else:
+                logger.info("Model redirection missing or discouraged wording, using a ready-made one")
+                text = pick_message(state.question, REDIRECT_MESSAGES)
+            cited = [state.retrieved[n - 1] for n in parsed.context_numbers or ()]
+            sources = tuple(source_reference(item) for item in cited)
+            state.response = ChatbotResponse(text, ResponseStatus.OUT_OF_SCOPE, sources, state.distances)
             return state
         if parsed.context_numbers is None:
             logger.warning("Answer has no valid SUMBER line, citing every context chunk")

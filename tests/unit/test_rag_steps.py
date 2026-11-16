@@ -2,7 +2,7 @@ import pytest
 from langchain_core.documents import Document
 
 from pekael.core import messages
-from pekael.core.prompts import FALLBACK_MESSAGE, SYSTEM_PROMPT
+from pekael.core.prompts import OFF_TOPIC_MESSAGES, REDIRECT_MESSAGES, SYSTEM_PROMPT
 from pekael.core.rag_steps import RagSteps, source_reference
 from pekael.core.schemas import ChainState, ResponseStatus, RetrievedDocument
 from pekael.models.embeddings import EmbeddingError
@@ -113,12 +113,28 @@ def test_missing_sources_line_cites_every_context_chunk():
     assert [s.page for s in response.sources] == [10, 7, 11]
 
 
-def test_not_found_marker_returns_fallback_without_sources():
+def test_not_found_without_redirection_uses_a_ready_made_one():
     response, _, _ = _ask(llm=FakeLLM("TIDAK_DITEMUKAN"))
 
     assert response.status is ResponseStatus.OUT_OF_SCOPE
-    assert response.answer == FALLBACK_MESSAGE
+    assert response.answer in REDIRECT_MESSAGES
     assert response.sources == ()
+
+
+def test_model_redirection_is_kept_with_related_pages():
+    redirect = "Jadwalnya ditetapkan tiap semester, tanyakan ke Admin Prodi PTIK. Syaratnya minimal 100 SKS."
+
+    response, _, _ = _ask(llm=FakeLLM(f"TIDAK_DITEMUKAN\n{redirect}\nSUMBER: 1"))
+
+    assert response.status is ResponseStatus.OUT_OF_SCOPE
+    assert response.answer == redirect
+    assert [s.page for s in response.sources] == [10]
+
+
+def test_redirection_with_discouraged_wording_is_replaced():
+    response, _, _ = _ask(llm=FakeLLM("TIDAK_DITEMUKAN\nMaaf, informasi ini tidak ditemukan di konteks.\nSUMBER: -"))
+
+    assert response.answer in REDIRECT_MESSAGES
 
 
 def test_snippet_is_short_and_from_chunk_text():
@@ -159,7 +175,7 @@ def test_gate_rejects_when_no_chunk_within_threshold_without_calling_llm():
     response, _, llm = _ask(max_distance=0.30)
 
     assert response.status is ResponseStatus.OUT_OF_SCOPE
-    assert response.answer == FALLBACK_MESSAGE
+    assert response.answer in OFF_TOPIC_MESSAGES
     assert response.distances == (0.35, 0.42, 0.55)
     assert llm.calls == []
 
