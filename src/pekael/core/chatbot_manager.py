@@ -122,6 +122,29 @@ class ChatbotManager:
             warnings=warnings,
         )
 
+    # ---------- start-up ----------
+
+    def warm_up(self) -> float:
+        """Load the index and open the embedding and Gemini connections before the first question.
+
+        The first call of a fresh process is noticeably slower (about 3 s more for Gemini); doing it
+        here, while the intro shows, keeps that wait away from students. Costs one embedding and one
+        tiny Gemini request per server start. Failures are logged, never raised.
+        """
+        started = time.perf_counter()
+        try:
+            if hasattr(self.vector_store, "load") and not getattr(self.vector_store, "is_ready", False):
+                self.vector_store.load()
+            embeddings = getattr(self.vector_store, "embeddings", None)
+            if embeddings is not None:
+                embeddings.embed_query("PKL")
+            self.llm.generate_response("Balas dengan satu kata: siap")
+        except Exception as exc:  # warm-up is best effort; the real question reports errors properly
+            logger.warning("Warm-up incomplete: %s", type(exc).__name__)
+        seconds = time.perf_counter() - started
+        logger.info("Warm-up finished in %.2f s", seconds)
+        return seconds
+
     # ---------- answer cache ----------
 
     def _cache_key(self, message: str) -> tuple[str, str] | None:

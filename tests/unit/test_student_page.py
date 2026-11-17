@@ -60,6 +60,7 @@ def app(monkeypatch):
             return manager
 
         monkeypatch.setattr(student_page, "get_manager", get_manager)
+        monkeypatch.setattr(student_page, "start_warm_up", lambda: None)  # no background thread in tests
         monkeypatch.setattr(student_page, "get_config", lambda: AppConfig(question_max_chars=500))
         at = AppTest.from_file(APP, default_timeout=30)
         at.session_state[student_page.INTRO_KEY] = intro_done
@@ -133,7 +134,7 @@ def test_question_text_is_escaped(app):
 
 def test_out_of_scope_and_service_problem_are_labelled(app):
     at = _ask(app(FakeManager(ChatbotResponse(FALLBACK_MESSAGE, ResponseStatus.OUT_OF_SCOPE))), "Apa itu machine learning?")
-    assert "Saran dari Pekael" in _html(at)
+    assert FALLBACK_MESSAGE in _html(at) and "Perlu dicoba lagi" not in _html(at)  # plain reply, no warning label
     assert not at.expander
 
     at = _ask(app(FakeManager(ChatbotResponse("Pekael sedang sibuk.", ResponseStatus.UNAVAILABLE))), "Berapa SKS?")

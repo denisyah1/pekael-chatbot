@@ -154,3 +154,45 @@ Sprint Planning memuat sembilan tugas (lihat [Sprint Planning](sprint_planning.m
 - *Product Owner* meninjau contoh respons arahan.
 - Menyiapkan penambahan knowledge base dari *Product Owner* setelah bimbingan.
 - Pemeriksaan ulang label halaman daftar topik (S4-T01), uji mengganti buku dari website (S4-T06), dan pengujian seluruh penggunaan (S4-T08).
+
+### 18 November 2026
+
+**Dikerjakan**
+- Menindaklanjuti masukan dosen pembimbing: jawaban Pekael dinilai masih kaku dan seragam. Pekael kini menyesuaikan gaya bahasa dengan cara mahasiswa bertanya. Pertanyaan santai dijawab santai dengan sapaan "kamu", pertanyaan formal dijawab dengan bahasa baku dan sapaan "Anda". Isi buku dijelaskan dengan kalimat sendiri, sedangkan angka, nilai, nama dokumen, dan isi daftar syarat tetap persis.
+- Gaya pertanyaan dikenali dari kata-kata yang dipakai (misalnya "kak", "gak", "sih" untuk santai, "mohon", "apakah", "mengenai" untuk formal), karena Gemini belum konsisten mengenalinya sendiri.
+- Sapaan, ucapan terima kasih, dan curhat kini dibalas seperti percakapan biasa, tanpa memberi informasi PKL yang tidak bersumber.
+- Uji langsung menemukan kesalahan serius: pertanyaan santai "kalo nilai aku 74 lulus gak?" dijawab "lulus". Penyebabnya, potongan buku yang memuat syarat kelulusan B+ ikut terbuang oleh batas kedekatan. Kini batas kedekatan hanya menentukan pertanyaan diterima atau ditolak, dan semua potongan yang ditemukan tetap dipakai. Instruksi juga diperketat: sebelum menyimpulkan lulus atau memenuhi syarat, syarat yang menentukan harus dicari dan disebutkan.
+- Memperbaiki waktu persiapan. Bagian yang hanya dibutuhkan saat membangun knowledge base (pembaca PDF dan OCR) tidak lagi dimuat saat Pekael dijalankan. Saat intro tampil, Pekael menyiapkan diri di belakang layar, termasuk membuka koneksi pertama ke layanan Gemini, sehingga halaman tanya-jawab dan jawaban pertama tidak menunggu lama.
+
+**Hasil uji**
+- Pengujian otomatis: 315 lulus, 0 gagal.
+- Waktu persiapan sebelum pertanyaan pertama dapat dijawab: sekitar 20 detik sebelum perbaikan, sekitar 7 detik sesudahnya, dan di website berlangsung selama intro.
+- Uji 44 pertanyaan dengan gaya bahasa baru (EXP-007): 36 dari 36 pertanyaan dalam cakupan dijawab, termasuk satu pertanyaan yang sebelumnya ditolak. Lima pertanyaan PKL yang jawabannya tidak ada di buku diarahkan ke pihak yang tepat, tiga pertanyaan di luar topik PKL dibalas seperti percakapan. Tidak ada ungkapan penolakan. Waktu jawab umumnya 2,8 detik.
+- Pasangan pertanyaan santai dan formal untuk topik yang sama dijawab dengan isi yang sama dan gaya yang berbeda.
+
+**Hambatan**
+- Balasan percakapan untuk pesan di luar topik PKL sempat memerlukan sekitar 8 detik pada uji ini. Dipantau pada uji berikutnya.
+
+**Berikutnya**
+- Developer mencoba gaya jawaban baru dan waktu masuk dari intro di website.
+- Rancangan pengelolaan knowledge base di ruang admin untuk dokumen tambahan dari *Product Owner*.
+- *Sprint Review* dan *Retrospective* Sprint 4 (19 November).
+
+### 19 November 2026
+
+**Dikerjakan**
+- Menindaklanjuti evaluasi Developer: jawaban untuk pertanyaan dengan maksud yang sama, misalnya "apa itu PKL", masih disajikan dengan bentuk yang sama. Kini setiap jawaban memakai satu bentuk penyajian yang dipilih acak, misalnya langsung ke inti, beberapa poin pendek, atau penjelasan sederhana seperti ke teman. Isi dan daftar syarat tetap sama. Arahan ke Koordinator PKL, Admin Prodi PTIK, atau Koordinator Program Studi (Kaprodi) juga disampaikan dengan beberapa bentuk, dan jawaban diminta lebih ringkas.
+- Kalimat siap pakai cadangan ditambah menjadi enam untuk arahan dan enam untuk pesan di luar topik PKL.
+- Menelusuri waktu jawab yang terasa lebih lama. Instruksi lama dan instruksi baru dibandingkan pada pertanyaan dan waktu yang sama, demikian juga pengaturan tingkat berpikir Gemini. Perbedaannya kecil, sehingga lamanya waktu jawab pada sesi ini berasal dari kondisi layanan Gemini.
+
+**Hasil uji**
+- Pengujian otomatis: 317 lulus, 0 gagal.
+- Perbandingan waktu (EXP-008): instruksi lama median 7,2 detik, instruksi baru 7,0 detik. Tingkat berpikir bawaan 8,0 detik, minimal 8,7 detik. Pada uji 44 pertanyaan sehari sebelumnya, instruksi yang sama memerlukan median 2,8 detik.
+- Uji langsung delapan pertanyaan: tiga pertanyaan "apa itu PKL" dengan gaya berbeda dijawab dengan isi yang sama dan penyajian berbeda. Tiga pertanyaan yang jawabannya tidak ada di buku diarahkan dengan cara berbeda. Waktu jawab 5,3–8,7 detik.
+
+**Hambatan**
+- Kecepatan layanan Gemini versi gratis berubah-ubah sepanjang hari dan berada di luar kendali Pekael.
+
+**Berikutnya**
+- Developer mencoba variasi penyajian di website.
+- *Sprint Review* dan *Retrospective* Sprint 4.

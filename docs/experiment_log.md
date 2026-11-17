@@ -130,3 +130,31 @@ Jawaban lengkap: [`scrum/sprint-03/pemeriksaan_jawaban.md`](scrum/sprint-03/peme
 | Hasil | Putaran 1: 2 dari 5 arahan masih memakai "tidak tersedia" dan "belum tercantum", sapaan bercampur. Putaran 2: 5 dari 5 arahan tanpa ungkapan terlarang, sapaan "kamu", pihak yang dituju sesuai topik. N1–N3 memakai kalimat siap pakai. Jawaban dalam cakupan tetap sama dengan rujukan yang sama |
 | Kesimpulan | Respons arahan memenuhi permintaan PO pada contoh yang diuji. Jumlah contoh kecil, sehingga respons arahan ikut diperiksa pada pengujian Sprint 5 |
 | Keputusan terkait | D-45 |
+
+### EXP-007 — Gaya jawaban adaptif dan ketepatan jawaban
+
+| | |
+|---|---|
+| Tanggal | 2026-11-18 |
+| Sprint | 4 |
+| Tujuan | Memastikan gaya jawaban baru (D-46) dan perubahan ambang (D-47) tidak menurunkan ketepatan dibanding EXP-004 |
+| Konfigurasi | Indeks `20261104T043244948591-565a9929`, `RETRIEVAL_K=4`, ambang 0,64 (hanya memutuskan), `gemini-3.5-flash-lite`, prompt D-30 + D-45 + D-46 |
+| Data uji | 44 pertanyaan EXP-004 |
+| Prosedur | `run_threshold_experiment.py --generate --pause 4 --output .../exp007.json`, dibandingkan dengan `exp004.json` |
+| Hasil | Dalam cakupan 36/36 dijawab (EXP-004: 35/36). Pertanyaan no. 22 kini dijawab dengan urutan prosedur halaman 14. L1–L5 5/5 diarahkan, N1–N3 3/3 dibalas sebagai percakapan. Tidak ada ungkapan terlarang atau penanda yang tampil. Waktu jawab dalam cakupan median 2,77 s, maks 9,95 s, 7 dari 36 di atas 5 s. Balasan percakapan N1–N3 median 8,63 s. E6 (cara menghitung nilai akhir) masih belum memuat rumus 30/40/30 halaman 28 |
+| Kesimpulan | Ketepatan tidak turun, cakupan naik satu pertanyaan. Waktu jawab naik sekitar 1 s karena prompt dan jawaban lebih panjang. Balasan percakapan perlu dipantau |
+| Keputusan terkait | D-46, D-47 |
+
+### EXP-008 — Penyebab waktu jawab yang lebih lama
+
+| | |
+|---|---|
+| Tanggal | 2026-11-19 |
+| Sprint | 4 |
+| Tujuan | Memeriksa apakah instruksi yang lebih panjang (D-46) atau tingkat berpikir Gemini memperlambat jawaban |
+| Konfigurasi | `gemini-3.5-flash-lite`, `timeout=40`, konteks 4 potongan yang sama per pertanyaan, koneksi dipanaskan lebih dulu |
+| Data uji | 6 pertanyaan (definisi PKL dalam tiga gaya, nilai 74, dokumen lampiran, SKS minimal), masing-masing 2 putaran |
+| Prosedur | Perbandingan 1: `reasoning_effort` bawaan dan `minimal` dengan instruksi sekarang. Perbandingan 2: instruksi commit `a9616d0` (933 karakter) dan instruksi sekarang (3.335 karakter). Setiap pasangan dijalankan bergantian pada waktu yang sama |
+| Hasil | Bawaan median 8,03 s, `minimal` 8,65 s. Instruksi lama 7,21 s (n=11), instruksi baru 7,04 s. Panjang jawaban median 332–444 karakter |
+| Kesimpulan | Panjang instruksi dan tingkat berpikir tidak menjelaskan perlambatan. Pada hari sebelumnya instruksi yang sama memerlukan median 2,77 s (EXP-007), sehingga perbedaan berasal dari kondisi layanan. Pengaturan bawaan dipertahankan |
+| Keputusan terkait | D-32, D-48 |

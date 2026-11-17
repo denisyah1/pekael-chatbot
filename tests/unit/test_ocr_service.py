@@ -39,7 +39,8 @@ def _rendered_text_image(text: str) -> Image.Image:
 def test_configured_path_is_used(restore_tesseract_cmd):
     import pytesseract
 
-    OcrService(tesseract_cmd=r"D:\tools\tesseract.exe")
+    service = OcrService(tesseract_cmd=r"D:\tools\tesseract.exe")
+    service._pytesseract()  # applied on first use, so start-up does not import pytesseract
 
     assert pytesseract.pytesseract.tesseract_cmd == r"D:\tools\tesseract.exe"
 

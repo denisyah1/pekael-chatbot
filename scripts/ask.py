@@ -10,6 +10,7 @@ Usage from the project root:
 
 import argparse
 import sys
+import threading
 import time
 
 from pekael.config.app_configurator import AppConfigurator
@@ -52,8 +53,11 @@ def main() -> int:
         for question in args.questions:
             show(manager, question)
         return 0
+    warm = threading.Thread(target=manager.warm_up, daemon=True)  # runs while the first question is typed
+    warm.start()
     while True:
         question = input("\nPertanyaan (kosong untuk keluar): ").strip()
+        warm.join()
         if not question:
             return 0
         show(manager, question)

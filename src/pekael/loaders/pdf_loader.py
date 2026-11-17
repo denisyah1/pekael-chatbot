@@ -1,17 +1,22 @@
 """PDF loader: native text per page, OCR fallback only for pages without enough text."""
 
+from __future__ import annotations
+
 import hashlib
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
 
-import pymupdf
 from langchain_core.documents import Document
-from PIL import Image
 
 from pekael.loaders.base import BaseLoader
 from pekael.loaders.text_cleaning import clean_page_text
 from pekael.services.ocr_service import OcrResult, OcrService
+
+if TYPE_CHECKING:  # PyMuPDF and Pillow are imported when a PDF is opened, not at start-up
+    import pymupdf
+    from PIL import Image
 
 NATIVE_TEXT = "native_text"
 TESSERACT_OCR = "tesseract_ocr"
@@ -101,6 +106,8 @@ class PDFLoader(BaseLoader):
 
     @staticmethod
     def open_pdf(path: Path) -> pymupdf.Document:
+        import pymupdf
+
         if not path.is_file():
             raise DocumentLoadError(f"File not found: {path}")
         try:
@@ -153,5 +160,8 @@ class PDFLoader(BaseLoader):
         return Document(page_content=clean_page_text(extraction.raw_text), metadata=metadata)
 
     def render(self, page: pymupdf.Page) -> Image.Image:
+        import pymupdf
+        from PIL import Image
+
         pixmap = page.get_pixmap(dpi=self.ocr_dpi, colorspace=pymupdf.csGRAY)
         return Image.frombytes("L", (pixmap.width, pixmap.height), pixmap.samples)

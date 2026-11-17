@@ -13,13 +13,18 @@ import re
 from pekael.core import messages
 from pekael.core.chain import Chain
 from pekael.core.prompts import (
+    CONVERSATION_PROMPT,
     OFF_TOPIC_MESSAGES,
     REDIRECT_MESSAGES,
     SYSTEM_PROMPT,
+    build_conversation_prompt,
     build_user_prompt,
     format_context,
+    is_unmarked_redirect,
     parse_answer,
     pick_message,
+    strip_unasked_greeting,
+    usable_conversation,
     usable_redirect,
 )
 from pekael.core.schemas import ChainState, ChatbotResponse, ResponseStatus, RetrievedDocument, SourceReference
@@ -115,18 +120,38 @@ class RagSteps:
                 state.response = ChatbotResponse(messages.RETRIEVAL_FAILED, ResponseStatus.ERROR)
             return state
         if not state.retrieved:
-            state.response = ChatbotResponse(pick_message(state.question, OFF_TOPIC_MESSAGES), ResponseStatus.OUT_OF_SCOPE)
+            state.response = ChatbotResponse(self.conversation_reply(state.question), ResponseStatus.OUT_OF_SCOPE)
         return state
 
     def relevancy_gate(self, state: ChainState) -> ChainState:
-        """Keep only chunks within the calibrated distance; reject the question if none remain."""
-        if self.max_distance is not None:
-            state.retrieved = [item for item in state.retrieved if item.distance <= self.max_distance]
+        """Reject the question when even the nearest chunk is beyond the calibrated distance.
+
+        A question that passes keeps all k chunks (D-47): casual wording sits further from the
+        handbook text, and dropping the farther chunks removed passages the answer needed
+        (a rule on page 11 was dropped while its grading table on page 16 was kept).
+        """
+        if self.max_distance is not None and state.retrieved and min(state.distances) > self.max_distance:
+            state.retrieved = []
         if not state.retrieved:
             logger.info("Relevancy gate rejected question, nearest distance %.3f", min(state.distances))
-            text = pick_message(state.question, OFF_TOPIC_MESSAGES)
+            text = self.conversation_reply(state.question)
             state.response = ChatbotResponse(text, ResponseStatus.OUT_OF_SCOPE, distances=state.distances)
         return state
+
+    def conversation_reply(self, question: str) -> str:
+        """A short human reply to greetings, thanks, feelings, or other topics, without any PKL facts (D-46).
+
+        Uses one Gemini call. A failed call or a reply that breaks the rules falls back to a ready-made message.
+        """
+        try:
+            reply = self.llm.generate_response(build_conversation_prompt(question), system_prompt=CONVERSATION_PROMPT).strip()
+        except Exception as exc:  # quota, timeout, or any provider error: a ready-made reply is fine here
+            logger.info("Conversation reply unavailable (%s), using a ready-made one", getattr(exc, "kind", type(exc).__name__))
+            return pick_message(question, OFF_TOPIC_MESSAGES)
+        if usable_conversation(reply):
+            return reply
+        logger.info("Conversation reply broke the rules, using a ready-made one")
+        return pick_message(question, OFF_TOPIC_MESSAGES)
 
     def build_prompt(self, state: ChainState) -> ChainState:
         state.context = format_context(state.retrieved)
@@ -152,9 +177,12 @@ class RagSteps:
         the redirection mentions are cited like any answer.
         """
         parsed = parse_answer(state.answer, len(state.retrieved))
+        if not parsed.not_found and is_unmarked_redirect(parsed.answer):
+            logger.info("Answer is a redirection without the marker, treated as one")
+            parsed = type(parsed)("", True, (), "")  # the wording says the handbook lacks it: use a ready-made one
         if parsed.not_found:
             if usable_redirect(parsed.redirect):
-                text = parsed.redirect
+                text = strip_unasked_greeting(state.question, parsed.redirect)
             else:
                 logger.info("Model redirection missing or discouraged wording, using a ready-made one")
                 text = pick_message(state.question, REDIRECT_MESSAGES)
@@ -168,5 +196,6 @@ class RagSteps:
         else:
             cited = [state.retrieved[n - 1] for n in parsed.context_numbers]
         sources = tuple(source_reference(item) for item in cited)
-        state.response = ChatbotResponse(parsed.answer, ResponseStatus.ANSWERED, sources, state.distances)
+        answer = strip_unasked_greeting(state.question, parsed.answer)
+        state.response = ChatbotResponse(answer, ResponseStatus.ANSWERED, sources, state.distances)
         return state

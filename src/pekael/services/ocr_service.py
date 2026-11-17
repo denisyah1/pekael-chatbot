@@ -1,9 +1,16 @@
-"""Tesseract OCR, used only during ingestion for pages without a usable text layer."""
+"""Tesseract OCR, used only during ingestion for pages without a usable text layer.
+
+pytesseract (which also loads pandas) is imported on first use, so answering questions
+does not pay for it at start-up.
+"""
+
+from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
-import pytesseract
-from PIL.Image import Image
+if TYPE_CHECKING:
+    from PIL.Image import Image
 
 # Words below this Tesseract confidence (0-100) are counted as uncertain for manual review.
 LOW_CONFIDENCE_THRESHOLD = 60
@@ -25,11 +32,18 @@ class OcrService:
     def __init__(self, tesseract_cmd: str | None = None, lang: str = "ind+eng") -> None:
         self.tesseract_cmd = tesseract_cmd
         self.lang = lang
-        if tesseract_cmd:
-            pytesseract.pytesseract.tesseract_cmd = tesseract_cmd
+
+    def _pytesseract(self):
+        """Import pytesseract on first use and point it at the configured executable."""
+        import pytesseract
+
+        if self.tesseract_cmd:
+            pytesseract.pytesseract.tesseract_cmd = self.tesseract_cmd
+        return pytesseract
 
     def check_available(self) -> str:
         """Return the Tesseract version, or raise if the executable or a language is missing."""
+        pytesseract = self._pytesseract()
         try:
             version = str(pytesseract.get_tesseract_version())
             installed = set(pytesseract.get_languages(config=""))
@@ -43,6 +57,7 @@ class OcrService:
         return version
 
     def image_to_text(self, image: Image) -> OcrResult:
+        pytesseract = self._pytesseract()
         text = pytesseract.image_to_string(image, lang=self.lang)
         data = pytesseract.image_to_data(image, lang=self.lang, output_type=pytesseract.Output.DICT)
         confidences = [

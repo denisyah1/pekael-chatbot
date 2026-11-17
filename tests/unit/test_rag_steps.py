@@ -2,7 +2,7 @@ import pytest
 from langchain_core.documents import Document
 
 from pekael.core import messages
-from pekael.core.prompts import OFF_TOPIC_MESSAGES, REDIRECT_MESSAGES, SYSTEM_PROMPT
+from pekael.core.prompts import CONVERSATION_PROMPT, OFF_TOPIC_MESSAGES, REDIRECT_MESSAGES, SYSTEM_PROMPT
 from pekael.core.rag_steps import RagSteps, source_reference
 from pekael.core.schemas import ChainState, ResponseStatus, RetrievedDocument
 from pekael.models.embeddings import EmbeddingError
@@ -96,6 +96,7 @@ def test_prompt_holds_question_context_and_system_prompt():
     prompt, system_prompt = llm.calls[0]
     assert system_prompt == SYSTEM_PROMPT
     assert prompt.endswith("PERTANYAAN MAHASISWA:\nBerapa SKS minimal?")
+    assert "GAYA BAHASA PERTANYAAN: netral" in prompt
     assert "[1] (halaman PDF 10, B. Persyaratan)" in prompt
     assert "[3] (halaman PDF 11, E. Kelulusan)" in prompt
 
@@ -171,21 +172,44 @@ def test_question_at_length_limit_is_accepted():
     assert response.status is ResponseStatus.ANSWERED
 
 
-def test_gate_rejects_when_no_chunk_within_threshold_without_calling_llm():
-    response, _, llm = _ask(max_distance=0.30)
+def test_gate_rejection_gets_a_conversational_reply_without_handbook_context():
+    reply = "Halo juga! Ada yang mau kamu tanyakan soal PKL?"
+
+    response, _, llm = _ask(question="halo kak", llm=FakeLLM(reply), max_distance=0.30)
+
+    assert response.status is ResponseStatus.OUT_OF_SCOPE
+    assert response.answer == reply
+    assert response.distances == (0.35, 0.42, 0.55)
+    (prompt, system), = llm.calls
+    assert system == CONVERSATION_PROMPT
+    assert prompt.endswith("PESAN MAHASISWA:\nhalo kak") and "KONTEKS" not in prompt  # no handbook passages
+    assert "GAYA BAHASA PERTANYAAN: santai" in prompt
+
+
+@pytest.mark.parametrize(
+    "reply",
+    ["PKL minimal 100 SKS kok.", "Maaf, itu tidak dapat dijawab.", "TIDAK_DITEMUKAN", ""],
+)
+def test_conversational_reply_with_facts_or_discouraged_wording_is_replaced(reply):
+    response, _, _ = _ask(question="apa itu machine learning", llm=FakeLLM(reply), max_distance=0.30)
+
+    assert response.answer in OFF_TOPIC_MESSAGES
+
+
+def test_conversational_reply_falls_back_when_gemini_fails():
+    response, _, _ = _ask(llm=FakeLLM(error=LLMError("quota", "Gemini request failed")), max_distance=0.30)
 
     assert response.status is ResponseStatus.OUT_OF_SCOPE
     assert response.answer in OFF_TOPIC_MESSAGES
-    assert response.distances == (0.35, 0.42, 0.55)
-    assert llm.calls == []
 
 
-def test_gate_drops_only_chunks_beyond_threshold():
+def test_question_passing_the_gate_keeps_all_chunks():
+    """D-47: only the nearest chunk decides; farther chunks may hold a rule the answer needs."""
     _, _, llm = _ask(max_distance=0.42)
 
     prompt = llm.calls[0][0]
     assert "[2] (halaman PDF 7)" in prompt
-    assert "[3]" not in prompt
+    assert "[3] (halaman PDF 11, E. Kelulusan)" in prompt
 
 
 def test_gate_disabled_when_threshold_not_set():
@@ -195,11 +219,11 @@ def test_gate_disabled_when_threshold_not_set():
     assert len(llm.calls) == 1
 
 
-def test_empty_retrieval_returns_fallback():
-    response, _, llm = _ask(store=FakeStore(results=[]))
+def test_empty_retrieval_gets_a_conversational_reply():
+    response, _, llm = _ask(store=FakeStore(results=[]), llm=FakeLLM("Siap, ada yang bisa dibantu soal PKL?"))
 
     assert response.status is ResponseStatus.OUT_OF_SCOPE
-    assert llm.calls == []
+    assert [system for _, system in llm.calls] == [CONVERSATION_PROMPT]
 
 
 def test_index_not_ready_returns_status_without_calling_llm():
@@ -251,3 +275,22 @@ def test_generation_failures_become_safe_status(kind, status, answer):
 
     assert (response.status, response.answer) == (status, answer)
     assert response.sources == ()
+
+
+def test_redirection_written_without_the_marker_is_treated_as_one():
+    answer = "Kamu bisa tanyakan ke Admin Prodi PTIK ya, karena infonya belum ada di panduan kita.\nSUMBER: 1, 2"
+
+    response, _, _ = _ask(llm=FakeLLM(answer))
+
+    assert response.status is ResponseStatus.OUT_OF_SCOPE
+    assert response.answer in REDIRECT_MESSAGES
+    assert response.sources == ()
+
+
+def test_real_answer_mentioning_a_contact_is_kept():
+    answer = "Minimal 100 SKS. Untuk cek SKS-mu, tanyakan ke Admin Prodi PTIK.\nSUMBER: 1"
+
+    response, _, _ = _ask(llm=FakeLLM(answer))
+
+    assert response.status is ResponseStatus.ANSWERED
+

@@ -115,3 +115,62 @@
 - Putaran 2 (7 pertanyaan): 5 arahan tanpa ungkapan terlarang, sapaan "kamu", pihak berbeda sesuai topik (pendaftaran, lowongan, nama koordinator, format laporan → Admin Prodi PTIK, kerja paruh waktu → Koordinator PKL), 1,52–2,85 s. Pertanyaan dalam cakupan: lama PKL hal. 14 dan 7, dokumen lampiran hal. 24.
 
 **Test**: `test_prompts.py` (pesan siap pakai, kontak di prompt, pilihan pesan stabil dan bervariasi, ungkapan terlarang, arahan kosong atau terlalu panjang, arahan model dan rujukannya), `test_rag_steps.py` (arahan model dipakai, ungkapan terlarang diganti, ambang memakai pesan di luar topik), `test_student_page.py` (label). `pytest` → **296 lulus, 0 gagal**.
+
+## Sesi 6 — 18 November 2026
+
+**Waktu persiapan (masukan Developer: jawaban cepat tetapi menunggu lama sebelum muncul, juga dari intro ke halaman tanya-jawab)**
+
+Pengukuran awal (`cold_start.py` sementara, proses baru):
+
+| Tahap | Waktu |
+|---|---|
+| `import langchain_core` | 0,85 s |
+| `import langchain_google_genai` | 6,00 s |
+| `import faiss` + `langchain_community` | 2,09 s |
+| `import pekael` (sisa) | 6,66 s |
+| `create_manager_from_config` | 4,10 s |
+| Muat indeks FAISS | 0,07 s |
+| Embedding #1 / #2 | 0,49 s / 0,36 s |
+| Gemini #1 / #2 (prompt pendek) | 3,51 s / 0,74 s |
+
+`python -X importtime`: `pymupdf` 2,25 s (termasuk `pymupdf.layout`), `pytesseract` 1,07 s yang memuat `pandas` 1,06 s. Keduanya hanya dipakai saat membangun knowledge base.
+
+**Perbaikan**
+- Impor malas: `pdf_loader.py` (PyMuPDF, Pillow saat PDF dibuka), `ocr_service.py` (`pytesseract` saat OCR dipakai, path Tesseract diterapkan di `_pytesseract()`), `faiss_vector_store.py` (`langchain_community.vectorstores.FAISS` saat indeks dibangun atau dimuat). `from __future__ import annotations` dan `TYPE_CHECKING` untuk anotasi.
+- `ChatbotManager.warm_up()`: muat indeks, satu embedding (`"PKL"`), satu permintaan Gemini pendek. Kegagalan dicatat, tidak dilempar.
+- `student_page.start_warm_up()`: thread latar belakang sekali per proses saat halaman pertama (intro) dibuka. `_build_manager()` dengan `threading.Lock` agar manager hanya dibuat sekali walau thread dan halaman memintanya bersamaan.
+- `scripts/ask.py` mode interaktif: `warm_up()` berjalan di thread selama pertanyaan pertama diketik.
+
+**Sesudah perbaikan** (proses baru, tanpa panggilan API): `import pekael` 2,05 s, `create_manager_from_config` 5,03 s (memuat `langchain_google_genai`), muat indeks 0,08 s, total 7,16 s. `pymupdf`, `pytesseract`, `pandas` tidak dimuat. Di website, tahap ini berjalan selama intro.
+
+**Test**: `test_warm_up_loads_index_and_opens_both_connections`, `test_warm_up_failure_is_not_raised`. Fixture `test_student_page.py` mengganti `start_warm_up` agar tidak ada thread di test.
+
+**Gaya bahasa adaptif (D-46)** — `src/pekael/core/prompts.py`
+- `STYLE_RULES` dipakai `SYSTEM_PROMPT` dan `CONVERSATION_PROMPT`: ikuti gaya pertanyaan, parafrase kecuali angka, nilai, tanggal, nama dokumen, istilah resmi, isi daftar, kalimat penenang hanya bila mahasiswa menyatakan cemas, tidak membuka dengan "Halo"/"Hai" kecuali disapa, tidak memanggil mahasiswa "kak". Contoh kalimat dihapus dari prompt setelah Gemini menyalin contoh "Bisa kok, asal SKS-mu sudah 100." mentah-mentah.
+- `detect_register()` (`CASUAL_WORDS`, `FORMAL_WORDS`), `register_line()` disisipkan ke prompt pengguna sebagai `GAYA BAHASA PERTANYAAN: santai|formal|netral`. `strip_unasked_greeting()` membuang "Halo!"/"Hai!" di awal bila pertanyaan tidak menyapa.
+- `RagSteps.conversation_reply()`: pertanyaan yang ditolak ambang atau tanpa hasil pencarian dijawab Gemini dengan `CONVERSATION_PROMPT` dan `build_conversation_prompt()` (tanpa konteks buku). `usable_conversation()` menolak balasan berisi angka, ungkapan terlarang, atau penanda. Kegagalan apa pun → `OFF_TOPIC_MESSAGES`.
+- `is_marker()`: penanda dikenali walau salah eja (`TIDAK_DITEMUCHAP` muncul pada uji langsung). `is_unmarked_redirect()`: jawaban yang menyatakan informasi tidak ada di panduan dan menyebut Admin Prodi/Koordinator PKL/Kaprodi diperlakukan sebagai arahan (muncul pada uji langsung untuk batas pendaftaran).
+- `student_page.py`: label "Saran dari Pekael" dihapus, balasan percakapan dan arahan tampil sebagai teks biasa.
+
+**Ambang hanya memutuskan (D-47)**: `relevancy_gate` menolak bila jarak terdekat > `RETRIEVAL_MAX_L2_DISTANCE`, bila lolos keempat potongan dipakai. Pemeriksaan pencarian `"kak, kalo nilai aku 74 lulus gak?"`: hal. 16 (0,617), hal. 28 (0,652), hal. 11 `011-c02` berisi syarat B+ (0,661), hal. 27 (0,682). Sebelumnya hanya hal. 16 yang lolos dan Gemini menjawab "statusnya lulus kok!". Sesudah perbaikan prompt, jawabannya membandingkan ke syarat B+ dan menyimpulkan belum lulus.
+
+**Uji langsung gaya** (`scripts/ask.py`, tiga putaran): putaran terakhir, formal "Bagaimana prosedur pengajuan PKL bagi mahasiswa PTIK?" → bahasa baku, "Anda", "Apakah mahasiswa dengan 90 SKS …" → "Karena jumlah SKS Anda baru mencapai 90 SKS, maka Anda belum memenuhi syarat minimal 100 SKS", santai "kak dokumen apa aja sih …" → "dokumen yang harus kamu lampirin … ada beberapa macam, nih", "halo kak" → "Halo juga! Ada yang bisa aku bantu …".
+
+**EXP-007**: lihat `experiment_log.md`. Data mentah `data/processed/Pedoman-PKL-2025/exp007.json`.
+
+**Pengukuran waktu di website**: tidak dijalankan pada sesi ini. Langkah yang menghentikan semua proses Streamlit di komputer Developer ditolak oleh pengaman otomatis.
+
+**Test**: `pytest` → **315 lulus, 0 gagal** (baru: deteksi gaya, sapaan pembuka, balasan percakapan dan penggantinya, penanda salah eja, arahan tanpa penanda, ambang mempertahankan semua potongan, Tesseract malas).
+
+## Sesi 7 — 19 November 2026
+
+**Variasi penyajian (D-49)** — `src/pekael/core/prompts.py`
+- `ANSWER_FORMS` (5), `REDIRECT_FORMS` (4), `CONVERSATION_FORMS` (3). `presentation_lines(rng)` memilih acak satu bentuk jawaban dan satu bentuk arahan, disisipkan ke prompt pengguna (`BENTUK PENYAJIAN`, `BENTUK ARAHAN`, "Isi daftar tetap lengkap"). `build_conversation_prompt` menyisipkan `BENTUK BALASAN`. `STYLE_RULES` no. 5: ringkas, sekitar 2–4 kalimat di luar daftar.
+- `REDIRECT_MESSAGES` dan `OFF_TOPIC_MESSAGES` masing-masing 6.
+- Simpanan jawaban tetap berlaku: pertanyaan yang sama persis mendapat jawaban yang sama.
+
+**EXP-008 (waktu jawab)**: skrip sementara (dihapus), 6 pertanyaan × 2 putaran, prompt dan konteks yang sama, koneksi dipanaskan lebih dulu. `reasoning_effort` bawaan median 8,03 s (maks 11,00 s), `minimal` median 8,65 s (maks 14,59 s). `SYSTEM_PROMPT` commit `a9616d0` (933 karakter) median 7,21 s (n=11, satu `LLMError`), `SYSTEM_PROMPT` sekarang (3.335 karakter) median 7,04 s.
+
+**Uji langsung** (`scripts/ask.py`, 8 pertanyaan): 5,30–8,72 s. "apa itu pkl?" → definisi lalu daftar 2 poin, "Apakah pengertian dari Praktik Kerja Lapangan di dalam Prodi PTIK?" → paragraf baku dengan "Anda", "kak pkl itu apaan sih?" → "Jadi gini ya, … Intinya, …". Arahan: batas pendaftaran → mengakui pertanyaan lalu Admin Prodi PTIK, jadwal pembekalan → langsung Admin Prodi PTIK, izin PKL di luar kota → Koordinator PKL dengan alasan.
+
+**Test**: `test_every_prompt_carries_one_presentation_form_picked_at_random`, `test_ready_made_messages_have_more_variants`. `pytest` → **317 lulus, 0 gagal**.

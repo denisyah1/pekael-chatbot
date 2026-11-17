@@ -10,6 +10,8 @@ switched to it, so a failed build never replaces a working index (FR-07). Distan
 squared L2 values returned by IndexFlatL2: smaller means closer, they are not probabilities.
 """
 
+from __future__ import annotations
+
 import json
 import os
 import shutil
@@ -17,8 +19,8 @@ from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
-from langchain_community.vectorstores import FAISS
-from langchain_community.vectorstores.utils import DistanceStrategy
+from typing import TYPE_CHECKING
+
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
 
@@ -30,6 +32,9 @@ ACTIVE_FILE = "ACTIVE"
 VERSIONS_DIR = "versions"
 MANIFEST_FILE = "manifest.json"
 TEMP_PREFIX = ".building-"
+
+if TYPE_CHECKING:  # faiss is imported when an index is built or loaded, not at start-up
+    from langchain_community.vectorstores import FAISS
 
 
 class FaissVectorStore(BaseVectorStore):
@@ -63,6 +68,9 @@ class FaissVectorStore(BaseVectorStore):
         versions = self.index_path / VERSIONS_DIR
         temp = versions / f"{TEMP_PREFIX}{build_id}"
         final = versions / build_id
+        from langchain_community.vectorstores import FAISS
+        from langchain_community.vectorstores.utils import DistanceStrategy
+
         try:
             store = FAISS.from_documents(documents, self.embeddings, distance_strategy=DistanceStrategy.EUCLIDEAN_DISTANCE)
             temp.mkdir(parents=True)
@@ -165,6 +173,8 @@ class FaissVectorStore(BaseVectorStore):
         self.manifest = manifest
 
     def _load_folder(self, folder: Path) -> FAISS:
+        from langchain_community.vectorstores import FAISS
+
         # The docstore is a pickle written by this application only, never an uploaded file.
         return FAISS.load_local(str(folder), self.embeddings, allow_dangerous_deserialization=True)
 

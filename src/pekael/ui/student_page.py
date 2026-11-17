@@ -8,6 +8,7 @@ sent back to the model (no conversation memory).
 
 import logging
 import random
+import threading
 from html import escape
 from dataclasses import dataclass
 from datetime import datetime
@@ -53,10 +54,39 @@ def get_config() -> AppConfig:
     return config
 
 
+_build_lock = threading.Lock()
+_shared: dict[str, ChatbotManager] = {}
+_warm_started = threading.Event()
+
+
+def _build_manager() -> ChatbotManager:
+    """Create the manager once per process, also when the warm-up thread and a page ask at the same time."""
+    with _build_lock:
+        if "manager" not in _shared:
+            _shared["manager"] = AppConfigurator.create_manager_from_config(get_config())
+        return _shared["manager"]
+
+
 @st.cache_resource(show_spinner=False)
 def get_manager() -> ChatbotManager:
     """One manager per server process, so the FAISS index is loaded once and shared."""
-    return AppConfigurator.create_manager_from_config(get_config())
+    return _build_manager()
+
+
+def start_warm_up() -> None:
+    """Prepare Pekael in the background while the intro plays (once per server process)."""
+    if _warm_started.is_set():
+        return
+    _warm_started.set()
+
+    def run() -> None:
+        try:
+            manager = _build_manager()
+            manager.warm_up()
+        except Exception as exc:  # the page reports configuration problems itself
+            logger.warning("Background preparation failed: %s", type(exc).__name__)
+
+    threading.Thread(target=run, name="pekael-warm-up", daemon=True).start()
 
 
 def load_manager() -> tuple[ChatbotManager | None, str | None]:
@@ -176,10 +206,9 @@ def render_exchange(index: int, item: Exchange) -> None:
             st.markdown(theme.time_stamp(item.answered_at), unsafe_allow_html=True)
     else:
         warn = response.status is not ResponseStatus.OUT_OF_SCOPE
-        label = "Perlu dicoba lagi" if warn else "Saran dari Pekael"
         with st.container(key=f"pk-a-out-{index}"):
-            st.markdown(f'<div class="pk-from">{label}</div>', unsafe_allow_html=True)
             if warn:
+                st.markdown('<div class="pk-from">Perlu dicoba lagi</div>', unsafe_allow_html=True)
                 st.markdown(f'<div class="pk-status pk-warn">{escape(response.answer)}</div>', unsafe_allow_html=True)
             else:  # a redirection written in plain text, possibly citing related handbook pages
                 st.markdown(response.answer)
@@ -213,6 +242,7 @@ def answer(manager: ChatbotManager, question: str, history: list[Exchange]) -> N
 
 def main() -> None:
     st.markdown(theme.style(), unsafe_allow_html=True)
+    start_warm_up()
 
     if not st.session_state.get(INTRO_KEY):
         render_intro()

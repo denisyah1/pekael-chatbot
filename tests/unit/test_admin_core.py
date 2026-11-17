@@ -216,3 +216,47 @@ def test_page_statistics_fall_back_to_docstore_for_older_builds(tmp_path):
 
     assert store.chunks_per_page() == {4: 1}
     assert store.total_pages() == 9
+
+
+class WarmStore:
+    def __init__(self) -> None:
+        self.is_ready = False
+        self.queries = []
+
+        class Embeddings:
+            def embed_query(inner, text):
+                self.queries.append(text)
+
+        self.embeddings = Embeddings()
+
+    def load(self):
+        self.is_ready = True
+
+
+class WarmLLM:
+    def __init__(self, error: Exception | None = None) -> None:
+        self.prompts, self.error = [], error
+
+    def generate_response(self, prompt, system_prompt=None):
+        self.prompts.append(prompt)
+        if self.error:
+            raise self.error
+        return "siap"
+
+
+def test_warm_up_loads_index_and_opens_both_connections():
+    store, llm = WarmStore(), WarmLLM()
+    manager = ChatbotManager(SYSTEM_PROMPT, PageLoader(), RecursiveCharacterSplitter(1000, 150), store, llm, chain=CountingChain())
+
+    seconds = manager.warm_up()
+
+    assert store.is_ready and store.queries == ["PKL"] and len(llm.prompts) == 1
+    assert seconds >= 0
+
+
+def test_warm_up_failure_is_not_raised():
+    manager = ChatbotManager(SYSTEM_PROMPT, PageLoader(), RecursiveCharacterSplitter(1000, 150), WarmStore(),
+                             WarmLLM(RuntimeError("503")), chain=CountingChain())
+
+    assert manager.warm_up() >= 0
+

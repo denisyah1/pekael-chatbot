@@ -2,6 +2,7 @@ import pytest
 from langchain_core.documents import Document
 
 from pekael.core.prompts import (
+    CONVERSATION_PROMPT,
     DISCOURAGED_PHRASES,
     FALLBACK_MESSAGE,
     NOT_FOUND_MARKER,
@@ -12,6 +13,7 @@ from pekael.core.prompts import (
     format_context,
     parse_answer,
     pick_message,
+    usable_conversation,
     usable_redirect,
 )
 from pekael.core.schemas import RetrievedDocument
@@ -36,8 +38,24 @@ def test_ready_made_messages_are_friendly_and_point_to_contacts():
 
 
 def test_system_prompt_names_the_contacts_and_forbids_guessing():
-    for text in ("Koordinator PKL", "Admin Prodi PTIK", "Kaprodi", "jangan menebak", "nomor kontak", '"kamu"'):
+    for text in ("Koordinator PKL", "Admin Prodi PTIK", "Kaprodi", "jangan menebak", "nomor kontak"):
         assert text in SYSTEM_PROMPT
+
+
+def test_prompts_ask_to_match_the_students_register_and_paraphrase():
+    for prompt in (SYSTEM_PROMPT, CONVERSATION_PROMPT):
+        assert 'sapaan "kamu"' in prompt and 'sapaan "Anda"' in prompt
+        assert "kalimatmu sendiri" in prompt
+    assert "Jangan memberi informasi PKL apa pun" in CONVERSATION_PROMPT
+    assert "Pertanyaan berupa kasus" in SYSTEM_PROMPT and "Hanya jika tidak ada satu pun informasi" in SYSTEM_PROMPT
+    assert "jangan memanggil mahasiswa" in SYSTEM_PROMPT
+    assert "SKS-mu" not in SYSTEM_PROMPT  # no example sentences the model could copy
+    assert "{" not in SYSTEM_PROMPT and "{" not in CONVERSATION_PROMPT  # no unfilled placeholder
+
+
+def test_conversational_reply_must_not_state_numbers():
+    assert usable_conversation("Halo juga, semangat ya! Ada yang mau ditanyakan soal PKL?")
+    assert not usable_conversation("PKL itu minimal 4 bulan.")
 
 
 def test_message_choice_is_stable_per_question_and_varies_between_questions():
@@ -94,7 +112,11 @@ def test_missing_sources_line_gives_none():
     assert parsed.context_numbers is None
 
 
-@pytest.mark.parametrize("text", [NOT_FOUND_MARKER, f"{NOT_FOUND_MARKER}.", f"**{NOT_FOUND_MARKER}**", f"{NOT_FOUND_MARKER}\nSUMBER: -"])
+@pytest.mark.parametrize(
+    "text",
+    [NOT_FOUND_MARKER, f"{NOT_FOUND_MARKER}.", f"**{NOT_FOUND_MARKER}**", f"{NOT_FOUND_MARKER}\nSUMBER: -",
+     "TIDAK_DITEMUCHAP\nTanyakan ke Admin Prodi PTIK ya.", "Tidak ditemukan"],
+)
 def test_not_found_marker_is_detected(text):
     parsed = parse_answer(text, context_count=4)
 
@@ -116,4 +138,46 @@ def test_not_found_keeps_the_model_redirection_and_related_sources():
     assert parsed.not_found
     assert parsed.redirect.startswith("Untuk jadwal pendaftaran")
     assert parsed.context_numbers == (2,)
+
+
+@pytest.mark.parametrize(
+    ("question", "register"),
+    [
+        ("kak PKL tuh brp lama sih?", "santai"),
+        ("kalo nilai aku 74 lulus gak?", "santai"),
+        ("Mohon informasi mengenai durasi pelaksanaan PKL.", "formal"),
+        ("Bagaimana prosedur pengajuan PKL bagi mahasiswa PTIK?", "formal"),
+        ("Berapa SKS minimal untuk PKL?", "netral"),
+    ],
+)
+def test_register_is_detected_from_the_wording(question, register):
+    from pekael.core.prompts import detect_register
+
+    assert detect_register(question) == register
+
+
+def test_opening_greeting_is_dropped_unless_the_student_greets():
+    from pekael.core.prompts import strip_unasked_greeting
+
+    assert strip_unasked_greeting("Berapa lama PKL?", "Halo! PKL minimal 4 bulan.") == "PKL minimal 4 bulan."
+    assert strip_unasked_greeting("halo kak, berapa lama PKL?", "Halo! PKL minimal 4 bulan.") == "Halo! PKL minimal 4 bulan."
+    assert strip_unasked_greeting("Berapa lama PKL?", "Halaman 7 menyebut 4 bulan.") == "Halaman 7 menyebut 4 bulan."
+
+
+def test_every_prompt_carries_one_presentation_form_picked_at_random():
+    import random as _random
+
+    from pekael.core.prompts import ANSWER_FORMS, CONVERSATION_FORMS, REDIRECT_FORMS, build_conversation_prompt
+
+    prompt = build_user_prompt("Berapa SKS minimal?", [_retrieved("Minimal 100 SKS.", 10)], rng=_random.Random(1))
+    answer_form = next(f for f in ANSWER_FORMS if f in prompt)
+    assert any(f in prompt for f in REDIRECT_FORMS)
+    assert "Isi daftar tetap lengkap" in prompt
+    forms = {next(f for f in ANSWER_FORMS if f in build_user_prompt("x", [], rng=_random.Random(seed))) for seed in range(40)}
+    assert len(forms) > 2 and answer_form in forms
+    assert any(f in build_conversation_prompt("halo kak", rng=_random.Random(2)) for f in CONVERSATION_FORMS)
+
+
+def test_ready_made_messages_have_more_variants():
+    assert len(REDIRECT_MESSAGES) >= 6 and len(OFF_TOPIC_MESSAGES) >= 6
 
