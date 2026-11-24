@@ -115,7 +115,7 @@ def test_missing_sources_line_gives_none():
 @pytest.mark.parametrize(
     "text",
     [NOT_FOUND_MARKER, f"{NOT_FOUND_MARKER}.", f"**{NOT_FOUND_MARKER}**", f"{NOT_FOUND_MARKER}\nSUMBER: -",
-     "TIDAK_DITEMUCHAP\nTanyakan ke Admin Prodi PTIK ya.", "Tidak ditemukan"],
+     "TIDAK_DITEMUCHAP\nTanyakan ke Admin Prodi PTIK ya.", "Tidak ditemukan", "TIDAK_DITEMUCH tanya admin ya"],
 )
 def test_not_found_marker_is_detected(text):
     parsed = parse_answer(text, context_count=4)
@@ -171,7 +171,7 @@ def test_every_prompt_carries_one_presentation_form_picked_at_random():
 
     prompt = build_user_prompt("Berapa SKS minimal?", [_retrieved("Minimal 100 SKS.", 10)], rng=_random.Random(1))
     answer_form = next(f for f in ANSWER_FORMS if f in prompt)
-    assert any(f in prompt for f in REDIRECT_FORMS)
+    assert not any(f in prompt for f in REDIRECT_FORMS)  # a redirection hint next to the question caused redirects
     assert "Isi daftar tetap lengkap" in prompt
     forms = {next(f for f in ANSWER_FORMS if f in build_user_prompt("x", [], rng=_random.Random(seed))) for seed in range(40)}
     assert len(forms) > 2 and answer_form in forms
@@ -180,4 +180,44 @@ def test_every_prompt_carries_one_presentation_form_picked_at_random():
 
 def test_ready_made_messages_have_more_variants():
     assert len(REDIRECT_MESSAGES) >= 6 and len(OFF_TOPIC_MESSAGES) >= 6
+
+
+@pytest.mark.parametrize(
+    "text",
+    ["TIDAK_DITEMUCH TAPI TANYA ADMIN PRODI PTIK YAA", "TIDAK_DITEMUKAN Tanyakan ke Admin Prodi PTIK ya.", "**TIDAK DITEMUKAN**\nTanya Koordinator PKL"],
+)
+def test_marker_followed_by_text_on_the_same_line_is_detected(text):
+    parsed = parse_answer(text, context_count=4)
+
+    assert parsed.not_found
+    assert "TIDAK" not in parsed.redirect.upper().split(" ")[0]
+
+
+def test_answer_starting_with_the_word_tidak_is_not_a_marker():
+    parsed = parse_answer("Tidak, nilai 74 belum memenuhi syarat B+.\nSUMBER: 1", context_count=2)
+
+    assert not parsed.not_found
+
+
+def test_shouting_redirect_is_not_usable():
+    assert not usable_redirect("TAPI TANYA ADMIN PRODI PTIK YAA, BIAR NANTI DIBANTU CEK LAGI.")
+
+
+def test_redirect_form_is_a_closing_note_of_the_system_prompt():
+    import random as _random
+
+    from pekael.core.prompts import REDIRECT_FORMS, system_prompt_with_redirect_form
+
+    prompt = system_prompt_with_redirect_form(SYSTEM_PROMPT, rng=_random.Random(3))
+
+    assert prompt.startswith(SYSTEM_PROMPT)
+    assert any(f in prompt for f in REDIRECT_FORMS)
+
+
+def test_greeting_question_sentence_is_dropped_when_not_greeted():
+    from pekael.core.prompts import strip_unasked_greeting
+
+    answer = "Hai, kamu mau tahu tentang PKL ya? PKL adalah kegiatan kurikuler."
+
+    assert strip_unasked_greeting("apa itu pkl?", answer) == "PKL adalah kegiatan kurikuler."
 

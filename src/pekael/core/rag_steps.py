@@ -24,6 +24,7 @@ from pekael.core.prompts import (
     parse_answer,
     pick_message,
     strip_unasked_greeting,
+    system_prompt_with_redirect_form,
     usable_conversation,
     usable_redirect,
 )
@@ -160,7 +161,8 @@ class RagSteps:
 
     def generate(self, state: ChainState) -> ChainState:
         try:
-            state.answer = self.llm.generate_response(state.prompt, system_prompt=self.system_prompt)
+            system = system_prompt_with_redirect_form(self.system_prompt)
+            state.answer = self.llm.generate_response(state.prompt, system_prompt=system)
         except LLMError as exc:
             logger.error("Generation failed (%s)", exc.kind)
             if exc.kind in _PROVIDER_MESSAGES:

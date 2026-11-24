@@ -65,4 +65,9 @@ def test_personal_values_default_to_blank(monkeypatch, tmp_path):
 
     values = export_docs._personal_values()
 
-    assert values == {"NIM_DEVELOPER": "123", "NIP_PRODUCT_OWNER": export_docs.BLANK}
+    assert values == {
+        "NIM_DEVELOPER": "123",
+        "NIP_PRODUCT_OWNER": export_docs.BLANK,
+        "NIP_SCRUM_MASTER_REVIEW": export_docs.BLANK,
+        "NIP_SCRUM_MASTER_RETRO": export_docs.BLANK,
+    }

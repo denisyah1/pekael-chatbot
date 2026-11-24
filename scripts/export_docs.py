@@ -10,8 +10,9 @@ Usage from the project root:
     .venv\\Scripts\\python.exe scripts\\export_docs.py --pdf        # also save PDF (needs Microsoft Word)
     .venv\\Scripts\\python.exe scripts\\export_docs.py --build-reference "Lembar Validasi Sprint Planning 1.docx"
 
-Personal identifiers are never stored in the repository: the placeholders {{NIM_DEVELOPER}}
-and {{NIP_PRODUCT_OWNER}} in the Markdown are filled from .env when exporting.
+Personal identifiers are never stored in the repository: the placeholders {{NIM_DEVELOPER}},
+{{NIP_PRODUCT_OWNER}}, {{NIP_SCRUM_MASTER_REVIEW}} and {{NIP_SCRUM_MASTER_RETRO}} in the Markdown
+are filled from .env when exporting.
 """
 
 import argparse
@@ -32,7 +33,7 @@ SCRUM_DIR = ROOT / "docs" / "scrum"
 EXPORT_DIR = ROOT / "docs" / "export"
 REFERENCE_DOCX = ROOT / "docs" / "templates" / "reference.docx"
 LUA_FILTER = ROOT / "docs" / "templates" / "pekael-docx.lua"
-PERSONAL_PLACEHOLDERS = ("NIM_DEVELOPER", "NIP_PRODUCT_OWNER")
+PERSONAL_PLACEHOLDERS = ("NIM_DEVELOPER", "NIP_PRODUCT_OWNER", "NIP_SCRUM_MASTER_REVIEW", "NIP_SCRUM_MASTER_RETRO")
 BLANK = "____________________"
 
 # file stem -> (header title, header subtitle, footer label); {n} is the sprint number
@@ -62,6 +63,11 @@ SPRINT_DOCUMENTS = {
         "SPRINT REPORT {n}",
         "Lampiran: Lembar Pemeriksaan Contoh Jawaban",
         "Sprint Report {n}: Pemeriksaan Jawaban",
+    ),
+    "pertanyaan_uji": (
+        "SPRINT REPORT {n}",
+        "Lampiran: Daftar Pertanyaan Uji",
+        "Sprint Report {n}: Pertanyaan Uji",
     ),
     "topik_pertanyaan": (
         "SPRINT REPORT {n}",

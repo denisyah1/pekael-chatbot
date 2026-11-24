@@ -54,6 +54,6 @@ Berdasarkan checklist di atas, peristiwa Scrum pada Sprint N telah terlaksana se
 
 | | |
 |---|---|
-| Jakarta, _[tanggal]_<br>Scrum Master,<br><br><br><br>_[nama Scrum Master]_ | <br>Developer,<br><br><br><br>Deni Merdiansyah<br>NIM {{NIM_DEVELOPER}} |
+| Jakarta, _[tanggal]_<br>Scrum Master,<br><br><br><br>Dr. Widodo, M. Kom.<br>NIP. {{NIP_SCRUM_MASTER_RETRO}} | <br>Developer,<br><br><br><br>Deni Merdiansyah<br>NIM {{NIM_DEVELOPER}} |
 
 *Dasar penyusunan: Schwaber & Sutherland (2020) untuk komponen Sprint Retrospective. Rujukan lengkap tercantum pada laporan.*

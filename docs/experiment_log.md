@@ -158,3 +158,17 @@ Jawaban lengkap: [`scrum/sprint-03/pemeriksaan_jawaban.md`](scrum/sprint-03/peme
 | Hasil | Bawaan median 8,03 s, `minimal` 8,65 s. Instruksi lama 7,21 s (n=11), instruksi baru 7,04 s. Panjang jawaban median 332–444 karakter |
 | Kesimpulan | Panjang instruksi dan tingkat berpikir tidak menjelaskan perlambatan. Pada hari sebelumnya instruksi yang sama memerlukan median 2,77 s (EXP-007), sehingga perbedaan berasal dari kondisi layanan. Pengaturan bawaan dipertahankan |
 | Keputusan terkait | D-32, D-48 |
+
+### EXP-009 — Ketepatan setelah perbaikan petunjuk arahan
+
+| | |
+|---|---|
+| Tanggal | 2026-11-19 |
+| Sprint | 4 |
+| Tujuan | Memastikan pertanyaan yang ada jawabannya kembali dijawab setelah petunjuk bentuk arahan dipindah (D-50) |
+| Konfigurasi | Seperti EXP-007, ditambah bentuk penyajian acak (D-49) dan perbaikan D-50 |
+| Data uji | 44 pertanyaan EXP-004 |
+| Prosedur | `run_threshold_experiment.py --generate --pause 4 --output .../exp009.json`, dibandingkan dengan `exp007.json` |
+| Hasil | Dalam cakupan 35/36 dijawab. No. 23 (pembekalan sebelum PKL) diarahkan ke Admin Prodi PTIK, pada EXP-007 dijawab. L1–L5 5/5 diarahkan, N1–N3 3/3 dibalas sebagai percakapan. Tidak ada penanda, ungkapan terlarang, atau sapaan pembuka yang tidak diminta. Satu arahan memuat "belum ada di panduan kita", frasa ini ditambahkan ke daftar ungkapan yang dicegah. Waktu jawab dalam cakupan median 5,44 s, maks 7,73 s |
+| Kesimpulan | Ketepatan kembali setara EXP-004 sampai EXP-007. Satu pertanyaan berubah status antar percobaan, sehingga hasil perlu diukur dengan beberapa kali pengulangan pada evaluasi Sprint 5. Waktu jawab mengikuti kondisi layanan |
+| Keputusan terkait | D-49, D-50 |

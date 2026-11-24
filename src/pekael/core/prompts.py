@@ -80,6 +80,7 @@ CONVERSATION_FORMS = (
 DISCOURAGED_PHRASES = (
     "tidak dapat dijawab", "tidak bisa dijawab", "tidak dapat menjawab", "tidak bisa menjawab", "tidak ditemukan",
     "tidak tersedia", "tidak tercantum", "belum tercantum", "tidak terdapat", "tidak ada di", "tidak dijelaskan",
+    "belum ada di", "belum tersedia",
     "di luar cakupan", "knowledge base", "basis pengetahuan", "konteks", NOT_FOUND_MARKER.lower(),
 )
 MAX_REDIRECT_CHARS = 700
@@ -93,7 +94,7 @@ STYLE_RULES = """Gaya bahasa (seperti kakak tingkat atau staf prodi yang ramah d
 2. Jelaskan dengan kalimatmu sendiri, jangan menyalin kalimat buku panduan mentah-mentah. Yang tetap harus persis: angka, nilai, tanggal, nama dokumen, istilah resmi, dan isi daftar syarat atau langkah.
 3. Kalimat penenang seperti "Tenang ya" hanya dipakai bila mahasiswa jelas menyatakan cemas, takut, atau bingung. Selain itu langsung ke jawaban. Jangan memperkenalkan diri, dan jangan membuka dengan "Halo" atau "Hai" kecuali mahasiswa menyapa.
 4. Pakai daftar hanya untuk syarat atau langkah yang banyak atau berurutan, selebihnya paragraf pendek.
-5. Usahakan ringkas, sekitar 2 sampai 4 kalimat di luar daftar, dan ikuti petunjuk "BENTUK PENYAJIAN" atau "BENTUK ARAHAN" bila diberikan."""
+5. Usahakan ringkas, sekitar 2 sampai 4 kalimat di luar daftar, dan ikuti petunjuk "BENTUK PENYAJIAN" bila diberikan."""
 
 SYSTEM_PROMPT = f"""Anda adalah Pekael, teman tanya seputar Praktik Kerja Lapangan (PKL) untuk mahasiswa Prodi Pendidikan Teknik Informatika dan Komputer (PTIK) Universitas Negeri Jakarta.
 
@@ -142,9 +143,15 @@ def pick_message(question: str, options: tuple[str, ...]) -> str:
     return options[zlib.crc32(key.encode("utf-8")) % len(options)]
 
 
+def _shouting(text: str) -> bool:
+    letters = [c for c in text if c.isalpha()]
+    return len(letters) >= 20 and sum(c.isupper() for c in letters) / len(letters) > 0.6
+
+
 def usable_redirect(text: str) -> bool:
     lowered = text.lower()
-    return bool(text.strip()) and len(text) <= MAX_REDIRECT_CHARS and not any(p in lowered for p in DISCOURAGED_PHRASES)
+    return (bool(text.strip()) and len(text) <= MAX_REDIRECT_CHARS and not _shouting(text)
+            and not any(p in lowered for p in DISCOURAGED_PHRASES))
 
 
 _ADMITS_MISSING = re.compile(
@@ -188,7 +195,7 @@ REGISTER_HINTS = {
     "formal": "formal, jawab dengan bahasa baku dan sapaan \"Anda\", tanpa kata gaul",
     "netral": "netral, jawab dengan bahasa yang sopan dan hangat dengan sapaan \"kamu\"",
 }
-_LEADING_GREETING = re.compile(r"^\s*(halo|hallo|hai|hi|hey)\b[^\n.!?]*[!.]\s*", re.IGNORECASE)
+_LEADING_GREETING = re.compile(r"^\s*(halo|hallo|hai|hi|hey)\b[^\n.!?]*[!.?]\s*", re.IGNORECASE)
 
 
 def _words(question: str) -> set[str]:
@@ -218,9 +225,13 @@ def register_line(question: str) -> str:
 
 
 def presentation_lines(rng: random.Random | None = None) -> str:
-    rng = rng or random
-    return (f"BENTUK PENYAJIAN (bila menjawab): {rng.choice(ANSWER_FORMS)}. Isi daftar tetap lengkap.\n"
-            f"BENTUK ARAHAN (bila jawabannya tidak ada): {rng.choice(REDIRECT_FORMS)}.")
+    """Only the answer form goes with the question: a redirection hint there made the model redirect answerable questions."""
+    return f"BENTUK PENYAJIAN: {(rng or random).choice(ANSWER_FORMS)}. Isi daftar tetap lengkap."
+
+
+def system_prompt_with_redirect_form(system_prompt: str, rng: random.Random | None = None) -> str:
+    """Vary how a redirection is phrased, as a closing note of the system prompt (D-49)."""
+    return f"{system_prompt}\n\nCatatan untuk aturan no. 7: bila memang perlu mengarahkan, {(rng or random).choice(REDIRECT_FORMS)}."
 
 
 def build_user_prompt(question: str, retrieved: list[RetrievedDocument], rng: random.Random | None = None) -> str:
@@ -231,6 +242,20 @@ def build_user_prompt(question: str, retrieved: list[RetrievedDocument], rng: ra
 def build_conversation_prompt(question: str, rng: random.Random | None = None) -> str:
     form = (rng or random).choice(CONVERSATION_FORMS)
     return f"{register_line(question)}\nBENTUK BALASAN: {form}.\n\nPESAN MAHASISWA:\n{question}"
+
+
+_MARKER_PREFIX = re.compile(r"^\W*TIDAK[\s_]*DITEMU[A-Z]*\W*", re.IGNORECASE)
+
+
+def split_marker(body: str) -> tuple[bool, str]:
+    """(found, rest): the marker at the start of the answer, also misspelled or followed by text on the same line."""
+    match = _MARKER_PREFIX.match(body)
+    if not match or not match.group(0).strip(" .`*\"'\n").upper().replace(" ", "_").startswith("TIDAK"):
+        return False, body
+    token = re.sub(r"[^A-Z]", "", match.group(0).upper())
+    if len(token) > len("TIDAKDITEMUKAN") + 4:  # a word that merely starts like the marker
+        return False, body
+    return True, body[match.end():].strip()
 
 
 def is_marker(line: str) -> bool:
@@ -251,7 +276,7 @@ def parse_answer(text: str, context_count: int) -> ParsedAnswer:
     matches = list(_SOURCES_LINE.finditer(text))
     last = matches[-1] if matches else None
     body = text[: last.start()].strip() if last else text.strip()
-    first_line, _, rest = body.partition("\n")
-    if is_marker(first_line) or (not body and NOT_FOUND_MARKER in text.upper()):
-        return ParsedAnswer("", True, _numbers(last, context_count) or (), rest.strip())
+    found, rest = split_marker(body)
+    if found or (not body and NOT_FOUND_MARKER in text.upper()):
+        return ParsedAnswer("", True, _numbers(last, context_count) or (), rest)
     return ParsedAnswer(body, False, _numbers(last, context_count))

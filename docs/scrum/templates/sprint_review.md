@@ -58,6 +58,6 @@ Berdasarkan pemeriksaan terhadap Increment Sprint N pada lembar ini, *Product Ow
 
 | | |
 |---|---|
-| Jakarta, _[tanggal]_<br>*Product Owner* (Dosen Koordinator PKL),<br><br><br><br>Bambang Satrio, S. Pd., M. Kom.<br>NIP. {{NIP_PRODUCT_OWNER}} | <br>Developer,<br><br><br><br>Deni Merdiansyah<br>NIM {{NIM_DEVELOPER}} |
+| Jakarta, _[tanggal]_<br>Scrum Master,<br><br><br><br>Nur Elah, S.Kom., M.T<br>NIP. {{NIP_SCRUM_MASTER_REVIEW}} | <br>Developer,<br><br><br><br>Deni Merdiansyah<br>NIM {{NIM_DEVELOPER}} |
 
 *Dasar penyusunan: Schwaber & Sutherland (2020) untuk komponen Sprint Review. Rujukan lengkap tercantum pada laporan.*

@@ -174,3 +174,18 @@ Pengukuran awal (`cold_start.py` sementara, proses baru):
 **Uji langsung** (`scripts/ask.py`, 8 pertanyaan): 5,30–8,72 s. "apa itu pkl?" → definisi lalu daftar 2 poin, "Apakah pengertian dari Praktik Kerja Lapangan di dalam Prodi PTIK?" → paragraf baku dengan "Anda", "kak pkl itu apaan sih?" → "Jadi gini ya, … Intinya, …". Arahan: batas pendaftaran → mengakui pertanyaan lalu Admin Prodi PTIK, jadwal pembekalan → langsung Admin Prodi PTIK, izin PKL di luar kota → Koordinator PKL dengan alasan.
 
 **Test**: `test_every_prompt_carries_one_presentation_form_picked_at_random`, `test_ready_made_messages_have_more_variants`. `pytest` → **317 lulus, 0 gagal**.
+
+**Pertanyaan tidak terjawab (laporan Developer)**: reproduksi `scripts/ask.py`: "kak dokumen apa aja yg dilampirin di laporan?" → `TIDAK_DITEMUCH TAPI TANYA ADMIN PRODI PTIK YAA…` dengan status `answered`, "apa itu pkl?" → dibuka "Hai, kamu mau tahu tentang PKL ya?".
+
+**Perbaikan (D-50)**
+- `presentation_lines()` hanya `BENTUK PENYAJIAN`. `system_prompt_with_redirect_form()` menambahkan catatan bentuk arahan di akhir instruksi sistem, dipanggil di `RagSteps.generate`.
+- `split_marker()` dengan `_MARKER_PREFIX` (`^\W*TIDAK[\s_]*DITEMU[A-Z]*\W*`), sisa teks setelah penanda menjadi arahan. `_shouting()` menolak arahan serba kapital. `_LEADING_GREETING` juga menerima `?`. `DISCOURAGED_PHRASES` ditambah `belum ada di`, `belum tersedia`.
+- Test baru: penanda diikuti teks pada baris yang sama (3 kasus), jawaban diawali "Tidak," bukan penanda, arahan serba kapital, catatan bentuk arahan di instruksi sistem, kalimat sapaan bertanda tanya.
+
+**EXP-009**: lihat `experiment_log.md`, data `data/processed/Pedoman-PKL-2025/exp009.json`.
+
+**Format tanda tangan (D-51)**: `scripts/export_docs.py` `PERSONAL_PLACEHOLDERS` ditambah `NIP_SCRUM_MASTER_REVIEW`, `NIP_SCRUM_MASTER_RETRO`, `.env.example` diperbarui, templat `sprint_review.md` (Nur Elah) dan `sprint_retrospective.md` (Dr. Widodo) diubah.
+
+**Test**: `pytest` → **327 lulus, 0 gagal**.
+
+**Daftar pertanyaan uji**: `docs/scrum/sprint-04/pertanyaan_uji.md` dibuat dari `topik_pertanyaan.md` (no. 1–30) dan `EXTRA_IN_SCOPE` (E1–E6), kolom hasil dari `exp009.json`. `export_docs.py` mendapat judul untuk `pertanyaan_uji`. Salinan ekspor `docs/export/sprint-04/pertanyaan_uji_4_DeniM.docx` dan `.pdf` (di-ignore git).

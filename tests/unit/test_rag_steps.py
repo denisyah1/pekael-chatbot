@@ -94,7 +94,7 @@ def test_prompt_holds_question_context_and_system_prompt():
     _, _, llm = _ask(question="  Berapa SKS minimal?  ")
 
     prompt, system_prompt = llm.calls[0]
-    assert system_prompt == SYSTEM_PROMPT
+    assert system_prompt.startswith(SYSTEM_PROMPT) and "Catatan untuk aturan no. 7" in system_prompt
     assert prompt.endswith("PERTANYAAN MAHASISWA:\nBerapa SKS minimal?")
     assert "GAYA BAHASA PERTANYAAN: netral" in prompt
     assert "[1] (halaman PDF 10, B. Persyaratan)" in prompt

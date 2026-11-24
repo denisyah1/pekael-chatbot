@@ -1,7 +1,7 @@
 # Product Backlog — Pekael
 
 > Sumber: proposal skripsi (Tabel Product Backlog) dan `project_spec.md` §13.
-> Product Owner: Bambang Satrio, S. Pd., M. Kom. · Terakhir diperbarui: 2026-11-13
+> Product Owner: Bambang Satrio, S. Pd., M. Kom. · Terakhir diperbarui: 2026-11-19
 
 ## Item Product Backlog (dari proposal)
 
@@ -12,9 +12,9 @@
 | PBI-03 | Text splitting dan embedding menjadi representasi vektor | Tinggi | 2 | Chunk mempertahankan metadata source/page, dimensi vektor konsisten, eksperimen parameter tercatat | Diterima PO |
 | PBI-04 | Penyimpanan embedding pada FAISS | Tinggi | 3 | Indeks `IndexFlatL2` dapat dibuat, disimpan, dan dimuat ulang pada proses baru | Diterima PO |
 | PBI-05 | Retrieval chain menghubungkan FAISS dan Gemini API | Tinggi | 3 | Pipeline CLI menghasilkan jawaban beserta sumber, fallback berjalan untuk pertanyaan di luar cakupan | Diterima PO |
-| PBI-06 | Antarmuka website untuk tanya-jawab | Tinggi | 4 | UI Streamlit menerima pertanyaan, menampilkan loading, jawaban, dan status error yang aman | Dikerjakan |
-| PBI-07 | Penampilan rujukan sumber pada setiap jawaban | Sedang | 4 | Nama dokumen dan halaman PDF tampil hanya dari chunk yang benar-benar diambil | Dikerjakan |
-| PBI-08 | Admin mengunggah/memperbarui dokumen knowledge base | Sedang | 4 | Login satu admin, upload PDF, indeks lama tetap aktif jika build gagal | Dikerjakan |
+| PBI-06 | Antarmuka website untuk tanya-jawab | Tinggi | 4 | UI Streamlit menerima pertanyaan, menampilkan loading, jawaban, dan status error yang aman | Diterima PO |
+| PBI-07 | Penampilan rujukan sumber pada setiap jawaban | Sedang | 4 | Nama dokumen dan halaman PDF tampil hanya dari chunk yang benar-benar diambil | Diterima PO |
+| PBI-08 | Admin mengunggah/memperbarui dokumen knowledge base | Sedang | 4 | Login satu admin, upload PDF, indeks lama tetap aktif jika build gagal | Diterima PO |
 
 ## Pekerjaan Pendukung Sprint 5–6
 
@@ -45,3 +45,4 @@ Nilai status: `Belum dimulai` · `Dikerjakan` · `Selesai (menunggu review)` · 
 | 2026-11-13 | PBI-06, PBI-07, dan PBI-08 dimulai pada Sprint 4 (13 – 26 Nov 2026) | Sprint 4 Planning | PO |
 | 2026-11-17 | Sprint 4–6 dipadatkan menjadi 1 minggu: Sprint 4 13–19 Nov, Sprint 5 20–26 Nov, Sprint 6 27 Nov–3 Des 2026 | Efisiensi waktu, mengikuti Sprint 1–3 | Developer, PO |
 | 2026-11-17 | PBI-06 ditambah respons arahan untuk pertanyaan yang jawabannya tidak ada di buku pedoman: ramah, bervariasi, dan mengarahkan ke admin prodi, koordinator program studi, atau koordinator PKL | Masukan bimbingan *Product Owner* | PO |
+| 2026-11-19 | Sprint 4 diterima. PBI-06, PBI-07, dan PBI-08 selesai. Pemeriksaan label daftar topik dibawa ke Sprint 5. Pengelolaan beberapa dokumen knowledge base dicatat untuk Sprint 5 | Sprint 4 Review | PO |

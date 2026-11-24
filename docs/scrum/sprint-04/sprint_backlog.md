@@ -11,15 +11,15 @@ Sprint Planning memuat sembilan tugas (lihat [Sprint Planning](sprint_planning.m
 
 | ID | Tugas | PBI | Pekerjaan | Status | Bukti |
 |---|---|---|---|---|---|
-| S4-T01 | 1 | PBI-06 | Pemeriksaan ulang label halaman daftar topik dan penambahan contoh pertanyaan halaman 22–28 | To Do | |
-| S4-T02 | 2 | PBI-06 | Halaman tanya-jawab mahasiswa | In Progress | Tampilan pertama selesai, menunggu evaluasi Developer |
-| S4-T03 | 3 | PBI-07 | Rujukan dokumen, halaman PDF, bagian, dan kutipan | In Progress | Tampil pada setiap jawaban, menunggu evaluasi Developer |
-| S4-T04 | 4 | PBI-06, PBI-07 | Evaluasi dan perbaikan tampilan pertama | In Progress | Evaluasi kedua Developer: pertanyaan di kanan dan jawaban di kiri seperti aplikasi percakapan, menunggu evaluasi berikutnya |
+| S4-T01 | 1 | PBI-06 | Pemeriksaan ulang label halaman daftar topik dan penambahan contoh pertanyaan halaman 22–28 | Dibawa ke Sprint 5 | Enam pertanyaan halaman 22–28 dipakai pada percobaan, pemeriksaan label dibawa ke Sprint 5 |
+| S4-T02 | 2 | PBI-06 | Halaman tanya-jawab mahasiswa | Done | Intro, halaman tanya-jawab, contoh pertanyaan, fakta PKL, gaya jawaban adaptif dan bervariasi |
+| S4-T03 | 3 | PBI-07 | Rujukan dokumen, halaman PDF, bagian, dan kutipan | Done | Nama dokumen, penanda halaman PDF, dan kutipan pada setiap jawaban |
+| S4-T04 | 4 | PBI-06, PBI-07 | Evaluasi dan perbaikan tampilan pertama | Done | Empat putaran evaluasi Developer dan masukan bimbingan diterapkan |
 | S4-T05 | 5 | PBI-08 | Login satu akun admin | Done | Satu akun dari pengaturan lokal, salah kata sandi lima kali mengunci formulir 30 detik |
-| S4-T06 | 6 | PBI-08 | Halaman admin untuk mengganti buku panduan dan laporan pembangunan | In Progress | Ruang admin selesai dibuat, menunggu evaluasi Developer dan uji unggah buku dari website |
+| S4-T06 | 6 | PBI-08 | Halaman admin untuk mengganti buku panduan dan laporan pembangunan | Done | Ganti dan bangun ulang buku dengan laporan, riwayat versi, uji pertanyaan, 16 pengujian ruang admin lulus |
 | S4-T07 | 7 | PBI-06 | Pembatasan panjang pertanyaan dan pencegahan pengiriman berulang | Done | Batas 500 karakter, kolom pertanyaan terkunci selama jawaban disusun, pertanyaan yang sama dijawab dari simpanan |
 | S4-T09 | 9 | PBI-06 | Respons arahan untuk pertanyaan yang jawabannya tidak ada di buku pedoman (permintaan *Product Owner*) | Done | Uji langsung 5 pertanyaan PKL yang jawabannya tidak ada di buku dan 3 pertanyaan di luar topik PKL, menunggu tinjauan *Product Owner* |
-| S4-T08 | 8 | PBI-06, PBI-07, PBI-08 | Pengujian otomatis tampilan dan uji seluruh penggunaan dari website | In Progress | 12 pengujian halaman mahasiswa dan 14 pengujian ruang admin lulus |
+| S4-T08 | 8 | PBI-06, PBI-07, PBI-08 | Pengujian otomatis tampilan dan uji seluruh penggunaan dari website | Done | 327 pengujian otomatis lulus, uji 44 pertanyaan (EXP-009), tangkapan layar laptop dan ponsel |
 
 ## Log Pengerjaan
 
@@ -183,16 +183,21 @@ Sprint Planning memuat sembilan tugas (lihat [Sprint Planning](sprint_planning.m
 **Dikerjakan**
 - Menindaklanjuti evaluasi Developer: jawaban untuk pertanyaan dengan maksud yang sama, misalnya "apa itu PKL", masih disajikan dengan bentuk yang sama. Kini setiap jawaban memakai satu bentuk penyajian yang dipilih acak, misalnya langsung ke inti, beberapa poin pendek, atau penjelasan sederhana seperti ke teman. Isi dan daftar syarat tetap sama. Arahan ke Koordinator PKL, Admin Prodi PTIK, atau Koordinator Program Studi (Kaprodi) juga disampaikan dengan beberapa bentuk, dan jawaban diminta lebih ringkas.
 - Kalimat siap pakai cadangan ditambah menjadi enam untuk arahan dan enam untuk pesan di luar topik PKL.
-- Menelusuri waktu jawab yang terasa lebih lama. Instruksi lama dan instruksi baru dibandingkan pada pertanyaan dan waktu yang sama, demikian juga pengaturan tingkat berpikir Gemini. Perbedaannya kecil, sehingga lamanya waktu jawab pada sesi ini berasal dari kondisi layanan Gemini.
+- Menelusuri waktu jawab yang terasa lebih lama. Instruksi lama dan instruksi baru dibandingkan pada pertanyaan dan waktu yang sama, demikian juga pengaturan tingkat berpikir Gemini. Perbedaannya kecil, sehingga lamanya waktu jawab berasal dari kondisi layanan Gemini.
+- Developer melaporkan beberapa pertanyaan tidak terjawab setelah perubahan bentuk penyajian. Penyebabnya, petunjuk bentuk arahan yang disertakan di setiap pertanyaan membuat Gemini mengarahkan pertanyaan yang sebenarnya ada jawabannya, misalnya dokumen lampiran laporan. Petunjuk itu dipindahkan ke akhir instruksi utama. Penanda khusus yang salah ditulis Gemini kini tetap dikenali walaupun menyatu dengan teks, dan sapaan pembuka yang tidak diminta dibuang.
+- Menyesuaikan format tanda tangan untuk Sprint 4 sampai 6 sesuai lampiran laporan: *Sprint Planning* oleh *Product Owner*, *Sprint Review* oleh Scrum Master Nur Elah, *Sprint Retrospective* oleh Scrum Master Dr. Widodo.
+- Menyusun *Sprint Review* dan *Sprint Retrospective* Sprint 4.
+- Menyusun [daftar 36 pertanyaan uji](pertanyaan_uji.md) beserta halaman sumber dan hasil uji terakhir, sebagai lampiran.
 
 **Hasil uji**
-- Pengujian otomatis: 317 lulus, 0 gagal.
+- Pengujian otomatis: 327 lulus, 0 gagal.
 - Perbandingan waktu (EXP-008): instruksi lama median 7,2 detik, instruksi baru 7,0 detik. Tingkat berpikir bawaan 8,0 detik, minimal 8,7 detik. Pada uji 44 pertanyaan sehari sebelumnya, instruksi yang sama memerlukan median 2,8 detik.
-- Uji langsung delapan pertanyaan: tiga pertanyaan "apa itu PKL" dengan gaya berbeda dijawab dengan isi yang sama dan penyajian berbeda. Tiga pertanyaan yang jawabannya tidak ada di buku diarahkan dengan cara berbeda. Waktu jawab 5,3–8,7 detik.
+- Uji langsung delapan pertanyaan: tiga pertanyaan "apa itu PKL" dengan gaya berbeda dijawab dengan isi yang sama dan penyajian berbeda. Tiga pertanyaan yang jawabannya tidak ada di buku diarahkan dengan cara berbeda.
+- Uji ulang 44 pertanyaan setelah perbaikan (EXP-009): 35 dari 36 pertanyaan dalam cakupan dijawab, termasuk dokumen lampiran dan nilai 74 yang dijawab dengan benar. Satu pertanyaan tentang pembekalan diarahkan ke Admin Prodi PTIK. Waktu jawab median 5,4 detik.
 
 **Hambatan**
 - Kecepatan layanan Gemini versi gratis berubah-ubah sepanjang hari dan berada di luar kendali Pekael.
 
 **Berikutnya**
-- Developer mencoba variasi penyajian di website.
-- *Sprint Review* dan *Retrospective* Sprint 4.
+- *Sprint Planning* Sprint 5 (20 November 2026).
+- Pemeriksaan label daftar topik (bawaan S4-T01) dan pengelolaan beberapa dokumen knowledge base.
