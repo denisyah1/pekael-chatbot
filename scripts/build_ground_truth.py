@@ -1,8 +1,9 @@
 """Ground truth dataset for Ragas and the repeated tests (Sprint 5, spec §10.2, SUP-01).
 
-This file is the single source of the 40 entries: 36 PKL questions (the test questions of
-Sprint 4) with reference answers written from the approved knowledge base, and 4 questions
-outside PKL with the expected behaviour. It writes
+This file is the single source of the 44 questions tested since Sprint 3 (EXP-004 to EXP-011, D-57):
+36 PKL questions (the test questions of Sprint 4) and L4, L5 with reference answers written from the
+approved knowledge base, L1 to L3 (PKL questions answered by neither document) and N1 to N3 (outside
+PKL) with the expected behaviour. It writes
 
 - ``data/evaluation/ground_truth.jsonl``: the dataset with reference contexts (full text of the
   source pages) and source pages, read by the evaluation scripts (not committed, NFR-07),
@@ -19,8 +20,8 @@ import json
 import sys
 from pathlib import Path
 
-VERSION = "v1"
-DRAFTED = "22 November 2026"
+VERSION = "v2"
+DRAFTED = "24 November 2026"
 HANDBOOK = "Pedoman-PKL-2025.pdf"
 EXTRA = "Knowledge_Base_PKL_PTIK_UNJ-2.pdf"
 HANDBOOK_PAGES = Path("data/processed/Pedoman-PKL-2025")
@@ -202,6 +203,32 @@ PKL = [
      P(16, 27, 28) + K(4, 5), None),
 ]
 
+# PKL questions of the Sprint 3 and 4 tests (group L) that the handbook did not answer. Since D-53 the
+# Product Owner's document answers L4 and L5, so they get a reference answer like the 36 above.
+ANSWERED_BY_EXTRA = [
+    ("L4", "Koordinator PKL Prodi PTIK", "Langsung", "Siapa koordinator PKL Prodi PTIK saat ini?",
+     "Koordinator PKL Prodi PTIK adalah Bambang Satrio, S.Pd., M.Kom. Koordinator PKL menangani pertanyaan PKL yang jawabannya tidak ada di panduan, "
+     "kasus per kasus, pembagian pembimbing, dan seminar PKL.",
+     K(7), "Sebelumnya tidak ada di Buku Pedoman, kini terjawab oleh dokumen knowledge base tambahan."),
+    ("L5", "Format margin dan huruf laporan", "Angka, daftar", "Bagaimana format margin dan huruf laporan PKL?",
+     "Margin laporan PKL: atas 3 cm, bawah 3 cm, kiri 4 cm, dan kanan 3 cm, dengan teks rata kiri-kanan. Huruf yang dipakai Times New Roman, "
+     "judul bab tebal 14 pt dan isi laporan regular 12 pt. Sampul memakai Times New Roman 14 pt.",
+     K(6), "Sebelumnya tidak ada di halaman Buku Pedoman yang dipakai, kini terjawab oleh dokumen knowledge base tambahan."),
+]
+
+# PKL questions whose answer is in neither document: Pekael must not guess and must redirect.
+REDIRECTED = [
+    ("L1", "Batas pendaftaran semester berjalan", "Kapan batas akhir pendaftaran PKL semester ini?",
+     "Tanggal batas pendaftaran semester berjalan tidak ada di knowledge base. Pekael tidak menebak tanggal dan mengarahkan mahasiswa ke Admin Prodi PTIK, "
+     "yang mengurus administrasi pendaftaran."),
+    ("L2", "Jadwal pembekalan tahun berjalan", "Kapan jadwal pembekalan PKL tahun ini?",
+     "Jadwal pembekalan tahun berjalan tidak ada di knowledge base. Pekael tidak menebak tanggal, boleh menyebut bahwa pembekalan diberikan sebelum PKL dimulai, "
+     "dan mengarahkan mahasiswa ke Koordinator PKL atau Admin Prodi PTIK."),
+    ("L3", "Lowongan PKL di perusahaan", "Perusahaan mana yang sedang membuka lowongan PKL untuk mahasiswa PTIK?",
+     "Daftar perusahaan yang sedang membuka lowongan tidak ada di knowledge base. Pekael tidak menyebut nama perusahaan, boleh menjelaskan jenis tempat PKL "
+     "dan syarat mengusulkan tempat sendiri, dan mengarahkan mahasiswa ke Koordinator PKL."),
+]
+
 OUT_OF_PKL_BEHAVIOUR = (
     "Pertanyaan di luar topik PKL. Pekael tidak menjawab isinya, membalas dengan ramah, dan mengajak kembali bertanya seputar PKL."
 )
@@ -210,8 +237,10 @@ NON_PKL = [
      OUT_OF_PKL_BEHAVIOUR + " Untuk urusan akademik di luar PKL boleh disarankan bertanya ke Admin Prodi PTIK."),
     ("N2", "Pengetahuan umum", "Apa itu machine learning?", OUT_OF_PKL_BEHAVIOUR),
     ("N3", "Permintaan kreatif", "Buatkan saya puisi tentang kampus.", OUT_OF_PKL_BEHAVIOUR),
-    ("N4", "Rekomendasi barang", "Laptop apa yang bagus untuk kuliah?", OUT_OF_PKL_BEHAVIOUR),
 ]
+
+ANSWERED = PKL + ANSWERED_BY_EXTRA
+TOTAL = len(ANSWERED) + len(REDIRECTED) + len(NON_PKL)
 
 
 def page_text(source: str, page: int) -> str:
@@ -224,20 +253,24 @@ def page_text(source: str, page: int) -> str:
 
 
 def dataset_rows() -> list[dict]:
+    """Category ``pkl`` is scored with the three Ragas metrics, ``pkl_redirect`` and ``non_pkl`` by their status (D-57)."""
     rows = []
-    for id_, topic, kind, question, reference, sources, note in PKL:
+    for id_, topic, kind, question, reference, sources, note in ANSWERED:
         rows.append({
             "id": id_, "version": VERSION, "category": "pkl", "topic": topic, "question_type": kind,
             "user_input": question, "reference": reference,
             "reference_contexts": [page_text(s, p) for s, p in sources],
             "reference_sources": [{"source_file": s, "page": p} for s, p in sources],
-            "note": note,
+            "expected_status": "answered", "note": note,
         })
-    for id_, topic, question, behaviour in NON_PKL:
-        rows.append({
-            "id": id_, "version": VERSION, "category": "non_pkl", "topic": topic, "question_type": "Di luar PKL",
-            "user_input": question, "reference": behaviour, "reference_contexts": [], "reference_sources": [], "note": None,
-        })
+    for group, category, status, kind in ((REDIRECTED, "pkl_redirect", "out_of_scope", "PKL, diarahkan"),
+                                          (NON_PKL, "non_pkl", "out_of_scope", "Di luar PKL")):
+        for id_, topic, question, behaviour in group:
+            rows.append({
+                "id": id_, "version": VERSION, "category": category, "topic": topic, "question_type": kind,
+                "user_input": question, "reference": behaviour, "reference_contexts": [], "reference_sources": [],
+                "expected_status": status, "note": None,
+            })
     return rows
 
 
@@ -252,29 +285,30 @@ def sheet() -> str:
         "|---|---|",
         "| Sprint | : Sprint 5 |",
         "| Dokumen sumber | : Buku Pedoman Praktik Kerja Lapangan UNJ 2025 dan dokumen Knowledge Base PKL Prodi PTIK UNJ dari *Product Owner* |",
-        f"| Jumlah pertanyaan | : 40 ({len(PKL)} pertanyaan PKL, {len(NON_PKL)} pertanyaan di luar PKL) |",
+        f"| Jumlah pertanyaan | : {TOTAL} ({len(ANSWERED)} dijawab dari knowledge base, {len(REDIRECTED)} diarahkan ke pihak prodi, {len(NON_PKL)} di luar PKL) |",
         f"| Versi dataset | : {VERSION}, disusun {DRAFTED} |",
         "| Pemeriksa | : Bambang Satrio, S. Pd., M. Kom. (*Product Owner*) |",
         "",
         "## Tujuan",
         "",
-        "Lembar ini memuat dataset evaluasi Pekael, yaitu 40 pertanyaan beserta jawaban acuannya. Dataset ini dipakai untuk evaluasi Ragas dan seluruh pengujian berikutnya, "
-        "sehingga jawaban acuan harus benar menurut *Product Owner*. Pertanyaan no. 1 – 30 berasal dari daftar topik pertanyaan mahasiswa Sprint 1, E1 – E6 dari daftar pertanyaan uji Sprint 4, "
-        "dan N1 – N4 adalah pertanyaan di luar topik PKL untuk menguji bahwa Pekael tidak menjawab hal di luar PKL.",
+        f"Lembar ini memuat dataset evaluasi Pekael, yaitu {TOTAL} pertanyaan yang sama dengan pertanyaan yang diujikan sejak Sprint 3 dan Sprint 4, beserta jawaban acuan "
+        "atau perilaku yang diharapkan. Dataset ini dipakai untuk evaluasi Ragas dan seluruh pengujian berikutnya, sehingga isinya harus benar menurut *Product Owner*. "
+        "Pertanyaan no. 1 – 30 berasal dari daftar topik pertanyaan mahasiswa Sprint 1, E1 – E6 ditambahkan pada Sprint 3, L1 – L5 adalah pertanyaan PKL yang tidak dijawab Buku Pedoman, "
+        "dan N1 – N3 adalah pertanyaan di luar topik PKL.",
         "",
         "## Cara pemeriksaan",
         "",
-        "1. Baca setiap pertanyaan dan jawaban acuannya.",
-        "2. Beri tanda pada \"Sesuai\" bila jawaban acuan benar dan lengkap menurut ketentuan PKL di Prodi PTIK.",
+        "1. Baca setiap pertanyaan beserta jawaban acuan atau perilaku yang diharapkan.",
+        "2. Beri tanda pada \"Sesuai\" bila isinya benar dan lengkap menurut ketentuan PKL di Prodi PTIK.",
         "3. Beri tanda pada \"Perlu perbaikan\" bila ada yang salah, kurang, atau berlebih, lalu tuliskan perbaikannya pada catatan.",
-        "4. Untuk pertanyaan di luar PKL, periksa apakah perilaku yang diharapkan sudah tepat.",
-        "5. Pertanyaan yang diberi catatan penyusun memerlukan keputusan *Product Owner*.",
+        "4. Pertanyaan yang diberi catatan penyusun memerlukan keputusan atau perhatian *Product Owner*.",
         "",
         "## Ringkasan",
         "",
         "| Kelompok | Jumlah | Yang diperiksa |",
         "|---|---|---|",
-        f"| Pertanyaan PKL | {len(PKL)} | Kebenaran dan kelengkapan jawaban acuan |",
+        f"| Pertanyaan PKL yang dijawab dari knowledge base | {len(ANSWERED)} | Kebenaran dan kelengkapan jawaban acuan |",
+        f"| Pertanyaan PKL yang jawabannya tidak ada di knowledge base | {len(REDIRECTED)} | Pihak prodi yang dituju |",
         f"| Pertanyaan di luar PKL | {len(NON_PKL)} | Perilaku yang diharapkan |",
         "",
         "## Daftar pertanyaan",
@@ -282,14 +316,19 @@ def sheet() -> str:
         "| No | Topik | Pertanyaan | Jenis pertanyaan |",
         "|---|---|---|---|",
     ]
-    lines += [f"| {i} | {t} | {q} | {k} |" for i, t, k, q, *_ in PKL]
+    lines += [f"| {i} | {t} | {q} | {k} |" for i, t, k, q, *_ in ANSWERED]
+    lines += [f"| {i} | {t} | {q} | PKL, diarahkan |" for i, t, q, _ in REDIRECTED]
     lines += [f"| {i} | {t} | {q} | Di luar PKL |" for i, t, q, _ in NON_PKL]
     lines += ["", "## Pertanyaan PKL dan jawaban acuan", "", "Pekael seharusnya menjawab sesuai jawaban acuan berikut.", ""]
-    for id_, _, _, question, reference, _, note in PKL:
+    for id_, _, _, question, reference, _, note in ANSWERED:
         lines += [f"**No. {id_}. {question}**", "", f"> {reference}", ""]
         if note:
             lines += [f"*Catatan penyusun: {note}*", ""]
         lines += [CHECK, ""]
+    lines += ["## Pertanyaan PKL yang jawabannya tidak ada di knowledge base", "",
+              "Pekael seharusnya tidak menebak dan mengarahkan mahasiswa ke pihak prodi yang tepat.", ""]
+    for id_, _, question, behaviour in REDIRECTED:
+        lines += [f"**{id_}. {question}**", "", f"> Perilaku yang diharapkan: {behaviour}", "", CHECK, ""]
     lines += ["## Pertanyaan di luar PKL", "", "Pekael seharusnya tidak menjawab isi pertanyaan berikut.", ""]
     for id_, _, question, behaviour in NON_PKL:
         lines += [f"**{id_}. {question}**", "", f"> Perilaku yang diharapkan: {behaviour}", "", CHECK, ""]
@@ -302,7 +341,7 @@ def sheet() -> str:
         "",
         "## Pernyataan validasi",
         "",
-        "Saya telah memeriksa pertanyaan dan jawaban acuan pada lembar ini terhadap ketentuan PKL di Prodi PTIK. "
+        "Saya telah memeriksa pertanyaan, jawaban acuan, dan perilaku yang diharapkan pada lembar ini terhadap ketentuan PKL di Prodi PTIK. "
         "Dataset ini dinyatakan dapat dipakai untuk evaluasi Pekael setelah perbaikan yang dicatat di atas diterapkan.",
         "",
         "| | |",
@@ -316,14 +355,14 @@ def sheet() -> str:
 
 def main() -> int:
     rows = dataset_rows()
-    assert len(rows) == 40 and len({r["id"] for r in rows}) == 40
+    assert len(rows) == TOTAL == 44 and len({r["id"] for r in rows}) == TOTAL
     assert all(";" not in r["reference"] for r in rows), "documents use no semicolons"
     DATASET.parent.mkdir(parents=True, exist_ok=True)
     DATASET.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
     SHEET.parent.mkdir(parents=True, exist_ok=True)
     SHEET.write_text(sheet(), encoding="utf-8")
-    pkl = sum(r["category"] == "pkl" for r in rows)
-    print(f"{DATASET}: {len(rows)} entri ({pkl} PKL, {len(rows) - pkl} di luar PKL), versi {VERSION}")
+    counts = {c: sum(r["category"] == c for r in rows) for c in ("pkl", "pkl_redirect", "non_pkl")}
+    print(f"{DATASET}: {len(rows)} entri {counts}, versi {VERSION}")
     print(f"{SHEET}: lembar validasi")
     return 0
 

@@ -4,28 +4,28 @@
 |---|---|
 | Sprint | : Sprint 5 |
 | Dokumen sumber | : Buku Pedoman Praktik Kerja Lapangan UNJ 2025 dan dokumen Knowledge Base PKL Prodi PTIK UNJ dari *Product Owner* |
-| Jumlah pertanyaan | : 40 (36 pertanyaan PKL, 4 pertanyaan di luar PKL) |
-| Versi dataset | : v1, disusun 22 November 2026 |
+| Jumlah pertanyaan | : 44 (38 dijawab dari knowledge base, 3 diarahkan ke pihak prodi, 3 di luar PKL) |
+| Versi dataset | : v2, disusun 24 November 2026 |
 | Pemeriksa | : Bambang Satrio, S. Pd., M. Kom. (*Product Owner*) |
 
 ## Tujuan
 
-Lembar ini memuat dataset evaluasi Pekael, yaitu 40 pertanyaan beserta jawaban acuannya. Dataset ini dipakai untuk evaluasi Ragas dan seluruh pengujian berikutnya, sehingga jawaban acuan harus benar menurut *Product Owner*. Pertanyaan no. 1 – 30 berasal dari daftar topik pertanyaan mahasiswa Sprint 1, E1 – E6 dari daftar pertanyaan uji Sprint 4, dan N1 – N4 adalah pertanyaan di luar topik PKL untuk menguji bahwa Pekael tidak menjawab hal di luar PKL.
+Lembar ini memuat dataset evaluasi Pekael, yaitu 44 pertanyaan yang sama dengan pertanyaan yang diujikan sejak Sprint 3 dan Sprint 4, beserta jawaban acuan atau perilaku yang diharapkan. Dataset ini dipakai untuk evaluasi Ragas dan seluruh pengujian berikutnya, sehingga isinya harus benar menurut *Product Owner*. Pertanyaan no. 1 – 30 berasal dari daftar topik pertanyaan mahasiswa Sprint 1, E1 – E6 ditambahkan pada Sprint 3, L1 – L5 adalah pertanyaan PKL yang tidak dijawab Buku Pedoman, dan N1 – N3 adalah pertanyaan di luar topik PKL.
 
 ## Cara pemeriksaan
 
-1. Baca setiap pertanyaan dan jawaban acuannya.
-2. Beri tanda pada "Sesuai" bila jawaban acuan benar dan lengkap menurut ketentuan PKL di Prodi PTIK.
+1. Baca setiap pertanyaan beserta jawaban acuan atau perilaku yang diharapkan.
+2. Beri tanda pada "Sesuai" bila isinya benar dan lengkap menurut ketentuan PKL di Prodi PTIK.
 3. Beri tanda pada "Perlu perbaikan" bila ada yang salah, kurang, atau berlebih, lalu tuliskan perbaikannya pada catatan.
-4. Untuk pertanyaan di luar PKL, periksa apakah perilaku yang diharapkan sudah tepat.
-5. Pertanyaan yang diberi catatan penyusun memerlukan keputusan *Product Owner*.
+4. Pertanyaan yang diberi catatan penyusun memerlukan keputusan atau perhatian *Product Owner*.
 
 ## Ringkasan
 
 | Kelompok | Jumlah | Yang diperiksa |
 |---|---|---|
-| Pertanyaan PKL | 36 | Kebenaran dan kelengkapan jawaban acuan |
-| Pertanyaan di luar PKL | 4 | Perilaku yang diharapkan |
+| Pertanyaan PKL yang dijawab dari knowledge base | 38 | Kebenaran dan kelengkapan jawaban acuan |
+| Pertanyaan PKL yang jawabannya tidak ada di knowledge base | 3 | Pihak prodi yang dituju |
+| Pertanyaan di luar PKL | 3 | Perilaku yang diharapkan |
 
 ## Daftar pertanyaan
 
@@ -67,10 +67,14 @@ Lembar ini memuat dataset evaluasi Pekael, yaitu 40 pertanyaan beserta jawaban a
 | E4 | Urutan sistematika laporan | Bagaimana contoh urutan sistematika laporan PKL? | Daftar, beberapa bagian |
 | E5 | Aspek nilai sikap (N1) | Aspek apa saja yang dinilai pada nilai sikap (N1)? | Daftar |
 | E6 | Cara menghitung nilai akhir | Bagaimana cara menghitung nilai akhir PKL? | Angka, beberapa bagian |
+| L4 | Koordinator PKL Prodi PTIK | Siapa koordinator PKL Prodi PTIK saat ini? | Langsung |
+| L5 | Format margin dan huruf laporan | Bagaimana format margin dan huruf laporan PKL? | Angka, daftar |
+| L1 | Batas pendaftaran semester berjalan | Kapan batas akhir pendaftaran PKL semester ini? | PKL, diarahkan |
+| L2 | Jadwal pembekalan tahun berjalan | Kapan jadwal pembekalan PKL tahun ini? | PKL, diarahkan |
+| L3 | Lowongan PKL di perusahaan | Perusahaan mana yang sedang membuka lowongan PKL untuk mahasiswa PTIK? | PKL, diarahkan |
 | N1 | Beasiswa | Bagaimana cara mengajukan beasiswa di UNJ? | Di luar PKL |
 | N2 | Pengetahuan umum | Apa itu machine learning? | Di luar PKL |
 | N3 | Permintaan kreatif | Buatkan saya puisi tentang kampus. | Di luar PKL |
-| N4 | Rekomendasi barang | Laptop apa yang bagus untuk kuliah? | Di luar PKL |
 
 ## Pertanyaan PKL dan jawaban acuan
 
@@ -300,6 +304,44 @@ Pekael seharusnya menjawab sesuai jawaban acuan berikut.
 
 ☐ Sesuai   ☐ Perlu perbaikan, catatan: ..............................
 
+**No. L4. Siapa koordinator PKL Prodi PTIK saat ini?**
+
+> Koordinator PKL Prodi PTIK adalah Bambang Satrio, S.Pd., M.Kom. Koordinator PKL menangani pertanyaan PKL yang jawabannya tidak ada di panduan, kasus per kasus, pembagian pembimbing, dan seminar PKL.
+
+*Catatan penyusun: Sebelumnya tidak ada di Buku Pedoman, kini terjawab oleh dokumen knowledge base tambahan.*
+
+☐ Sesuai   ☐ Perlu perbaikan, catatan: ..............................
+
+**No. L5. Bagaimana format margin dan huruf laporan PKL?**
+
+> Margin laporan PKL: atas 3 cm, bawah 3 cm, kiri 4 cm, dan kanan 3 cm, dengan teks rata kiri-kanan. Huruf yang dipakai Times New Roman, judul bab tebal 14 pt dan isi laporan regular 12 pt. Sampul memakai Times New Roman 14 pt.
+
+*Catatan penyusun: Sebelumnya tidak ada di halaman Buku Pedoman yang dipakai, kini terjawab oleh dokumen knowledge base tambahan.*
+
+☐ Sesuai   ☐ Perlu perbaikan, catatan: ..............................
+
+## Pertanyaan PKL yang jawabannya tidak ada di knowledge base
+
+Pekael seharusnya tidak menebak dan mengarahkan mahasiswa ke pihak prodi yang tepat.
+
+**L1. Kapan batas akhir pendaftaran PKL semester ini?**
+
+> Perilaku yang diharapkan: Tanggal batas pendaftaran semester berjalan tidak ada di knowledge base. Pekael tidak menebak tanggal dan mengarahkan mahasiswa ke Admin Prodi PTIK, yang mengurus administrasi pendaftaran.
+
+☐ Sesuai   ☐ Perlu perbaikan, catatan: ..............................
+
+**L2. Kapan jadwal pembekalan PKL tahun ini?**
+
+> Perilaku yang diharapkan: Jadwal pembekalan tahun berjalan tidak ada di knowledge base. Pekael tidak menebak tanggal, boleh menyebut bahwa pembekalan diberikan sebelum PKL dimulai, dan mengarahkan mahasiswa ke Koordinator PKL atau Admin Prodi PTIK.
+
+☐ Sesuai   ☐ Perlu perbaikan, catatan: ..............................
+
+**L3. Perusahaan mana yang sedang membuka lowongan PKL untuk mahasiswa PTIK?**
+
+> Perilaku yang diharapkan: Daftar perusahaan yang sedang membuka lowongan tidak ada di knowledge base. Pekael tidak menyebut nama perusahaan, boleh menjelaskan jenis tempat PKL dan syarat mengusulkan tempat sendiri, dan mengarahkan mahasiswa ke Koordinator PKL.
+
+☐ Sesuai   ☐ Perlu perbaikan, catatan: ..............................
+
 ## Pertanyaan di luar PKL
 
 Pekael seharusnya tidak menjawab isi pertanyaan berikut.
@@ -322,12 +364,6 @@ Pekael seharusnya tidak menjawab isi pertanyaan berikut.
 
 ☐ Sesuai   ☐ Perlu perbaikan, catatan: ..............................
 
-**N4. Laptop apa yang bagus untuk kuliah?**
-
-> Perilaku yang diharapkan: Pertanyaan di luar topik PKL. Pekael tidak menjawab isinya, membalas dengan ramah, dan mengajak kembali bertanya seputar PKL.
-
-☐ Sesuai   ☐ Perlu perbaikan, catatan: ..............................
-
 ## Catatan *Product Owner*
 
 ..............................................................................................................
@@ -336,7 +372,7 @@ Pekael seharusnya tidak menjawab isi pertanyaan berikut.
 
 ## Pernyataan validasi
 
-Saya telah memeriksa pertanyaan dan jawaban acuan pada lembar ini terhadap ketentuan PKL di Prodi PTIK. Dataset ini dinyatakan dapat dipakai untuk evaluasi Pekael setelah perbaikan yang dicatat di atas diterapkan.
+Saya telah memeriksa pertanyaan, jawaban acuan, dan perilaku yang diharapkan pada lembar ini terhadap ketentuan PKL di Prodi PTIK. Dataset ini dinyatakan dapat dipakai untuk evaluasi Pekael setelah perbaikan yang dicatat di atas diterapkan.
 
 | | |
 |---|---|

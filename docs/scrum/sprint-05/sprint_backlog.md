@@ -10,7 +10,7 @@
 | S5-T01 | SUP-01 | Memeriksa ulang label halaman daftar topik pertanyaan (dibawa dari Sprint 4) | Done | Halaman sumber tercatat per pertanyaan di dataset evaluasi |
 | S5-T02 | PBI-02, PBI-08 | Memasukkan dokumen knowledge base tambahan dari *Product Owner* dengan rujukan nama dokumen dan halaman | Done | D-53, EXP-010, [log teknis](../../technical/sprint-05.md) |
 | S5-T03 | SUP-03 | Mengganti evaluator Ragas ke Groq versi gratis dan menguji ketiga metrik dengan satu contoh | Done | D-52, [smoke test](../../technical/smoke_tests.md) §8 |
-| S5-T04 | SUP-01 | Menyusun dataset ground truth awal sekitar 30 pertanyaan beserta jawaban acuan dan konteks rujukan | Done | [dataset_ground_truth.md](dataset_ground_truth.md), D-56 |
+| S5-T04 | SUP-01 | Menyusun dataset ground truth awal sekitar 30 pertanyaan beserta jawaban acuan dan konteks rujukan | Done | [dataset_ground_truth.md](dataset_ground_truth.md), D-56, D-57 |
 | S5-T05 | SUP-01 | Validasi dataset bersama *Product Owner* | In Progress | Lembar validasi diserahkan |
 | S5-T06 | SUP-02 | Uji kasus angka, tanggal, persyaratan, parafrasa, multi-bagian, tidak tercakup, non-PKL, dan waktu jawab pagi, siang, malam | In Progress | EXP-010, EXP-011 |
 | S5-T07 | SUP-02 | Kalibrasi dan pembekuan pengaturan untuk evaluasi akhir | To Do | |
@@ -131,3 +131,30 @@ Satu entri per sesi kerja, ditulis setelah sesi selesai.
 
 **Berikutnya**
 - Validasi lembar dataset oleh *Product Owner* (S5-T05) dan uji coba Ragas (S5-T08).
+
+### 2026-11-24
+
+**Dikerjakan**
+- Dataset evaluasi diperbaiki menjadi versi v2 atas permintaan Developer (D-57): isinya kini sama dengan 44 pertanyaan yang diujikan sejak Sprint 3 dan Sprint 4, menggantikan susunan 40 pertanyaan versi v1.
+  - 36 pertanyaan dalam cakupan tetap dengan jawaban acuan yang sama.
+  - L4 (Koordinator PKL Prodi PTIK) dan L5 (format margin dan huruf laporan) dulu tidak ada di Buku Pedoman, kini diberi jawaban acuan dari dokumen knowledge base tambahan.
+  - L1 (batas pendaftaran), L2 (jadwal pembekalan), dan L3 (lowongan perusahaan) tidak ada di kedua dokumen, sehingga diisi perilaku yang diharapkan: tidak menebak dan mengarahkan ke pihak prodi yang tepat.
+  - N1 sampai N3 tetap sebagai pertanyaan di luar PKL. Pertanyaan tambahan N4 pada versi v1 dihapus.
+- Lembar validasi untuk *Product Owner* dibuat ulang dengan tiga kelompok: 38 pertanyaan dengan jawaban acuan, 3 pertanyaan yang diarahkan, dan 3 pertanyaan di luar PKL.
+
+**Hasil test**
+- Pengujian otomatis: 344 lulus, 0 gagal. Test dataset kini memeriksa 44 nomor unik dan kesamaan teks pertanyaan dengan pertanyaan percobaan.
+
+**File dibuat/diubah**
+- Skrip: `build_ground_truth.py`.
+- Test: `test_ground_truth.py`.
+- Dokumen: `dataset_ground_truth.md`, `sprint_backlog.md`, `decision_log.md`, `technical/sprint-05.md`.
+
+**Keputusan**
+- D-57 dataset evaluasi memakai 44 pertanyaan pengujian.
+
+**Hambatan**
+- Tidak ada.
+
+**Berikutnya**
+- Validasi lembar dataset oleh *Product Owner* (S5-T05), lalu uji coba Ragas (S5-T08).

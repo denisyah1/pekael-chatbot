@@ -76,3 +76,12 @@
 - `scripts/export_docs.py`: argumen `--only NAME` (hanya dokumen dengan nama file tersebut), pemetaan `product_backlog_utama` → "Lampiran: Product Backlog Utama".
 - `export_docs.py --sprint 1 --only product_backlog_utama --pdf` → 3 halaman, placeholder terisi, salinan `product_backlog_utama_1_DeniM.docx/.pdf`. Waktu ubah file ekspor Sprint 1 lain tetap sama.
 - `pytest` → **344 lulus, 0 gagal**.
+
+## Sesi 5 — 24 November 2026
+
+**Dataset evaluasi v2 (D-57)**
+- `scripts/build_ground_truth.py`: `VERSION = "v2"`. Daftar `ANSWERED_BY_EXTRA` (L4 dari dokumen tambahan hlm. 7, L5 dari hlm. 6), `REDIRECTED` (L1–L3), `NON_PKL` (N1–N3, N4 dihapus), `ANSWERED = PKL + ANSWERED_BY_EXTRA`, `TOTAL = 44`.
+- `ground_truth.jsonl`: kategori `pkl` 38, `pkl_redirect` 3, `non_pkl` 3, field baru `expected_status` (`answered` atau `out_of_scope`).
+- `tests/unit/test_ground_truth.py`: teks L1–L5 dan N1–N3 dibandingkan dengan `run_chunk_experiment.load_questions(TOPICS)` (sumber pertanyaan EXP-004 sampai EXP-011).
+- `export_docs.py --sprint 5 --only dataset_ground_truth --pdf` → 11 halaman, salinan `dataset_ground_truth_5_DeniM.docx/.pdf` diperbarui.
+- `pytest` → **344 lulus, 0 gagal**.
