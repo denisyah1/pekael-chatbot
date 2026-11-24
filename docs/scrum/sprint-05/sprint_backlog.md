@@ -112,3 +112,22 @@ Satu entri per sesi kerja, ditulis setelah sesi selesai.
 
 **Berikutnya**
 - Validasi lembar dataset oleh *Product Owner* (S5-T05) pada 23 November 2026.
+
+### 2026-11-23
+
+**Dikerjakan**
+- Lembar Product Backlog utama disusun atas permintaan Developer ([sprint-01/product_backlog_utama.md](../sprint-01/product_backlog_utama.md)): delapan item PBI-01 sampai PBI-08 dari proposal dan rencana implementasi beserta prioritas, sprint, kriteria penerimaan, bukti hasil, rencana sprint, Definition of Done, dan aturan perubahan. Lembar diberi tanggal 23 Oktober 2026 karena menjadi acuan sejak *Sprint Planning* Sprint 1, dan ditempatkan di folder Sprint 1 tanpa mengubah dokumen Sprint 1 yang sudah ada.
+- Skrip ekspor dokumen diberi pilihan untuk mengekspor satu dokumen saja, sehingga file Word dan PDF Sprint 1 yang sudah diedit tidak tertimpa.
+
+**Hasil test**
+- Pengujian otomatis: 344 lulus, 0 gagal.
+
+**File dibuat/diubah**
+- Dokumen: `sprint-01/product_backlog_utama.md` (baru), `sprint_backlog.md`.
+- Skrip: `export_docs.py`.
+
+**Hambatan**
+- Tidak ada.
+
+**Berikutnya**
+- Validasi lembar dataset oleh *Product Owner* (S5-T05) dan uji coba Ragas (S5-T08).

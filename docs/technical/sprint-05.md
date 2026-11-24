@@ -69,3 +69,10 @@
 - `scripts/export_docs.py`: pemetaan `dataset_ground_truth` → "Lampiran: Lembar Validasi Dataset Evaluasi". Ekspor `--sprint 5 --pdf` → 10 halaman, placeholder NIM/NIP terisi, salinan `dataset_ground_truth_5_DeniM.docx/.pdf`.
 - `tests/unit/test_ground_truth.py`: 40 id unik, teks pertanyaan sama dengan `sprint-04/pertanyaan_uji.md`, setiap entri PKL punya sumber, lembar tanpa rujukan halaman dan tanpa titik koma.
 - `pytest` → **344 lulus, 0 gagal**.
+
+## Sesi 4 — 23 November 2026
+
+- `docs/scrum/sprint-01/product_backlog_utama.md` (baru): PBI-01 sampai PBI-08 dari spec §13 dan tabel keterlacakan `implementation_plan.md` §4, Definition of Done dari spec §14. File Sprint 1 lain tidak diubah.
+- `scripts/export_docs.py`: argumen `--only NAME` (hanya dokumen dengan nama file tersebut), pemetaan `product_backlog_utama` → "Lampiran: Product Backlog Utama".
+- `export_docs.py --sprint 1 --only product_backlog_utama --pdf` → 3 halaman, placeholder terisi, salinan `product_backlog_utama_1_DeniM.docx/.pdf`. Waktu ubah file ekspor Sprint 1 lain tetap sama.
+- `pytest` → **344 lulus, 0 gagal**.

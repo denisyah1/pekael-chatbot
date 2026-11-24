@@ -69,6 +69,11 @@ SPRINT_DOCUMENTS = {
         "Lampiran: Daftar Pertanyaan Uji",
         "Sprint Report {n}: Pertanyaan Uji",
     ),
+    "product_backlog_utama": (
+        "SPRINT REPORT {n}",
+        "Lampiran: Product Backlog Utama",
+        "Sprint Report {n}: Product Backlog",
+    ),
     "dataset_ground_truth": (
         "SPRINT REPORT {n}",
         "Lampiran: Lembar Validasi Dataset Evaluasi",
@@ -351,6 +356,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--sprint", type=int, help="export only docs/scrum/sprint-NN")
     parser.add_argument("--pdf", action="store_true", help="also save PDF through Microsoft Word")
+    parser.add_argument("--only", metavar="NAME", help="export only the document with this file name, e.g. product_backlog_utama "
+                        "(leaves the other exports, which may have been edited, untouched)")
     parser.add_argument("--build-reference", metavar="TEMPLATE_DOCX", help="rebuild docs/templates/reference.docx")
     args = parser.parse_args()
 
@@ -362,6 +369,8 @@ def main() -> int:
 
     folder = SCRUM_DIR / f"sprint-{args.sprint:02d}" if args.sprint else SCRUM_DIR
     sources = [p for p in sorted(folder.rglob("*.md")) if "templates" not in p.parts and document_titles(p)]
+    if args.only:
+        sources = [p for p in sources if p.stem == args.only]
     if not sources:
         raise SystemExit(f"Tidak ada dokumen untuk diekspor di {folder.relative_to(ROOT)}")
 
