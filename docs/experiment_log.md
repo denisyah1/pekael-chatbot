@@ -186,3 +186,17 @@ Jawaban lengkap: [`scrum/sprint-03/pemeriksaan_jawaban.md`](scrum/sprint-03/peme
 | Hasil | Dalam cakupan 36/36 dijawab (EXP-009: 35/36). E6 kini memuat rumus nilai akhir 30% N1 + 40% N2 + 30% N3 dari dokumen tambahan. Dari kelompok L, L5 (margin dan huruf laporan) dan L2 (jadwal pembekalan) dijawab dari dokumen tambahan, L1, L3, L4 diarahkan. N1–N3 3/3 ditolak ambang. Jarak terbesar dalam cakupan 0,557, terkecil non-PKL 0,663 (titik tengah 0,61), jarak N1 hanya 0,023 di atas ambang 0,64. Halaman Buku Pedoman yang diharapkan terambil pada 34/36 pertanyaan, dua lainnya dijawab dari dokumen tambahan. Waktu jawab median 1,68 s, maks 2,35 s |
 | Kesimpulan | Dokumen tambahan menambah cakupan tanpa menurunkan ketepatan. Kelompok L tidak lagi seluruhnya di luar cakupan sehingga perlu disusun ulang untuk dataset Sprint 5. Ambang 0,64 masih memisahkan, tetapi selisih dengan pertanyaan non-PKL terdekat mengecil dan perlu diuji ulang sebelum dibekukan (S5-T07). Jawaban L2 memakai kalimat tentang jadwal seminar dan perlu diperiksa *Product Owner*. Pada uji langsung L4 dijawab dengan nama Koordinator PKL, sehingga statusnya masih berubah antar percobaan |
 | Keputusan terkait | D-53, D-54 |
+
+### EXP-011 — Ketepatan setelah perbaikan pemeriksaan arahan
+
+| | |
+|---|---|
+| Tanggal | 2026-11-21 |
+| Sprint | 5 |
+| Tujuan | Memastikan perbaikan D-55 tidak membuat pertanyaan yang memang tidak ada jawabannya lolos sebagai jawaban |
+| Konfigurasi | Seperti EXP-010, ditambah perbaikan D-54 lanjutan dan D-55 |
+| Data uji | 44 pertanyaan EXP-004 |
+| Prosedur | `run_threshold_experiment.py --generate --pause 4 --threshold 0.64 --output .../exp011.json`, dibandingkan dengan `exp010.json` |
+| Hasil | Dalam cakupan 36/36 dijawab. L4 (Koordinator PKL) dan L5 (margin dan huruf laporan) dijawab dari dokumen tambahan. L1, L2, L3 diarahkan, L2 (jadwal pembekalan) tidak lagi memakai kalimat jadwal seminar. N1–N3 3/3 ditolak ambang. Tidak ada sapaan pembuka atau penanda yang tampil. Waktu jawab median 1,67 s, maks 9,28 s (satu pertanyaan), lainnya di bawah 2,5 s |
+| Kesimpulan | Perbaikan tidak menurunkan ketepatan. Dari kelompok L, dua pertanyaan kini termasuk cakupan dokumen tambahan, sehingga kelompok pertanyaan tidak tercakup perlu disusun ulang pada dataset Sprint 5 |
+| Keputusan terkait | D-54, D-55 |

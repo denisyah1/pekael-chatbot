@@ -236,3 +236,26 @@ def test_greeting_in_front_of_content_only_loses_the_greeting_word():
     )
     assert strip_unasked_greeting("Berapa lama PKL?", "Hai kak, PKL minimal 4 bulan.") == "PKL minimal 4 bulan."
     assert strip_unasked_greeting("Berapa lama PKL?", "Hiasan sampul berwarna biru.") == "Hiasan sampul berwarna biru."
+
+
+def test_describing_questions_missing_from_the_handbook_is_not_a_redirect():
+    from pekael.core.prompts import is_unmarked_redirect
+
+    answer = (
+        "Koordinator PKL Prodi PTIK saat ini adalah Bambang Satrio, S.Pd., M.Kom. Kamu bisa menghubungi beliau "
+        "untuk pertanyaan PKL yang jawabannya tidak ada di panduan atau soal pembagian pembimbing."
+    )
+
+    assert not is_unmarked_redirect(answer)
+    assert not is_unmarked_redirect("Hubungi Koordinator PKL untuk hal yang tidak ada di panduan.")
+    assert is_unmarked_redirect("Info jadwalnya belum ada di panduan kita, coba tanya Admin Prodi PTIK ya.")
+
+
+def test_words_attached_to_the_greeting_go_with_it():
+    from pekael.core.prompts import strip_unasked_greeting
+
+    assert strip_unasked_greeting("siapa koordinator pkl", "Halo juga! Koordinatornya Bambang Satrio.") == "Koordinatornya Bambang Satrio."
+    assert strip_unasked_greeting("siapa koordinator pkl", "Hai kamu, buat urusan PKL ada koordinatornya.") == (
+        "Buat urusan PKL ada koordinatornya."
+    )
+    assert strip_unasked_greeting("berapa lama pkl", "Halo kamus besar.") == "Kamus besar."

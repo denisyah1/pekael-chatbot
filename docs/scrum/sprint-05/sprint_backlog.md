@@ -7,12 +7,12 @@
 
 | ID task | Item | Task | Status | Bukti (file / test / laporan) |
 |---|---|---|---|---|
-| S5-T01 | SUP-01 | Memeriksa ulang label halaman daftar topik pertanyaan (dibawa dari Sprint 4) | To Do | |
+| S5-T01 | SUP-01 | Memeriksa ulang label halaman daftar topik pertanyaan (dibawa dari Sprint 4) | Done | Halaman sumber tercatat per pertanyaan di dataset evaluasi |
 | S5-T02 | PBI-02, PBI-08 | Memasukkan dokumen knowledge base tambahan dari *Product Owner* dengan rujukan nama dokumen dan halaman | Done | D-53, EXP-010, [log teknis](../../technical/sprint-05.md) |
-| S5-T03 | SUP-03 | Mengganti evaluator Ragas ke Groq versi gratis dan menguji ketiga metrik dengan satu contoh | In Progress | D-52, [smoke test](../../technical/smoke_tests.md) §8 |
-| S5-T04 | SUP-01 | Menyusun dataset ground truth awal sekitar 30 pertanyaan beserta jawaban acuan dan konteks rujukan | To Do | |
-| S5-T05 | SUP-01 | Validasi dataset bersama *Product Owner* | To Do | |
-| S5-T06 | SUP-02 | Uji kasus angka, tanggal, persyaratan, parafrasa, multi-bagian, tidak tercakup, non-PKL, dan waktu jawab pagi, siang, malam | In Progress | EXP-010 |
+| S5-T03 | SUP-03 | Mengganti evaluator Ragas ke Groq versi gratis dan menguji ketiga metrik dengan satu contoh | Done | D-52, [smoke test](../../technical/smoke_tests.md) §8 |
+| S5-T04 | SUP-01 | Menyusun dataset ground truth awal sekitar 30 pertanyaan beserta jawaban acuan dan konteks rujukan | Done | [dataset_ground_truth.md](dataset_ground_truth.md), D-56 |
+| S5-T05 | SUP-01 | Validasi dataset bersama *Product Owner* | In Progress | Lembar validasi diserahkan |
+| S5-T06 | SUP-02 | Uji kasus angka, tanggal, persyaratan, parafrasa, multi-bagian, tidak tercakup, non-PKL, dan waktu jawab pagi, siang, malam | In Progress | EXP-010, EXP-011 |
 | S5-T07 | SUP-02 | Kalibrasi dan pembekuan pengaturan untuk evaluasi akhir | To Do | |
 | S5-T08 | SUP-03 | Uji coba Ragas pada beberapa entri dataset | To Do | |
 | S5-T09 | PBI-08 | Pengelolaan dokumen tambahan di ruang admin | In Progress | D-53 |
@@ -61,3 +61,54 @@ Satu entri per sesi kerja, ditulis setelah sesi selesai.
 **Berikutnya**
 - Mengisi API key Groq lalu menjalankan uji ketiga metrik Ragas.
 - Memeriksa ulang label daftar topik (S5-T01) dan mulai menyusun dataset evaluasi (S5-T04).
+
+### 2026-11-21
+
+**Dikerjakan**
+- API key Groq diisi Developer di pengaturan lokal. Uji ketiga metrik Ragas dengan satu contoh fiktif berhasil: Faithfulness 1,000, Answer Relevancy 0,992, Context Recall 1,000, masing-masing 2 sampai 7 detik (S5-T03 selesai). Evaluator Groq versi gratis dapat dipakai untuk uji coba Ragas pada dataset.
+- Developer melaporkan pertanyaan "siapa koordinator PKL" berstatus di luar cakupan. Penyebab: Gemini menjawab benar dengan nama Koordinator PKL, lalu mengutip tugas koordinator dari dokumen tambahan ("pertanyaan PKL yang jawabannya tidak ada di panduan"). Kalimat itu terbaca sebagai pengakuan bahwa informasinya tidak ada, sehingga jawaban diganti kalimat arahan siap pakai. Kini kalimat yang didahului "yang" atau "jawabannya" tidak lagi dihitung sebagai pengakuan (D-55).
+- Uji langsung pertanyaan yang sama dengan tiga gaya: ketiganya dijawab dengan nama Koordinator PKL. Dua jawaban diawali sisa sapaan ("Kamu, ...", "Juga! ...") dari "Hai kamu" dan "Halo juga". Kata yang menempel pada sapaan kini ikut dihapus (lanjutan D-54).
+- Uji ulang 44 pertanyaan (EXP-011): 36 dari 36 pertanyaan dalam cakupan dijawab, pertanyaan koordinator PKL dijawab, pertanyaan jadwal pembekalan kini diarahkan ke Admin Prodi PTIK, pertanyaan non-PKL tetap ditolak. Waktu jawab median 1,67 detik.
+
+**Hasil test**
+- Pengujian otomatis: 342 lulus, 0 gagal (bertambah 2 test).
+- Uji Ragas: 3 dari 3 metrik berjalan. Rincian di [smoke_tests.md](../../technical/smoke_tests.md) §8.
+
+**File dibuat/diubah**
+- Kode: instruksi dan pemeriksaan jawaban (`prompts.py`).
+- Test: `test_prompts.py`.
+- Dokumen: `sprint_backlog.md`, `decision_log.md`, `experiment_log.md`, `technical/sprint-05.md`, `technical/smoke_tests.md`.
+
+**Keputusan**
+- D-55 kalimat yang menggambarkan jenis pertanyaan lain tidak dianggap arahan.
+
+**Hambatan**
+- Satu jawaban memerlukan 9,28 detik pada EXP-011, jawaban lainnya di bawah 2,5 detik.
+
+**Berikutnya**
+- Memeriksa ulang label daftar topik (S5-T01) dan menyusun dataset evaluasi (S5-T04).
+
+### 2026-11-22
+
+**Dikerjakan**
+- Dataset evaluasi versi v1 disusun (S5-T04, D-56): 40 pertanyaan, terdiri atas 36 pertanyaan uji Sprint 4 dengan jawaban acuan dan 4 pertanyaan di luar PKL dengan perilaku yang diharapkan. Dataset ini dipakai untuk evaluasi Ragas dan seluruh pengujian berikutnya.
+- Jawaban acuan ditulis dari teks Buku Pedoman yang sudah diperiksa dan dokumen knowledge base tambahan. Setiap pertanyaan menyimpan halaman sumber dan teks halaman tersebut sebagai konteks rujukan. Pemeriksaan ulang halaman sumber ini menyelesaikan S5-T01 tanpa mengubah dokumen Sprint 1.
+- Lembar validasi untuk *Product Owner* dibuat tanpa menampilkan halaman sumber ([dataset_ground_truth.md](dataset_ground_truth.md)). Setiap pertanyaan diberi pilihan "Sesuai" atau "Perlu perbaikan" dengan catatan. Tiga pertanyaan diberi catatan penyusun karena memerlukan keputusan *Product Owner*: alur pengajuan dan tempat pendaftaran yang memuat praktik di PTIK, perhitungan menit per minggu, dan versi sistematika laporan.
+- Dataset dan lembar validasi dihasilkan dari satu skrip, sehingga perbaikan dari *Product Owner* cukup diterapkan sekali lalu keduanya dibuat ulang.
+
+**Hasil test**
+- Pengujian otomatis: 344 lulus, 0 gagal (bertambah 2 test untuk dataset: 40 nomor unik, teks pertanyaan sama dengan daftar Sprint 4, setiap jawaban punya sumber, lembar tanpa halaman sumber).
+
+**File dibuat/diubah**
+- Skrip: `build_ground_truth.py` (baru), `export_docs.py` (judul lampiran dataset).
+- Test: `test_ground_truth.py` (baru).
+- Dokumen: `dataset_ground_truth.md` (baru), `sprint_backlog.md`, `decision_log.md`, `technical/sprint-05.md`.
+
+**Keputusan**
+- D-56 susunan dataset evaluasi 40 pertanyaan.
+
+**Hambatan**
+- Tidak ada.
+
+**Berikutnya**
+- Validasi lembar dataset oleh *Product Owner* (S5-T05) pada 23 November 2026.

@@ -69,6 +69,11 @@ SPRINT_DOCUMENTS = {
         "Lampiran: Daftar Pertanyaan Uji",
         "Sprint Report {n}: Pertanyaan Uji",
     ),
+    "dataset_ground_truth": (
+        "SPRINT REPORT {n}",
+        "Lampiran: Lembar Validasi Dataset Evaluasi",
+        "Sprint Report {n}: Dataset Evaluasi",
+    ),
     "topik_pertanyaan": (
         "SPRINT REPORT {n}",
         "Lampiran: Daftar Topik Pertanyaan Mahasiswa",

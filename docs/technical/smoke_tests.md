@@ -114,3 +114,6 @@ Perintah: `.venv\Scripts\python.exe scripts\smoke_test_ragas.py` (1 sampel fikti
 | Tanggal | Metrik | Evaluator LLM | Embedding | Hasil | Catatan |
 |---|---|---|---|---|---|
 | 2026-11-20 | Ketiga metrik | `openai/gpt-oss-120b` (Groq) | `gemini-embedding-001` | **Belum berjalan** | `GROQ_API_KEY` belum diisi, skrip berhenti dengan exit 2 sebelum memanggil API |
+| 2026-11-21 | Faithfulness | `openai/gpt-oss-120b` (Groq) | — | Lulus | skor 1,000, 4,24 s |
+| 2026-11-21 | Answer Relevancy | `openai/gpt-oss-120b` (Groq) | `gemini-embedding-001` | Lulus | skor 0,992, 6,44 s |
+| 2026-11-21 | Context Recall | `openai/gpt-oss-120b` (Groq) | — | Lulus | skor 1,000, 1,96 s |

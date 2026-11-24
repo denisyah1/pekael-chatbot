@@ -154,8 +154,10 @@ def usable_redirect(text: str) -> bool:
             and not any(p in lowered for p in DISCOURAGED_PHRASES))
 
 
+# "...pertanyaan yang jawabannya tidak ada di panduan" describes other questions (the coordinator's duties in the
+# Product Owner's document, D-55), it does not admit that this answer is missing.
 _ADMITS_MISSING = re.compile(
-    r"\b(belum|tidak|gak|nggak)\s+(ada|tersedia|tercantum|dijelaskan|disebutkan|dibahas)\b[^.!?\n]{0,40}"
+    r"(?<!yang )(?<!jawabannya )(?<!jawaban )\b(belum|tidak|gak|nggak)\s+(ada|tersedia|tercantum|dijelaskan|disebutkan|dibahas)\b[^.!?\n]{0,40}"
     r"\b(panduan|pedoman|buku)",
     re.IGNORECASE,
 )
@@ -198,7 +200,7 @@ REGISTER_HINTS = {
 # An opening filler question ("Hai, kamu mau tahu tentang PKL ya?") is dropped whole. Otherwise only the
 # greeting word goes: a first sentence can carry the answer ("Hai, koordinatornya Bambang Satrio, S.Pd.").
 _GREETING_QUESTION = re.compile(r"^\s*(halo|hallo|hai|hi|hey)\b[^\n.!?]*\?\s*", re.IGNORECASE)
-_GREETING_WORD = re.compile(r"^\s*(halo|hallo|hai|hi|hey)\b(\s+(kak|kakak|semua|semuanya|teman-teman))?[\s,!.]*", re.IGNORECASE)
+_GREETING_WORD = re.compile(r"^\s*(halo|hallo|hai|hi|hey)\b(\s+(kak|kakak|kamu|juga|semua|semuanya|teman-teman)\b)*[\s,!.]*", re.IGNORECASE)
 
 
 def _words(question: str) -> set[str]:

@@ -42,3 +42,30 @@
 
 **Uji**
 - `pytest` → **340 lulus, 0 gagal** (327 sebelumnya). Test baru: dokumen tambahan dimuat penuh dan dipotong terpisah, build tanpa dokumen tambahan, `KNOWLEDGE_BASE_EXTRA_PATHS`, field Groq dan redaksinya, manifest per dokumen, build lama satu dokumen, `all_pages`, pengelompokan rujukan, `top_pill`, sapaan di depan isi, tiga pola secret Groq.
+
+## Sesi 2 — 21 November 2026
+
+**Ragas dengan Groq (S5-T03)**
+- `python scripts/smoke_test_ragas.py` → `ragas 0.4.3 | evaluator LLM: openai/gpt-oss-120b (Groq) | embeddings: gemini-embedding-001 (Gemini)`. Faithfulness 1.000 (4,24 s), Answer Relevancy 0.992 (6,44 s), Context Recall 1.000 (1,96 s), `3/3 metrik berjalan`, exit 0. Mode instructor bawaan `llm_factory(provider="openai")` bekerja dengan endpoint Groq.
+
+**Pertanyaan koordinator PKL berstatus `out_of_scope` (D-55)**
+- Keluaran mentah (2 dari 4 percobaan): "...Koordinator PKL Prodi PTIK kita adalah Bambang Satrio, S.Pd., M.Kom. ... menghubungi beliau kalau ada pertanyaan seputar PKL yang jawabannya tidak ada di panduan ..." → log `Answer is a redirection without the marker, treated as one`.
+- `core/prompts.py`: `_ADMITS_MISSING` diberi lookbehind `(?<!yang )(?<!jawabannya )(?<!jawaban )`. `_GREETING_WORD` menerima kata pendamping berulang `kak|kakak|kamu|juga|semua|semuanya|teman-teman` dengan batas kata (`Halo kamus` tidak terpotong).
+- Uji langsung sesudah perbaikan: "siapa koordinator pkl", "Siapa koordinator PKL?", "siapa koordinator pkl ya kak" → `answered`. "Kapan batas akhir pendaftaran PKL semester ini?" → `out_of_scope`.
+
+**EXP-011**
+- `python scripts/run_threshold_experiment.py --generate --pause 4 --threshold 0.64 --output data/processed/Pedoman-PKL-2025/exp011.json` → dalam cakupan 36/36 `answered`, L4 dan L5 `answered`, L1–L3 `out_of_scope`, N1–N3 ditolak ambang, median 1,67 s, maks 9,28 s (no. 25).
+
+**Uji**
+- `pytest` → **342 lulus, 0 gagal** (test baru: kalimat yang menggambarkan pertanyaan lain bukan arahan, kata pendamping sapaan).
+
+## Sesi 3 — 22 November 2026
+
+**Dataset evaluasi v1 (S5-T04, D-56)**
+- `scripts/build_ground_truth.py` (tanpa panggilan API) menyimpan 40 entri: `PKL` (id, topik, jenis, pertanyaan, jawaban acuan, sumber, catatan) dan `NON_PKL` (N1–N4). Keluaran:
+  - `data/evaluation/ground_truth.jsonl` (di-ignore Git): `id`, `version`, `category` (`pkl`/`non_pkl`), `topic`, `question_type`, `user_input`, `reference`, `reference_contexts` (teks utuh halaman sumber: `data/processed/Pedoman-PKL-2025/page_NNN.txt` atau teks PyMuPDF dokumen tambahan), `reference_sources` (`source_file`, `page`), `note`. Total teks konteks rujukan 152.486 karakter.
+  - `docs/scrum/sprint-05/dataset_ground_truth.md`: lembar validasi tanpa halaman sumber.
+- Pertanyaan N1–N3 sama dengan EXP-004, N4 baru ("Laptop apa yang bagus untuk kuliah?").
+- `scripts/export_docs.py`: pemetaan `dataset_ground_truth` → "Lampiran: Lembar Validasi Dataset Evaluasi". Ekspor `--sprint 5 --pdf` → 10 halaman, placeholder NIM/NIP terisi, salinan `dataset_ground_truth_5_DeniM.docx/.pdf`.
+- `tests/unit/test_ground_truth.py`: 40 id unik, teks pertanyaan sama dengan `sprint-04/pertanyaan_uji.md`, setiap entri PKL punya sumber, lembar tanpa rujukan halaman dan tanpa titik koma.
+- `pytest` → **344 lulus, 0 gagal**.
