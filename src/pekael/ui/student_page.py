@@ -21,6 +21,7 @@ from pekael.config.logging_config import configure_logging
 from pekael.config.settings import AppConfig, ConfigError
 from pekael.core.chatbot_manager import ChatbotManager
 from pekael.core.schemas import ChatbotResponse, ResponseStatus, SourceReference
+from pekael.core.schemas import document_name as _document_name
 from pekael.models.embeddings import EmbeddingError
 from pekael.models.gemini_model import LLMError
 from pekael.ui import content, theme
@@ -110,7 +111,15 @@ def load_manager() -> tuple[ChatbotManager | None, str | None]:
 
 def document_name(source_file: str) -> str:
     """'Pedoman-PKL-2025.pdf' -> 'Pedoman PKL 2025'."""
-    return Path(source_file).stem.replace("-", " ").replace("_", " ")
+    return _document_name(source_file)
+
+
+def manifest_documents(manifest: dict) -> list[dict]:
+    """Per-document summaries of a manifest, also for builds made before D-53 (one document)."""
+    if manifest.get("documents"):
+        return manifest["documents"]
+    source = (manifest.get("sources") or [{"source_file": "Buku pedoman"}])[0]
+    return [{"source_file": source["source_file"], "pages": manifest.get("pages", []), "chunk_count": manifest.get("chunk_count", 0)}]
 
 
 def page_ranges(pages: list[int]) -> str:
@@ -124,6 +133,16 @@ def page_ranges(pages: list[int]) -> str:
     return ", ".join(f"{a}–{b}" if a != b else str(a) for a, b in ranges)
 
 
+def top_pill(manifest: dict | None) -> str:
+    if not manifest:
+        return "Buku pedoman belum siap"
+    documents = manifest_documents(manifest)
+    pages = sum(len(d["pages"]) for d in documents)
+    if len(documents) == 1:
+        return f"{document_name(documents[0]['source_file'])} · {pages} halaman"
+    return f"{len(documents)} dokumen panduan · {pages} halaman"
+
+
 def readable_date(iso: str) -> str:
     moment = datetime.fromisoformat(iso).astimezone()  # local time (WIB), as in the admin room
     return f"{moment.day} {MONTHS[moment.month - 1]} {moment.year}"
@@ -131,6 +150,19 @@ def readable_date(iso: str) -> str:
 
 def source_pages(sources: tuple[SourceReference, ...]) -> list[int]:
     return sorted({s.page for s in sources})
+
+
+def source_groups(sources: tuple[SourceReference, ...]) -> list[tuple[str, list[int]]]:
+    """Cited pages per document, in the order the documents were first cited."""
+    groups: dict[str, set[int]] = {}
+    for source in sources:
+        groups.setdefault(source.source_file, set()).add(source.page)
+    return [(document_name(name), sorted(pages)) for name, pages in groups.items()]
+
+
+def render_source_tabs(sources: tuple[SourceReference, ...]) -> None:
+    for document, pages in source_groups(sources):
+        st.markdown(theme.page_tabs(pages, document), unsafe_allow_html=True)
 
 
 # ---------- sections ----------
@@ -156,12 +188,13 @@ def render_sidebar(manager: ChatbotManager | None) -> None:
         )
         st.markdown(f'<div class="pk-side"><h4>Cara kerja</h4>{steps}<h4>Sumber jawaban</h4></div>', unsafe_allow_html=True)
         if manifest:
-            name = document_name(manifest["sources"][0]["source_file"]) if manifest.get("sources") else "Buku pedoman"
-            st.markdown(
-                f'<div class="pk-src"><strong>{escape(name)}</strong><br>Halaman PDF {page_ranges(manifest["pages"])}<br>'
-                f'{manifest["chunk_count"]} potongan teks · dimuat {readable_date(manifest["created_at"])}</div>',
-                unsafe_allow_html=True,
-            )
+            for document in manifest_documents(manifest):
+                st.markdown(
+                    f'<div class="pk-src"><strong>{escape(document_name(document["source_file"]))}</strong><br>'
+                    f'Halaman PDF {page_ranges(document["pages"])}<br>{document["chunk_count"]} potongan teks</div>',
+                    unsafe_allow_html=True,
+                )
+            st.markdown(f'<div class="pk-src">Dimuat {readable_date(manifest["created_at"])}</div>', unsafe_allow_html=True)
         else:
             st.markdown('<div class="pk-src">Buku pedoman belum dimuat.</div>', unsafe_allow_html=True)
         st.write("")
@@ -195,14 +228,15 @@ def render_exchange(index: int, item: Exchange) -> None:
     response = item.response
     if response.status is ResponseStatus.ANSWERED:
         with st.container(key=f"pk-a-{index}"):
-            st.markdown('<div class="pk-from">Dari buku pedoman</div>', unsafe_allow_html=True)
+            st.markdown('<div class="pk-from">Dari panduan PKL</div>', unsafe_allow_html=True)
             st.markdown(response.answer)
             if response.sources:
-                document = document_name(response.sources[0].source_file)
-                st.markdown(theme.page_tabs(source_pages(response.sources), document), unsafe_allow_html=True)
-                with st.expander("Lihat kutipan dari buku pedoman"):
+                render_source_tabs(response.sources)
+                several = len({s.source_file for s in response.sources}) > 1
+                with st.expander("Lihat kutipan sumbernya"):
                     for source in response.sources:
-                        st.markdown(theme.quote(source.page, source.section, source.snippet), unsafe_allow_html=True)
+                        document = document_name(source.source_file) if several else None
+                        st.markdown(theme.quote(source.page, source.section, source.snippet, document), unsafe_allow_html=True)
             st.markdown(theme.time_stamp(item.answered_at), unsafe_allow_html=True)
     else:
         warn = response.status is not ResponseStatus.OUT_OF_SCOPE
@@ -213,8 +247,7 @@ def render_exchange(index: int, item: Exchange) -> None:
             else:  # a redirection written in plain text, possibly citing related handbook pages
                 st.markdown(response.answer)
                 if response.sources:
-                    document = document_name(response.sources[0].source_file)
-                    st.markdown(theme.page_tabs(source_pages(response.sources), document), unsafe_allow_html=True)
+                    render_source_tabs(response.sources)
             st.markdown(theme.time_stamp(item.answered_at), unsafe_allow_html=True)
 
 
@@ -257,7 +290,7 @@ def main() -> None:
 
     render_sidebar(manager)
     manifest = getattr(manager.vector_store, "manifest", None) if manager and not problem else None
-    pill = f"{document_name(manifest['sources'][0]['source_file'])} · {len(manifest['pages'])} halaman" if manifest else "Buku pedoman belum siap"
+    pill = top_pill(manifest)
     st.markdown(theme.top_bar(pill, problem is None), unsafe_allow_html=True)
 
     history: list[Exchange] = st.session_state.setdefault(HISTORY_KEY, [])

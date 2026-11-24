@@ -172,3 +172,17 @@ Jawaban lengkap: [`scrum/sprint-03/pemeriksaan_jawaban.md`](scrum/sprint-03/peme
 | Hasil | Dalam cakupan 35/36 dijawab. No. 23 (pembekalan sebelum PKL) diarahkan ke Admin Prodi PTIK, pada EXP-007 dijawab. L1–L5 5/5 diarahkan, N1–N3 3/3 dibalas sebagai percakapan. Tidak ada penanda, ungkapan terlarang, atau sapaan pembuka yang tidak diminta. Satu arahan memuat "belum ada di panduan kita", frasa ini ditambahkan ke daftar ungkapan yang dicegah. Waktu jawab dalam cakupan median 5,44 s, maks 7,73 s |
 | Kesimpulan | Ketepatan kembali setara EXP-004 sampai EXP-007. Satu pertanyaan berubah status antar percobaan, sehingga hasil perlu diukur dengan beberapa kali pengulangan pada evaluasi Sprint 5. Waktu jawab mengikuti kondisi layanan |
 | Keputusan terkait | D-49, D-50 |
+
+### EXP-010 — Ketepatan setelah dokumen knowledge base tambahan
+
+| | |
+|---|---|
+| Tanggal | 2026-11-20 |
+| Sprint | 5 |
+| Tujuan | Memeriksa pengaruh dokumen knowledge base tambahan dari *Product Owner* (D-53) terhadap jarak kedekatan, ketepatan, dan waktu jawab |
+| Konfigurasi | Indeks `20261124T053813125686-565a9929` (Buku Pedoman 33 potongan, dokumen tambahan 28 potongan), `RETRIEVAL_K=4`, ambang tetap 0,64, `gemini-3.5-flash-lite`, prompt EXP-009 dengan label nama dokumen |
+| Data uji | 44 pertanyaan EXP-004 |
+| Prosedur | `run_threshold_experiment.py --generate --pause 4 --threshold 0.64 --output .../exp010.json`, dibandingkan dengan `exp009.json` |
+| Hasil | Dalam cakupan 36/36 dijawab (EXP-009: 35/36). E6 kini memuat rumus nilai akhir 30% N1 + 40% N2 + 30% N3 dari dokumen tambahan. Dari kelompok L, L5 (margin dan huruf laporan) dan L2 (jadwal pembekalan) dijawab dari dokumen tambahan, L1, L3, L4 diarahkan. N1–N3 3/3 ditolak ambang. Jarak terbesar dalam cakupan 0,557, terkecil non-PKL 0,663 (titik tengah 0,61), jarak N1 hanya 0,023 di atas ambang 0,64. Halaman Buku Pedoman yang diharapkan terambil pada 34/36 pertanyaan, dua lainnya dijawab dari dokumen tambahan. Waktu jawab median 1,68 s, maks 2,35 s |
+| Kesimpulan | Dokumen tambahan menambah cakupan tanpa menurunkan ketepatan. Kelompok L tidak lagi seluruhnya di luar cakupan sehingga perlu disusun ulang untuk dataset Sprint 5. Ambang 0,64 masih memisahkan, tetapi selisih dengan pertanyaan non-PKL terdekat mengecil dan perlu diuji ulang sebelum dibekukan (S5-T07). Jawaban L2 memakai kalimat tentang jadwal seminar dan perlu diperiksa *Product Owner*. Pada uji langsung L4 dijawab dengan nama Koordinator PKL, sehingga statusnya masih berubah antar percobaan |
+| Keputusan terkait | D-53, D-54 |

@@ -12,8 +12,9 @@ KEY_PATTERNS = {
     "OpenAI API key": re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
     "Google API key": re.compile(r"AIza[0-9A-Za-z_-]{35}"),
     "Google auth token": re.compile(r"AQ\.[A-Za-z0-9_-]{20,}"),
+    "Groq API key": re.compile(r"gsk_[A-Za-z0-9]{20,}"),
 }
-SECRET_ASSIGNMENT = re.compile(r"^\s*(GEMINI_API_KEY|OPENAI_API_KEY|ADMIN_PASSWORD)\s*=\s*(\S+)")
+SECRET_ASSIGNMENT = re.compile(r"^\s*(GEMINI_API_KEY|GROQ_API_KEY|OPENAI_API_KEY|ADMIN_PASSWORD)\s*=\s*(\S+)")
 PLACEHOLDER_PREFIX = "replace_with_"
 ENV_FILE = re.compile(r"(^|/)\.env(\..+)?$")
 

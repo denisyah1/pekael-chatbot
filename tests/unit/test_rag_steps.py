@@ -97,8 +97,8 @@ def test_prompt_holds_question_context_and_system_prompt():
     assert system_prompt.startswith(SYSTEM_PROMPT) and "Catatan untuk aturan no. 7" in system_prompt
     assert prompt.endswith("PERTANYAAN MAHASISWA:\nBerapa SKS minimal?")
     assert "GAYA BAHASA PERTANYAAN: netral" in prompt
-    assert "[1] (halaman PDF 10, B. Persyaratan)" in prompt
-    assert "[3] (halaman PDF 11, E. Kelulusan)" in prompt
+    assert "[1] (pedoman, halaman PDF 10, B. Persyaratan)" in prompt
+    assert "[3] (pedoman, halaman PDF 11, E. Kelulusan)" in prompt
 
 
 def test_sources_number_outside_context_is_ignored():
@@ -208,8 +208,8 @@ def test_question_passing_the_gate_keeps_all_chunks():
     _, _, llm = _ask(max_distance=0.42)
 
     prompt = llm.calls[0][0]
-    assert "[2] (halaman PDF 7)" in prompt
-    assert "[3] (halaman PDF 11, E. Kelulusan)" in prompt
+    assert "[2] (pedoman, halaman PDF 7)" in prompt
+    assert "[3] (pedoman, halaman PDF 11, E. Kelulusan)" in prompt
 
 
 def test_gate_disabled_when_threshold_not_set():

@@ -155,3 +155,73 @@ def test_create_manager_wires_components_from_config(tmp_path):
     assert manager.llm.model_name == config.gemini_chat_model
     assert manager.system_prompt == SYSTEM_PROMPT
     assert len(manager.chain.step_names) == 6
+
+
+class TwoDocumentLoader(BaseLoader):
+    """Handbook pages honour the selection, the additional document is loaded in full (D-53)."""
+
+    def __init__(self) -> None:
+        self.calls = []
+
+    def load(self, source_path, *, pages=None, on_page=None, all_pages=False):
+        self.calls.append((str(source_path), pages, all_pages))
+        name = str(source_path)
+        count = 2 if name == "pedoman.pdf" else 3
+        hash_ = "abc" if name == "pedoman.pdf" else "def"
+        docs = [Document(f"{name} {n}", metadata={"source_file": name, "source_hash": hash_, "page": n,
+                                                  "extraction_method": "native_text", "manually_corrected": False})
+                for n in range(1, count + 1)]
+        for done in range(1, count + 1):
+            if on_page:
+                on_page(done, count)
+        return docs
+
+
+class CountingSplitter(FakeSplitter):
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def split(self, documents):
+        self.calls += 1
+        assert len({d.metadata["source_file"] for d in documents}) == 1  # never mixes documents
+        return super().split(documents)
+
+
+def test_extra_documents_are_loaded_in_full_split_separately_and_recorded():
+    loader, splitter, store = TwoDocumentLoader(), CountingSplitter(), FakeStore()
+    store.build_info = {}
+    manager = ChatbotManager(SYSTEM_PROMPT, loader, splitter, store, llm=object(), chain=Chain())
+
+    report = manager.initialize_knowledge_base("pedoman.pdf", pages=[1, 2], extra_paths=["kb.pdf"])
+
+    assert loader.calls == [("pedoman.pdf", [1, 2], False), ("kb.pdf", None, True)]
+    assert splitter.calls == 2
+    assert [d.metadata["source_file"] for d in store.ingested] == ["pedoman.pdf"] * 2 + ["kb.pdf"] * 3
+    assert (report.source_file, report.page_count, report.extra_sources) == ("pedoman.pdf", 5, ("kb.pdf",))
+    assert store.build_info["extra_paths"] == ["kb.pdf"]
+
+
+def test_build_without_extra_documents_records_an_empty_list():
+    store = FakeStore()
+    store.build_info = {}
+
+    report = _manager(store).initialize_knowledge_base("pedoman.pdf")
+
+    assert report.extra_sources == ()
+    assert store.build_info["extra_paths"] == []
+
+
+def test_extra_knowledge_paths_are_read_from_a_comma_separated_setting():
+    config = AppConfig.from_env({"KNOWLEDGE_BASE_EXTRA_PATHS": " data/source/kb.pdf , data/source/faq.pdf ,"})
+
+    assert [p.as_posix() for p in config.extra_knowledge_paths] == ["data/source/kb.pdf", "data/source/faq.pdf"]
+    assert AppConfig.from_env({}).extra_knowledge_paths == []
+
+
+def test_groq_evaluator_key_is_optional_and_redacted():
+    config = AppConfig.from_env({"GROQ_API_KEY": "gsk_" + "x" * 30})
+
+    assert config.groq_eval_model == "openai/gpt-oss-120b"
+    assert config.groq_base_url.startswith("https://api.groq.com/")
+    assert "gsk_" + "x" * 30 in config.secret_values()
+    assert AppConfig.from_env({"GROQ_API_KEY": "replace_with_your_groq_key"}).groq_api_key is None

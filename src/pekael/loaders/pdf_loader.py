@@ -84,13 +84,17 @@ class PDFLoader(BaseLoader):
         *,
         pages: list[int] | None = None,
         on_page: Callable[[int, int], None] | None = None,
+        all_pages: bool = False,
     ) -> list[Document]:
-        """Return one Document per selected PDF page (all pages if no selection), in page order."""
+        """Return one Document per selected PDF page (all pages if no selection), in page order.
+
+        The configured selection belongs to the handbook, ``all_pages=True`` skips it for other documents.
+        """
         path = Path(source_path)
         pdf = self.open_pdf(path)
         source_hash = file_sha256(path)
         try:
-            selection = sorted(set(pages)) if pages else self.pages
+            selection = None if all_pages else sorted(set(pages)) if pages else self.pages
             numbers = selection or list(range(1, pdf.page_count + 1))
             outside = [n for n in numbers if n > pdf.page_count]
             if outside:

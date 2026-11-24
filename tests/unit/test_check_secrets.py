@@ -12,6 +12,7 @@ spec.loader.exec_module(check_secrets)
 FAKE_OPENAI = "sk-" + "proj-" + "x" * 40
 FAKE_GOOGLE_TOKEN = "AQ." + "A" * 40
 FAKE_GOOGLE_KEY = "AIza" + "B" * 35
+FAKE_GROQ = "gsk" + "_" + "C" * 40
 
 
 @pytest.mark.parametrize(
@@ -21,6 +22,8 @@ FAKE_GOOGLE_KEY = "AIza" + "B" * 35
         f"GEMINI_API_KEY={FAKE_GOOGLE_TOKEN}",
         f'key = "{FAKE_GOOGLE_KEY}"',
         "ADMIN_PASSWORD=pkl" + "12345",
+        f"GROQ_API_KEY={FAKE_GROQ}",
+        f"client = Groq(api_key=\"{FAKE_GROQ}\")",
     ],
 )
 def test_detects_secrets(line):
@@ -33,6 +36,7 @@ def test_detects_secrets(line):
         "GEMINI_API_KEY=replace_with_your_new_gemini_key",
         "ADMIN_PASSWORD=replace_with_a_strong_secret",
         "GEMINI_API_KEY=",
+        "GROQ_API_KEY=replace_with_your_groq_key",
         "RETRIEVAL_K=4",
         "Use sk-learn style naming",
     ],

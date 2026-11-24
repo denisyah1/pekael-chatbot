@@ -1,8 +1,9 @@
-"""Manual live smoke test for the three Ragas research metrics (spec §10.4; OD-05, OD-06).
+"""Manual live smoke test for the three Ragas research metrics (spec §10.4; OD-05, OD-06, D-52).
 
 Scores ONE fictional sample with Faithfulness, Answer Relevancy and Context Recall using
-the OpenAI evaluator LLM and Gemini embeddings. The sample is not research data.
-Costs a few small gpt-4o-mini calls. Usage from the project root:
+the Groq evaluator LLM (free tier, OpenAI-compatible API) and Gemini embeddings. The sample
+is not research data. Costs a handful of Groq requests and one or two Gemini embedding calls.
+Usage from the project root:
 
     .venv\\Scripts\\python.exe scripts\\smoke_test_ragas.py
 """
@@ -50,20 +51,20 @@ async def run() -> int:
     except ConfigError as exc:
         print(exc)
         return 2
-    missing = [name for name, value in (("OPENAI_API_KEY", config.openai_api_key), ("GEMINI_API_KEY", config.gemini_api_key)) if not value]
+    missing = [name for name, value in (("GROQ_API_KEY", config.groq_api_key), ("GEMINI_API_KEY", config.gemini_api_key)) if not value]
     if missing:
         print("Variabel berikut belum diisi di .env:", ", ".join(missing))
         return 2
 
     secrets = config.secret_values()
-    llm = llm_factory(
-        config.openai_eval_model, client=AsyncOpenAI(api_key=config.openai_api_key.get_secret_value(), max_retries=0)
-    )
+    # Groq speaks the OpenAI API, so the openai client is pointed at Groq's endpoint (no extra package).
+    client = AsyncOpenAI(api_key=config.groq_api_key.get_secret_value(), base_url=config.groq_base_url, max_retries=0)
+    llm = llm_factory(config.groq_eval_model, provider="openai", client=client)
     embeddings = GoogleEmbeddings(
         client=genai.Client(api_key=config.gemini_api_key.get_secret_value()), model=config.gemini_embedding_model
     )
 
-    print(f"ragas {version('ragas')} | evaluator LLM: {config.openai_eval_model} | embeddings: {config.gemini_embedding_model} (Gemini)")
+    print(f"ragas {version('ragas')} | evaluator LLM: {config.groq_eval_model} (Groq) | embeddings: {config.gemini_embedding_model} (Gemini)")
     print("Sampel: 1 contoh fiktif (bukan data penelitian)")
     print()
 

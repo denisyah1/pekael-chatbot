@@ -47,12 +47,12 @@ INTRO_LINES = (
     "Semua jawabannya diambil dari Buku Pedoman PKL UNJ, lengkap dengan halamannya.",
 )
 GREETING = "Halo, mau tahu apa soal PKL?"
-GREETING_SUB = "Tulis pertanyaanmu dengan bahasa sehari-hari. Pekael akan mencarinya di buku pedoman dan menunjukkan halamannya."
+GREETING_SUB = "Tulis pertanyaanmu dengan bahasa sehari-hari. Pekael akan mencarinya di buku pedoman dan panduan PKL Prodi, lalu menunjukkan halamannya."
 PLACEHOLDER = "Tulis pertanyaanmu tentang PKL..."
 NOTE = "Pekael bisa keliru. Untuk keputusan resmi, cek buku pedoman atau tanya koordinator PKL."
 HOW_IT_WORKS = (
     ("Kamu bertanya", "Pakai bahasa sehari-hari, satu pertanyaan sekali kirim."),
-    ("Pekael membuka buku", "Halaman yang paling sesuai dicari dari Buku Pedoman PKL."),
+    ("Pekael membuka buku", "Halaman yang paling sesuai dicari dari Buku Pedoman PKL dan panduan PKL Prodi PTIK."),
     ("Jawaban + halaman", "Setiap jawaban menyebut halaman sumbernya, jadi bisa kamu cek sendiri."),
 )
 NOT_CONFIGURED = "Pekael belum bisa dipakai karena pengaturannya belum lengkap. Silakan hubungi admin."

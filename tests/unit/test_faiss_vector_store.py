@@ -146,3 +146,29 @@ def test_factory_builds_faiss_store(tmp_path):
 def test_invalid_parameters(tmp_path, k, keep):
     with pytest.raises(ValueError):
         _store(tmp_path, default_k=k, keep_versions=keep)
+
+
+def test_manifest_summarises_each_document_with_the_handbook_first(tmp_path):
+    store = _store(tmp_path)
+    extra = [Document(page_content=t, metadata={"source_file": "kb.pdf", "source_hash": "def", "page": 1 + i % 2,
+                                                "total_pages": 8, "chunk_id": f"k{i}"}) for i, t in enumerate(["A1 syarat", "B1 waktu", "D3 lulus"])]
+
+    store.ingest_document(_chunks() + extra)
+
+    manifest = store.manifest
+    assert [s["source_file"] for s in manifest["sources"]] == ["pedoman.pdf", "kb.pdf"]
+    assert manifest["pages"] == [7, 8, 9]  # page fields still describe the handbook
+    assert manifest["chunks_per_page"] == {"7": 1, "8": 1, "9": 1}
+    kb = manifest["documents"][1]
+    assert (kb["pages"], kb["chunks_per_page"], kb["total_pages"], kb["chunk_count"]) == ([1, 2], {"1": 2, "2": 1}, 8, 3)
+    assert store.documents() == manifest["documents"]
+    assert store.chunks_per_page() == {7: 1, 8: 1, 9: 1}
+
+
+def test_documents_of_an_older_single_document_build_are_derived(tmp_path):
+    store = _store(tmp_path)
+    store.manifest = {"sources": [{"source_file": "pedoman.pdf", "source_hash": "abc"}], "pages": [4, 5],
+                      "chunks_per_page": {"4": 2, "5": 1}, "total_pages": 29, "chunk_count": 3}
+
+    assert store.documents() == [{"source_file": "pedoman.pdf", "source_hash": "abc", "pages": [4, 5],
+                                  "chunks_per_page": {"4": 2, "5": 1}, "total_pages": 29, "chunk_count": 3}]

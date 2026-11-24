@@ -11,7 +11,7 @@ import re
 import threading
 import time
 from collections import OrderedDict
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from pathlib import Path
 
 from langchain_core.callbacks import BaseCallbackHandler
@@ -84,30 +84,38 @@ class ChatbotManager:
         source_path: str | Path,
         pages: list[int] | None = None,
         on_progress: Callable[[str, int, int], None] | None = None,
+        extra_paths: Sequence[str | Path] = (),
     ) -> IngestionReport:
-        """Load, split and index one approved PDF. A failed build keeps the previous index (FR-07).
+        """Load, split and index the approved handbook pages plus any additional documents.
 
-        ``pages`` overrides the configured page selection. ``on_progress(stage, done, total)``
-        reports the stages in BUILD_STAGES, with page counts while loading.
+        A failed build keeps the previous index (FR-07). ``pages`` overrides the configured page
+        selection of the handbook, ``extra_paths`` are further approved PDFs used in full (D-53).
+        Every document is split on its own, so chunks never mix documents.
+        ``on_progress(stage, done, total)`` reports the stages in BUILD_STAGES, with page counts while loading.
         """
 
         def report(stage: str, done: int = 0, total: int = 0) -> None:
             if on_progress:
                 on_progress(stage, done, total)
 
+        def on_page(done: int, total: int) -> None:
+            report("load", done, total)
+
         report("load")
-        pages_loaded = self.loader.load(source_path, pages=pages, on_page=lambda done, total: report("load", done, total))
+        loaded = [self.loader.load(source_path, pages=pages, on_page=on_page)]
+        loaded += [self.loader.load(extra, on_page=on_page, all_pages=True) for extra in extra_paths]
         report("split")
-        chunks = self.splitter.split(pages_loaded)
+        chunks = [chunk for documents in loaded for chunk in self.splitter.split(documents)]
         report("index", 0, len(chunks))
         build_info = getattr(self.vector_store, "build_info", None)
-        if isinstance(build_info, dict):  # recorded in the manifest, so the admin can rebuild from the same file
+        if isinstance(build_info, dict):  # recorded in the manifest, so the admin can rebuild from the same files
             build_info["source_path"] = str(source_path)
+            build_info["extra_paths"] = [str(p) for p in extra_paths]
             if pages is not None:
                 build_info["knowledge_base_pages"] = ",".join(str(p) for p in sorted(set(pages)))
         indexing = self.vector_store.ingest_document(chunks)
         self.clear_cache()
-        pages = pages_loaded
+        pages = [page for documents in loaded for page in documents]
         ocr_pages = [d for d in pages if d.metadata.get("extraction_method") == TESSERACT_OCR]
         unchecked = [d.metadata["page"] for d in ocr_pages if not d.metadata.get("manually_corrected")]
         warnings = (f"OCR pages without a correction file, confirm they were checked: {unchecked}",) if unchecked else ()
@@ -120,6 +128,7 @@ class ChatbotManager:
             chunk_count=len(chunks),
             indexing=indexing,
             warnings=warnings,
+            extra_sources=tuple(documents[0].metadata["source_file"] for documents in loaded[1:] if documents),
         )
 
     # ---------- start-up ----------

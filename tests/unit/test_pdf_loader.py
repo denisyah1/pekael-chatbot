@@ -169,6 +169,14 @@ def test_only_selected_pages_are_loaded(tmp_path):
     assert ocr.calls == 0
 
 
+def test_all_pages_ignores_the_handbook_selection(tmp_path):
+    path = _make_pdf(tmp_path / "kb.pdf", [NATIVE_PAGE, NATIVE_PAGE, NATIVE_PAGE])
+
+    documents = PDFLoader(pages=[2]).load(path, all_pages=True)
+
+    assert [d.metadata["page"] for d in documents] == [1, 2, 3]
+
+
 def test_selected_page_outside_document_is_an_error(tmp_path):
     path = _make_pdf(tmp_path / "pedoman.pdf", [NATIVE_PAGE, NATIVE_PAGE])
 

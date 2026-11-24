@@ -87,7 +87,16 @@ def render_login(config: AppConfig) -> None:
 
 # ---------- building ----------
 
-def run_build(manager: ChatbotManager, source: Path, pages: list[int] | None) -> IngestionReport | None:
+def extra_paths(manager: ChatbotManager, config: AppConfig) -> list[Path]:
+    """Additional documents kept in every rebuild: those of the active build, else the configured ones (D-53)."""
+    manifest = getattr(manager.vector_store, "manifest", None) or {}
+    if "extra_paths" in manifest:
+        return [Path(p) for p in manifest["extra_paths"]]
+    return config.extra_knowledge_paths
+
+
+def run_build(manager: ChatbotManager, source: Path, pages: list[int] | None,
+              extras: list[Path] | None = None) -> IngestionReport | None:
     """Build a new knowledge base version with a progress view. Returns None when it failed."""
     box = st.empty()
     bar = st.progress(0.0)
@@ -107,7 +116,10 @@ def run_build(manager: ChatbotManager, source: Path, pages: list[int] | None) ->
     started = time.perf_counter()
     try:
         OcrService(student_page.get_config().tesseract_cmd, student_page.get_config().tesseract_lang).check_available()
-        report = manager.initialize_knowledge_base(source, pages=pages, on_progress=progress)
+        if extras:
+            report = manager.initialize_knowledge_base(source, pages=pages, on_progress=progress, extra_paths=extras)
+        else:
+            report = manager.initialize_knowledge_base(source, pages=pages, on_progress=progress)
     except tuple(BUILD_ERRORS) as exc:
         box.empty()
         bar.empty()
@@ -136,6 +148,8 @@ def render_report() -> None:
         f"({report.ocr_pages} OCR, {report.native_pages} teks digital) · {report.chunk_count} potongan",
         f"Versi: {escape(report.indexing.build_id)}",
     ]
+    if report.extra_sources:
+        lines.insert(2, "Dokumen tambahan ikut dibangun: " + ", ".join(f"<b>{escape(n)}</b>" for n in report.extra_sources))
     for warning in report.warnings:
         pages = warning.rsplit(":", 1)[-1].strip()
         lines.append(f"Perhatian: halaman OCR {escape(pages)} belum punya file koreksi. Pastikan teksnya sudah diperiksa.")
@@ -156,6 +170,11 @@ def save_upload(name: str, data: bytes, max_mb: int) -> Path:
 
 def render_replace(manager: ChatbotManager, config: AppConfig) -> None:
     st.caption("Buku baru dibangun di folder sementara dan baru dipakai setelah berhasil diperiksa. Kalau gagal, buku lama tetap dipakai.")
+    extras = [p for p in extra_paths(manager, config)]
+    if extras:
+        missing = [p.name for p in extras if not p.is_file()]
+        st.caption("Dokumen tambahan dari Product Owner selalu ikut dibangun: " + ", ".join(p.name for p in extras)
+                   + (f". File tidak ditemukan: {', '.join(missing)}" if missing else ""))
     upload = st.file_uploader("File buku pedoman (PDF)", type=["pdf"], key="pk-upload")
     pages_text = st.text_input("Halaman yang dipakai", value=config.knowledge_base_pages or "",
                                help="Contoh: 4-16,22-25,27-28. Kosongkan untuk memakai semua halaman.")
@@ -180,11 +199,11 @@ def render_replace(manager: ChatbotManager, config: AppConfig) -> None:
         except DocumentLoadError as exc:
             st.markdown(theme.report_box([f"<b>File ditolak.</b> {escape(str(exc))}."], failed=True), unsafe_allow_html=True)
             return
-        if run_build(manager, source, pages) is None:
+        if run_build(manager, source, pages, extras) is None:
             source.unlink(missing_ok=True)
         else:
             st.rerun()
-    elif rebuild and run_build(manager, current, pages):
+    elif rebuild and run_build(manager, current, pages, extras):
         st.rerun()
     render_report()
 
@@ -200,7 +219,7 @@ def render_versions(manager: ChatbotManager) -> None:
     st.caption("Dua versi terakhir disimpan. Versi lama dapat diaktifkan kembali bila versi baru bermasalah.")
     for version in versions:
         created = datetime.fromisoformat(version["created_at"]).astimezone()
-        name = version["sources"][0]["source_file"] if version.get("sources") else "?"
+        name = " + ".join(student_page.document_name(s["source_file"]) for s in version.get("sources", [])) or "?"
         detail = (f"{name} · halaman {student_page.page_ranges(version.get('pages', []))} · {version.get('chunk_count')} potongan · "
                   f"{version.get('embedding_model')}, {version.get('dimension')} dimensi")
         st.markdown(theme.version_row(f"{indonesian_date(created)}, {created:%H.%M}", detail, version["active"]), unsafe_allow_html=True)
@@ -229,7 +248,7 @@ def render_try(manager: ChatbotManager, config: AppConfig) -> None:
     box.empty()
     gate = config.retrieval_max_l2_distance
     distances = ", ".join(f"{d:.3f}" for d in response.distances) or "-"
-    pages = ", ".join(str(p) for p in sorted({s.page for s in response.sources})) or "-"
+    pages = "; ".join(f"{name} hlm. {', '.join(map(str, numbers))}" for name, numbers in student_page.source_groups(response.sources)) or "-"
     st.markdown(theme.key_values([
         ("Status", response.status.value),
         ("Waktu", f"{time.perf_counter() - started:.2f} detik"),
@@ -285,12 +304,18 @@ def render_dashboard(user: str) -> None:
         created = datetime.fromisoformat(manifest["created_at"]).astimezone()
         st.markdown(theme.stats([
             ("Buku aktif", student_page.document_name(name), f"sha256 {manifest['sources'][0]['source_hash'][:12]}" if manifest.get("sources") else ""),
-            ("Halaman", str(len(manifest["pages"])), student_page.page_ranges(manifest["pages"])),
+            ("Halaman", str(sum(len(d["pages"]) for d in student_page.manifest_documents(manifest))),
+             student_page.page_ranges(manifest["pages"]) + (f" + {len(manifest['documents']) - 1} dokumen" if len(manifest.get("documents", [])) > 1 else "")),
             ("Potongan", str(manifest["chunk_count"]), f"{manifest['dimension']} dimensi"),
             ("Versi", str(len(versions)), f"aktif sejak {indonesian_date(created)}"),
         ]), unsafe_allow_html=True)
-        st.markdown(theme.label("Peta halaman buku"), unsafe_allow_html=True)
-        st.markdown(theme.page_map(store.total_pages(), store.chunks_per_page()), unsafe_allow_html=True)
+        documents = student_page.manifest_documents(manifest)
+        for i, document in enumerate(documents):
+            title = "Peta halaman buku" if i == 0 else f"Dokumen tambahan: {student_page.document_name(document['source_file'])}"
+            per_page = store.chunks_per_page() if i == 0 else {int(p): n for p, n in document.get("chunks_per_page", {}).items()}
+            total = store.total_pages() if i == 0 else document.get("total_pages", 0)
+            st.markdown(theme.label(title), unsafe_allow_html=True)
+            st.markdown(theme.page_map(total, per_page), unsafe_allow_html=True)
     else:
         st.warning(problem or "Knowledge base belum dibangun.", icon=":material/info:")
 

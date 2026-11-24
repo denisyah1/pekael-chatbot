@@ -43,6 +43,8 @@ class AppConfig(BaseModel):
     knowledge_base_path: Path = Path("data/source/handbook.pdf")
     # PDF pages approved by the Product Owner, e.g. "4-16" (empty = all pages)
     knowledge_base_pages: str | None = None
+    # Additional PDFs approved by the Product Owner, comma-separated, all pages used (D-53)
+    knowledge_base_extra_paths: str | None = None
     pdf_max_upload_mb: int = Field(default=30, gt=0)
     question_max_chars: int = Field(default=500, gt=0)
     ocr_min_text_chars_per_page: int = Field(default=40, ge=0)
@@ -56,10 +58,11 @@ class AppConfig(BaseModel):
     admin_username: str | None = None
     admin_password: SecretStr | None = None
 
-    # Ragas evaluator (evaluation scripts only)
-    openai_api_key: SecretStr | None = None
-    openai_eval_model: str = "gpt-4o-mini"
-    openai_eval_embedding_model: str = "text-embedding-3-small"
+    # Ragas evaluator LLM (evaluation scripts only): Groq free tier through its
+    # OpenAI-compatible API (D-52). Answer Relevancy embeddings use Gemini (OD-05).
+    groq_api_key: SecretStr | None = None
+    groq_eval_model: str = "openai/gpt-oss-120b"
+    groq_base_url: str = "https://api.groq.com/openai/v1"
     ragas_dataset_path: Path = Path("data/evaluation/ground_truth.jsonl")
 
     # Operational
@@ -113,10 +116,15 @@ class AppConfig(BaseModel):
         return [] if self.gemini_api_key else ["GEMINI_API_KEY"]
 
     @property
+    def extra_knowledge_paths(self) -> list[Path]:
+        """'a.pdf, b.pdf' -> [Path('a.pdf'), Path('b.pdf')]."""
+        return [Path(part.strip()) for part in (self.knowledge_base_extra_paths or "").split(",") if part.strip()]
+
+    @property
     def admin_enabled(self) -> bool:
         return bool(self.admin_username and self.admin_password and self.admin_password.get_secret_value())
 
     def secret_values(self) -> list[str]:
         """Plain secret values, used only to redact them from logs."""
-        secrets = (self.gemini_api_key, self.admin_password, self.openai_api_key)
+        secrets = (self.gemini_api_key, self.admin_password, self.groq_api_key)
         return [s.get_secret_value() for s in secrets if s and s.get_secret_value()]

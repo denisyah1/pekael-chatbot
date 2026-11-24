@@ -14,6 +14,13 @@ class ResponseStatus(str, Enum):
     ERROR = "error"
 
 
+def document_name(source_file: str) -> str:
+    """'Pedoman-PKL-2025.pdf' -> 'Pedoman PKL 2025' (shown in prompts and citations)."""
+    stem = source_file.replace("\\", "/").rsplit("/", 1)[-1]
+    stem = stem[: -len(".pdf")] if stem.lower().endswith(".pdf") else stem
+    return stem.replace("-", " ").replace("_", " ")
+
+
 @dataclass(frozen=True)
 class SourceReference:
     """A citation built from the metadata of a retrieved chunk, never from LLM output."""
@@ -59,6 +66,7 @@ class IngestionReport:
     chunk_count: int
     indexing: IndexingReport | None = None
     warnings: tuple[str, ...] = ()
+    extra_sources: tuple[str, ...] = ()  # file names of the additional documents (D-53)
 
 
 @dataclass

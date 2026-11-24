@@ -52,7 +52,7 @@ py -3.11 -m venv .venv
 
 - `requirements.txt`: dependency runtime yang dipin.
 - `requirements-dev.txt`: runtime + pytest.
-- `requirements-eval.txt`: runtime + Ragas/OpenAI, khusus skrip evaluasi (tidak diperlukan chatbot maupun deployment):
+- `requirements-eval.txt`: runtime + Ragas dan klien `openai` (dipakai untuk API Groq yang kompatibel dengan OpenAI), khusus skrip evaluasi (tidak diperlukan chatbot maupun deployment):
   `pip install -r requirements-eval.txt`
 - `requirements-lock.txt`: seluruh dependency transitif lingkungan pengembangan (dev + eval) hasil `pip freeze`, untuk reproduksi persis:
   `pip install -r requirements-lock.txt -e .`
@@ -71,7 +71,9 @@ Isi `.env` dengan nilai asli. File ini di-ignore oleh Git dan **tidak boleh** di
 |---|---|
 | `GEMINI_API_KEY` | Wajib untuk menjawab pertanyaan |
 | `ADMIN_USERNAME`, `ADMIN_PASSWORD` | Satu akun admin; login admin nonaktif bila kosong |
-| `OPENAI_API_KEY` | Hanya untuk skrip evaluasi Ragas, tidak dibutuhkan chatbot |
+| `KNOWLEDGE_BASE_PATH`, `KNOWLEDGE_BASE_PAGES` | Buku pedoman dan halaman yang disetujui Product Owner |
+| `KNOWLEDGE_BASE_EXTRA_PATHS` | Dokumen tambahan dari Product Owner, dipisah koma, dipakai seluruh halamannya |
+| `GROQ_API_KEY`, `GROQ_EVAL_MODEL` | Hanya untuk skrip evaluasi Ragas (Groq versi gratis, key dari console.groq.com), tidak dibutuhkan chatbot |
 | `TESSERACT_CMD` | Contoh: `C:\Program Files\Tesseract-OCR\tesseract.exe` |
 | `CHUNK_SIZE`, `CHUNK_OVERLAP`, `RETRIEVAL_K`, `RETRIEVAL_MAX_L2_DISTANCE` | Parameter eksperimen; perubahan dicatat di [`docs/experiment_log.md`](docs/experiment_log.md) |
 
@@ -79,7 +81,7 @@ Nilai kosong atau yang masih berawalan `replace_with_` dianggap belum diisi. Pad
 
 ## Menjalankan Pekael
 
-Bangun knowledge base sekali (dan setiap kali buku pedoman atau pengaturan potongan berubah):
+Bangun knowledge base sekali (dan setiap kali buku pedoman, dokumen tambahan, atau pengaturan potongan berubah):
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\build_knowledge_base.py
@@ -125,7 +127,7 @@ Uji model Gemini dengan API sungguhan dijalankan manual (3 panggilan kecil, tanp
 .\.venv\Scripts\python.exe scripts\smoke_test_models.py
 ```
 
-Uji ketiga metrik Ragas (memakai kredit OpenAI API, satu sampel fiktif):
+Uji ketiga metrik Ragas (evaluator Groq versi gratis dan embedding Gemini, satu sampel fiktif):
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\smoke_test_ragas.py

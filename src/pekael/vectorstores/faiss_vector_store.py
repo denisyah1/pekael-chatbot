@@ -102,11 +102,28 @@ class FaissVectorStore(BaseVectorStore):
         source_hash = str(documents[0].metadata.get("source_hash", "nohash"))[:8]
         return f"{datetime.now(timezone.utc):%Y%m%dT%H%M%S%f}-{source_hash}"
 
+    @staticmethod
+    def _document_summaries(documents: list[Document]) -> list[dict]:
+        """One summary per source document, in ingestion order (the handbook first)."""
+        grouped: dict[tuple, list[Document]] = {}
+        for d in documents:
+            grouped.setdefault((d.metadata.get("source_file"), d.metadata.get("source_hash")), []).append(d)
+        summaries = []
+        for (source_file, source_hash), chunks in grouped.items():
+            per_page = Counter(d.metadata["page"] for d in chunks if "page" in d.metadata)
+            summaries.append({
+                "source_file": source_file,
+                "source_hash": source_hash,
+                "pages": sorted(per_page),
+                "chunks_per_page": {str(p): per_page[p] for p in sorted(per_page)},
+                "total_pages": max((d.metadata.get("total_pages", 0) for d in chunks), default=0),
+                "chunk_count": len(chunks),
+            })
+        return summaries
+
     def _manifest(self, build_id: str, documents: list[Document], store: FAISS) -> dict:
-        sources = sorted({(d.metadata.get("source_file"), d.metadata.get("source_hash")) for d in documents}, key=str)
-        per_page = Counter(d.metadata["page"] for d in documents if "page" in d.metadata)
-        pages = sorted(per_page)
-        total_pages = max((d.metadata.get("total_pages", 0) for d in documents), default=0)
+        summaries = self._document_summaries(documents)
+        main = summaries[0]  # page fields below describe the handbook, as in builds before D-53
         return {
             "build_id": build_id,
             "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -117,10 +134,11 @@ class FaissVectorStore(BaseVectorStore):
             "dimension": store.index.d,
             "normalized": getattr(self.embeddings, "normalize", None),
             "chunk_count": len(documents),
-            "pages": pages,
-            "chunks_per_page": {str(p): per_page[p] for p in pages},
-            "total_pages": total_pages,
-            "sources": [{"source_file": f, "source_hash": h} for f, h in sources],
+            "pages": main["pages"],
+            "chunks_per_page": main["chunks_per_page"],
+            "total_pages": main["total_pages"],
+            "sources": [{"source_file": s["source_file"], "source_hash": s["source_hash"]} for s in summaries],
+            "documents": summaries,
             **self.build_info,
         }
 
@@ -209,13 +227,31 @@ class FaissVectorStore(BaseVectorStore):
         self._activate(build_id)
         self._store, self.manifest = store, manifest
 
+    def documents(self) -> list[dict]:
+        """Per-document summaries of the active index (older single-document builds are derived)."""
+        if not self.manifest:
+            return []
+        if "documents" in self.manifest:
+            return self.manifest["documents"]
+        source = (self.manifest.get("sources") or [{}])[0]
+        return [{
+            "source_file": source.get("source_file", "?"),
+            "source_hash": source.get("source_hash", ""),
+            "pages": self.manifest.get("pages", []),
+            "chunks_per_page": self.manifest.get("chunks_per_page", {}),
+            "total_pages": self.manifest.get("total_pages", 0),
+            "chunk_count": self.manifest.get("chunk_count", 0),
+        }]
+
     def chunks_per_page(self) -> dict[int, int]:
         """Number of chunks per PDF page of the active index (from the manifest, or the docstore for older builds)."""
         if self.manifest and "chunks_per_page" in self.manifest:
             return {int(p): n for p, n in self.manifest["chunks_per_page"].items()}
         if self._store is None:
             return {}
-        counts = Counter(doc.metadata.get("page") for doc in self._store.docstore._dict.values())
+        values = list(self._store.docstore._dict.values())
+        first = values[0].metadata.get("source_file") if values else None
+        counts = Counter(doc.metadata.get("page") for doc in values if doc.metadata.get("source_file") == first)
         return {p: n for p, n in sorted(counts.items()) if p is not None}
 
     def total_pages(self) -> int:

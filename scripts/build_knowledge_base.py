@@ -1,5 +1,8 @@
 """Build the FAISS knowledge base from the approved PDF pages (Sprint 3, spec §4.1).
 
+The handbook pages come from KNOWLEDGE_BASE_PAGES, the additional documents listed in
+KNOWLEDGE_BASE_EXTRA_PATHS are used in full (D-53).
+
 Calls the Gemini embedding API once per batch of 50 chunks. The new index version is used
 only after it reloads correctly, a failed build keeps the previous one.
 
@@ -36,10 +39,13 @@ def main() -> int:
         return 2
 
     pdf_path = Path(args.pdf or config.knowledge_base_path)
+    extras = config.extra_knowledge_paths
     print(f"Membangun knowledge base dari {pdf_path.name}, halaman {config.knowledge_base_pages or 'semua'}")
+    for extra in extras:
+        print(f"  + dokumen tambahan {extra.name}, semua halaman")
     started = time.perf_counter()
     try:
-        report = manager.initialize_knowledge_base(pdf_path)
+        report = manager.initialize_knowledge_base(pdf_path, extra_paths=extras)
     except (DocumentLoadError, VectorStoreError, EmbeddingError) as exc:
         print(f"Gagal, knowledge base lama tetap dipakai: {exc}")
         return 1
@@ -47,6 +53,8 @@ def main() -> int:
     indexing = report.indexing
     print(f"Selesai dalam {time.perf_counter() - started:.1f} s")
     print(f"  sumber      : {report.source_file} (sha256 {report.source_hash[:12]})")
+    for name in report.extra_sources:
+        print(f"  tambahan    : {name}")
     print(f"  halaman     : {report.page_count} (teks digital {report.native_pages}, OCR {report.ocr_pages})")
     print(f"  potongan    : {report.chunk_count}")
     print(f"  build_id    : {indexing.build_id}")

@@ -1,7 +1,7 @@
 # Product Backlog — Pekael
 
 > Sumber: proposal skripsi (Tabel Product Backlog) dan `project_spec.md` §13.
-> Product Owner: Bambang Satrio, S. Pd., M. Kom. · Terakhir diperbarui: 2026-11-19
+> Product Owner: Bambang Satrio, S. Pd., M. Kom. · Terakhir diperbarui: 2026-11-20
 
 ## Item Product Backlog (dari proposal)
 
@@ -22,10 +22,10 @@ Item berikut adalah aktivitas validasi dan evaluasi menurut spec §12. Item ini 
 
 | ID | Aktivitas | Sprint | Status |
 |---|---|---|---|
-| SUP-01 | Dataset ground truth dan validasi oleh PO | 5 | Belum dimulai |
-| SUP-02 | Kalibrasi dan pembekuan parameter (k, threshold, chunking, prompt) | 5 | Belum dimulai |
-| SUP-03 | Dry-run Ragas | 5 | Belum dimulai |
-| SUP-04 | Pemilihan hosting dan estimasi biaya | 5 | Belum dimulai |
+| SUP-01 | Dataset ground truth dan validasi oleh PO | 5 | Dikerjakan |
+| SUP-02 | Kalibrasi dan pembekuan parameter (k, threshold, chunking, prompt) | 5 | Dikerjakan |
+| SUP-03 | Dry-run Ragas | 5 | Dikerjakan |
+| SUP-04 | Pemilihan hosting dan estimasi biaya | 5 | Dikerjakan |
 | SUP-05 | Deployment dan smoke test di lingkungan target | 6 | Belum dimulai |
 | SUP-06 | Evaluasi Ragas final (3 metrik) | 6 | Belum dimulai |
 | SUP-07 | UAT minimal 100 responden dan analisis | 6 | Belum dimulai |
@@ -46,3 +46,4 @@ Nilai status: `Belum dimulai` · `Dikerjakan` · `Selesai (menunggu review)` · 
 | 2026-11-17 | Sprint 4–6 dipadatkan menjadi 1 minggu: Sprint 4 13–19 Nov, Sprint 5 20–26 Nov, Sprint 6 27 Nov–3 Des 2026 | Efisiensi waktu, mengikuti Sprint 1–3 | Developer, PO |
 | 2026-11-17 | PBI-06 ditambah respons arahan untuk pertanyaan yang jawabannya tidak ada di buku pedoman: ramah, bervariasi, dan mengarahkan ke admin prodi, koordinator program studi, atau koordinator PKL | Masukan bimbingan *Product Owner* | PO |
 | 2026-11-19 | Sprint 4 diterima. PBI-06, PBI-07, dan PBI-08 selesai. Pemeriksaan label daftar topik dibawa ke Sprint 5. Pengelolaan beberapa dokumen knowledge base dicatat untuk Sprint 5 | Sprint 4 Review | PO |
+| 2026-11-20 | Sprint 5 dimulai dengan SUP-01 sampai SUP-04. Dokumen knowledge base tambahan dari *Product Owner* (8 halaman) dimasukkan ke knowledge base bersama Buku Pedoman (lanjutan PBI-02 dan PBI-08, D-53). Evaluator Ragas diganti dari OpenAI ke Groq versi gratis (D-52) | Sprint 5 Planning | PO |

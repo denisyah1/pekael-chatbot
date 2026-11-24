@@ -382,8 +382,8 @@ def page_tabs(pages: list[int], document: str) -> str:
     return f'<div class="pk-pages"><small>{escape(document)}</small>{tabs}</div>'
 
 
-def quote(page: int, section: str | None, snippet: str | None) -> str:
-    heading = f"Halaman PDF {page}" + (f" · {section}" if section else "")
+def quote(page: int, section: str | None, snippet: str | None, document: str | None = None) -> str:
+    heading = (f"{document} · " if document else "") + f"Halaman PDF {page}" + (f" · {section}" if section else "")
     return f'<div class="pk-quote"><b>{escape(heading)}</b><span>{escape(snippet or "")}</span></div>'
 
 

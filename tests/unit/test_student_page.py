@@ -113,7 +113,7 @@ def test_answer_shows_bubble_page_tabs_quotes_and_progress(app):
     assert '<div class="pk-q"><div>Berapa SKS minimal?</div><span class="pk-time">' in html  # question on the right, with time
     assert "Minimal 100 SKS." in html
     assert '<span class="pk-page">hal. 10</span><span class="pk-page">hal. 13</span>' in html
-    assert at.expander[0].label == "Lihat kutipan dari buku pedoman"
+    assert at.expander[0].label == "Lihat kutipan sumbernya"
     assert "Halaman PDF 10 · G. Persyaratan Peserta PKL" in html
     assert content.GREETING.split(",")[0] not in html  # welcome hidden after the first question
 
@@ -191,3 +191,26 @@ def test_facts_quote_verified_pages():
     assert set(content.STEP_LABELS) == {
         "validate_input", "retrieve", "relevancy_gate", "build_prompt", "generate", "validate_citations"
     }
+
+
+def test_sources_are_grouped_per_document_in_citation_order():
+    from pekael.core.schemas import SourceReference
+
+    sources = (
+        SourceReference("Knowledge_Base_PKL_PTIK_UNJ.pdf", 5, "k1"),
+        SourceReference("Pedoman-PKL-2025.pdf", 11, "p1"),
+        SourceReference("Knowledge_Base_PKL_PTIK_UNJ.pdf", 3, "k2"),
+        SourceReference("Knowledge_Base_PKL_PTIK_UNJ.pdf", 5, "k3"),
+    )
+
+    assert student_page.source_groups(sources) == [("Knowledge Base PKL PTIK UNJ", [3, 5]), ("Pedoman PKL 2025", [11])]
+
+
+def test_top_pill_counts_documents_and_pages():
+    single = {"sources": [{"source_file": "Pedoman-PKL-2025.pdf"}], "pages": [4, 5, 6], "chunk_count": 5}
+    double = {"documents": [{"source_file": "Pedoman-PKL-2025.pdf", "pages": [4, 5, 6], "chunk_count": 5},
+                            {"source_file": "kb.pdf", "pages": [1, 2], "chunk_count": 4}]}
+
+    assert student_page.top_pill(single) == "Pedoman PKL 2025 · 3 halaman"
+    assert student_page.top_pill(double) == "2 dokumen panduan · 5 halaman"
+    assert student_page.top_pill(None) == "Buku pedoman belum siap"

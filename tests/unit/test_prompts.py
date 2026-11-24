@@ -19,8 +19,8 @@ from pekael.core.prompts import (
 from pekael.core.schemas import RetrievedDocument
 
 
-def _retrieved(text: str, page: int, section: str = "") -> RetrievedDocument:
-    return RetrievedDocument(Document(page_content=text, metadata={"page": page, "section": section}), 0.4)
+def _retrieved(text: str, page: int, section: str = "", source: str = "Pedoman-PKL-2025.pdf") -> RetrievedDocument:
+    return RetrievedDocument(Document(page_content=text, metadata={"source_file": source, "page": page, "section": section}), 0.4)
 
 
 def test_system_prompt_states_the_grounding_rules():
@@ -77,11 +77,14 @@ def test_empty_or_too_long_redirect_is_not_usable():
 
 
 def test_context_is_numbered_with_page_and_section():
-    text = format_context([_retrieved("Minimal 100 SKS.", 10, "G. Persyaratan Peserta PKL"), _retrieved("Nilai minimal B+.", 11)])
+    text = format_context([
+        _retrieved("Minimal 100 SKS.", 10, "G. Persyaratan Peserta PKL"),
+        _retrieved("Nilai minimal B+.", 5, source="Knowledge_Base_PKL_PTIK_UNJ.pdf"),
+    ])
 
     assert text == (
-        "[1] (halaman PDF 10, G. Persyaratan Peserta PKL)\nMinimal 100 SKS.\n\n"
-        "[2] (halaman PDF 11)\nNilai minimal B+."
+        "[1] (Pedoman PKL 2025, halaman PDF 10, G. Persyaratan Peserta PKL)\nMinimal 100 SKS.\n\n"
+        "[2] (Knowledge Base PKL PTIK UNJ, halaman PDF 5)\nNilai minimal B+."
     )
 
 
@@ -221,3 +224,15 @@ def test_greeting_question_sentence_is_dropped_when_not_greeted():
 
     assert strip_unasked_greeting("apa itu pkl?", answer) == "PKL adalah kegiatan kurikuler."
 
+
+
+def test_greeting_in_front_of_content_only_loses_the_greeting_word():
+    from pekael.core.prompts import strip_unasked_greeting
+
+    answer = "Hai, koordinator PKL PTIK sekarang dijabat Bambang Satrio, S.Pd., M.Kom. Beliau mengurus PKL."
+
+    assert strip_unasked_greeting("Siapa koordinator PKL?", answer) == (
+        "Koordinator PKL PTIK sekarang dijabat Bambang Satrio, S.Pd., M.Kom. Beliau mengurus PKL."
+    )
+    assert strip_unasked_greeting("Berapa lama PKL?", "Hai kak, PKL minimal 4 bulan.") == "PKL minimal 4 bulan."
+    assert strip_unasked_greeting("Berapa lama PKL?", "Hiasan sampul berwarna biru.") == "Hiasan sampul berwarna biru."

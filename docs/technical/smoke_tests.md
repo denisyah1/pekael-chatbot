@@ -106,3 +106,11 @@ Kuota habis dan timeout tidak dipicu secara langsung, keduanya diuji dengan tiru
 | 2026-11-15 | `gemini-3.5-flash` (alur lengkap, EXP-005) | 13/36 dijawab, lalu 429 | Kuota gratis 20 permintaan per hari |
 | 2026-11-15 | `gemini-3.5-flash-lite` (alur lengkap, per langkah) | Gemini 22,8–28,8 s, pencarian 0,5 s | Hampir seluruh waktu di Gemini |
 | 2026-11-15 | `gemini-3.5-flash-lite` (streaming) | Token pertama 13,91 s, selesai 14,07 s | Menunggu sebelum token pertama |
+
+## 8. Ragas dengan evaluator Groq (Sprint 5)
+
+Perintah: `.venv\Scripts\python.exe scripts\smoke_test_ragas.py` (1 sampel fiktif, bukan data penelitian). Evaluator memakai Groq versi gratis melalui API yang kompatibel dengan OpenAI (D-52), embedding Answer Relevancy tetap `gemini-embedding-001`.
+
+| Tanggal | Metrik | Evaluator LLM | Embedding | Hasil | Catatan |
+|---|---|---|---|---|---|
+| 2026-11-20 | Ketiga metrik | `openai/gpt-oss-120b` (Groq) | `gemini-embedding-001` | **Belum berjalan** | `GROQ_API_KEY` belum diisi, skrip berhenti dengan exit 2 sebelum memanggil API |

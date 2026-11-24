@@ -49,7 +49,7 @@ Dokumen di `docs/scrum/` ditulis dengan bahasa sederhana sebagai bahan laporan. 
 | 2 | 30 Okt – 5 Nov 2026 | Chunking dan embedding | ✓ 30 Okt | ✓ 5 Nov | ✓ 5 Nov | Selesai, diterima PO |
 | 3 | 6 – 12 Nov 2026 | FAISS dan alur RAG inti | ✓ 6 Nov | ✓ 12 Nov | ✓ 12 Nov | Selesai, diterima PO |
 | 4 | 13 – 19 Nov 2026 | UI Streamlit dan pengujian internal | ✓ 13 Nov | ✓ 19 Nov | ✓ 19 Nov | Selesai, diterima PO |
-| 5 | 20 – 26 Nov 2026 (rencana) | Validasi ahli dan revisi | ☐ | ☐ | ☐ | Belum dimulai |
+| 5 | 20 – 26 Nov 2026 | Validasi ahli dan revisi | ✓ 20 Nov | ☐ | ☐ | Berjalan |
 | 6 | 27 Nov – 3 Des 2026 (rencana) | Deployment, Ragas, UAT, analisis | ☐ | ☐ | ☐ | Belum dimulai |
 
 ## Aturan Pencatatan
