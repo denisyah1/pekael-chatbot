@@ -74,6 +74,11 @@ SPRINT_DOCUMENTS = {
         "Lampiran: Product Backlog Utama",
         "Sprint Report {n}: Product Backlog",
     ),
+    "uji_coba_ragas": (
+        "SPRINT REPORT {n}",
+        "Lampiran: Laporan Uji Coba Evaluasi Ragas",
+        "Sprint Report {n}: Uji Coba Ragas",
+    ),
     "dataset_ground_truth": (
         "SPRINT REPORT {n}",
         "Lampiran: Lembar Validasi Dataset Evaluasi",

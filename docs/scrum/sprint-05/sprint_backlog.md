@@ -14,7 +14,7 @@
 | S5-T05 | SUP-01 | Validasi dataset bersama *Product Owner* | In Progress | Lembar validasi diserahkan |
 | S5-T06 | SUP-02 | Uji kasus angka, tanggal, persyaratan, parafrasa, multi-bagian, tidak tercakup, non-PKL, dan waktu jawab pagi, siang, malam | In Progress | EXP-010, EXP-011 |
 | S5-T07 | SUP-02 | Kalibrasi dan pembekuan pengaturan untuk evaluasi akhir | To Do | |
-| S5-T08 | SUP-03 | Uji coba Ragas pada beberapa entri dataset | To Do | |
+| S5-T08 | SUP-03 | Uji coba Ragas pada beberapa entri dataset | In Progress | [uji_coba_ragas.md](uji_coba_ragas.md), EXP-012 |
 | S5-T09 | PBI-08 | Pengelolaan dokumen tambahan di ruang admin | In Progress | D-53 |
 | S5-T10 | SUP-07 | Memeriksa enam pernyataan UAT pada Tabel 3.7 | To Do | |
 | S5-T11 | SUP-04 | Perbandingan hosting dan estimasi biaya | To Do | |
@@ -158,3 +158,30 @@ Satu entri per sesi kerja, ditulis setelah sesi selesai.
 
 **Berikutnya**
 - Validasi lembar dataset oleh *Product Owner* (S5-T05), lalu uji coba Ragas (S5-T08).
+
+### 2026-11-25
+
+**Dikerjakan**
+- Skrip evaluasi Ragas dibuat sesuai rancangan spec (S5-T08): Pekael menjawab setiap pertanyaan seperti saat dipakai mahasiswa, jawaban dan potongan teks yang ditemukan disimpan, lalu dinilai dengan Faithfulness, Answer Relevancy, dan Context Recall. Setiap langkah perantara penilaian (pernyataan, alasan penilai, tebakan pertanyaan, kemiripan) ikut disimpan sehingga setiap nilai dapat dijelaskan.
+- Uji integrasi pada dua pertanyaan menemukan jawaban penilai untuk Faithfulness terpotong. Batas panjang keluaran penilai dinaikkan (D-58).
+- Uji coba pada 36 pertanyaan uji (EXP-012): seluruh pertanyaan dijawab Pekael, 18 pertanyaan pertama selesai dinilai dengan rerata Faithfulness 0,90, Answer Relevancy 0,91, dan Context Recall 0,97. Penilaian berhenti karena kuota token harian layanan penilai tercapai.
+- Laporan uji coba berbahasa sederhana dengan satu contoh pertanyaan yang dijelaskan per metrik disusun ([uji_coba_ragas.md](uji_coba_ragas.md)).
+
+**Hasil test**
+- Pengujian otomatis: 351 lulus, 0 gagal (bertambah 7 test modul evaluasi).
+- Uji coba Ragas: 18 dari 36 pertanyaan dinilai, 18 menunggu kuota.
+
+**File dibuat/diubah**
+- Kode: `evaluation/dataset.py`, `evaluation/ragas_evaluator.py` (baru).
+- Skrip: `run_ragas_evaluation.py` (baru), `export_docs.py`.
+- Test: `test_evaluation.py` (baru).
+- Dokumen: `uji_coba_ragas.md` (baru), `technical/ragas_dry_run.md` (baru), `sprint_backlog.md`, `decision_log.md`, `experiment_log.md`, `README.md`.
+
+**Keputusan**
+- D-58 pengaturan evaluator dan pembagian evaluasi menjadi dua hari.
+
+**Hambatan**
+- Kuota gratis Groq 200.000 token per hari hanya cukup untuk sekitar 21 pertanyaan per hari.
+
+**Berikutnya**
+- Melanjutkan penilaian no. 19 sampai E6 setelah kuota pulih.

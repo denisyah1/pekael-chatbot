@@ -200,3 +200,17 @@ Jawaban lengkap: [`scrum/sprint-03/pemeriksaan_jawaban.md`](scrum/sprint-03/peme
 | Hasil | Dalam cakupan 36/36 dijawab. L4 (Koordinator PKL) dan L5 (margin dan huruf laporan) dijawab dari dokumen tambahan. L1, L2, L3 diarahkan, L2 (jadwal pembekalan) tidak lagi memakai kalimat jadwal seminar. N1–N3 3/3 ditolak ambang. Tidak ada sapaan pembuka atau penanda yang tampil. Waktu jawab median 1,67 s, maks 9,28 s (satu pertanyaan), lainnya di bawah 2,5 s |
 | Kesimpulan | Perbaikan tidak menurunkan ketepatan. Dari kelompok L, dua pertanyaan kini termasuk cakupan dokumen tambahan, sehingga kelompok pertanyaan tidak tercakup perlu disusun ulang pada dataset Sprint 5 |
 | Keputusan terkait | D-54, D-55 |
+
+### EXP-012 — Uji coba Ragas pada 36 pertanyaan uji
+
+| | |
+|---|---|
+| Tanggal | 2026-11-25 |
+| Sprint | 5 |
+| Tujuan | Memastikan ketiga metrik Ragas berjalan dari jawaban Pekael sampai nilai per pertanyaan, dan mengetahui kebutuhan kuota evaluator (S5-T08) |
+| Konfigurasi | Indeks `20261124T053813125686-565a9929`, `gemini-3.5-flash-lite`, `k=4`, ambang 0,64, evaluator `openai/gpt-oss-120b` (Groq, `max_tokens=4096`), embedding `gemini-embedding-001`, Ragas 0.4.3 |
+| Data uji | Dataset v2 scope `uji36` (36 pertanyaan), belum divalidasi *Product Owner* |
+| Prosedur | `run_ragas_evaluation.py --experiment EXP-012 --scope uji36 --pause 20`, hasil di `data/evaluation/results/EXP-012/` |
+| Hasil | 36/36 dijawab Pekael (median 1,79 s). 18/36 dinilai sebelum batas token harian Groq tercapai. Rerata 18 pertanyaan: Faithfulness 0,901, Answer Relevancy 0,906, Context Recall 0,972. Nilai terendah: Faithfulness no. 15 (0,333, salah tafsir evaluator) dan no. 14 (0,500, kalimat basa-basi), Context Recall no. 2 (0,500, halaman dasar hukum tidak terambil) |
+| Kesimpulan | Integrasi ketiga metrik berhasil dan setiap nilai dapat ditelusuri. Kalimat pengantar dan penutup yang ramah menurunkan Faithfulness, penilai dapat salah tafsir sehingga nilai rendah perlu diperiksa manual, dan pencarian belum menemukan halaman dasar hukum. Kuota gratis cukup untuk sekitar 21 pertanyaan per hari. Hasil ini uji coba, bukan hasil penelitian |
+| Keputusan terkait | D-52, D-57, D-58 |

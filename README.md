@@ -133,6 +133,12 @@ Uji ketiga metrik Ragas (evaluator Groq versi gratis dan embedding Gemini, satu 
 .\.venv\Scripts\python.exe scripts\smoke_test_ragas.py
 ```
 
+Evaluasi Ragas pada dataset (`data/evaluation/ground_truth.jsonl`, dibuat `scripts/build_ground_truth.py`). Kuota gratis Groq cukup untuk sekitar 21 pertanyaan per hari, lanjutkan dengan `--resume`:
+
+```powershell
+.\.venv\Scripts\python.exe scriptsun_ragas_evaluation.py --experiment EXP-012 --scope uji36 --pause 20 [--resume]
+```
+
 Hasil smoke test dicatat di [`docs/technical/smoke_tests.md`](docs/technical/smoke_tests.md).
 
 ## Ekspor Dokumen ke Word/PDF
